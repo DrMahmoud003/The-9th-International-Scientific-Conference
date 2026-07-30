@@ -56,6 +56,56 @@
         .card-hover:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
         .list-item-enter { animation: slideIn 0.25s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* Carousel / Slideshow Styles */
+        .carousel-container { position: relative; overflow: hidden; }
+        .carousel-track { display: flex; transition: transform 0.5s ease; }
+        .carousel-slide { min-width: 100%; }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; background: rgba(255,255,255,0.9); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 16px; display: flex; align-items: center; justify-content: center; color: #1d4ed8; transition: all 0.2s; }
+        .carousel-btn:hover { background: #1d4ed8; color: white; }
+        .carousel-prev { left: 10px; }
+        .carousel-next { right: 10px; }
+        .carousel-dots { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+        .carousel-dot { width: 10px; height: 10px; border-radius: 50%; background: #cbd5e1; border: none; cursor: pointer; transition: all 0.2s; padding: 0; }
+        .carousel-dot.active { background: #1d4ed8; width: 28px; border-radius: 99px; }
+        .carousel-dot:hover { background: #93c5fd; }
+
+        /* News Carousel - shows 2 slides on desktop */
+        .news-carousel .carousel-slide { min-width: 50%; padding: 0 8px; }
+        @media (max-width: 640px) {
+            .news-carousel .carousel-slide { min-width: 100%; }
+        }
+
+        /* Mobile Responsive Enhancements */
+        @media (max-width: 640px) {
+            .header-title-text { font-size: 0.9rem !important; line-height: 1.3 !important; }
+            .hero-section { padding: 2rem 1rem !important; }
+            .hero-section h2 { font-size: 1.5rem !important; }
+            .section-padding { padding: 1.5rem !important; }
+            .carousel-btn { width: 32px; height: 32px; font-size: 12px; }
+            .gallery-slide { height: 200px !important; }
+        }
+        @media (max-width: 480px) {
+            .header-logo { width: 36px; height: 36px; }
+            .header-title-text { font-size: 0.78rem !important; }
+            .admin-btn-text { display: none; }
+            .header-actions { gap: 0.25rem; }
+        }
+
+        /* Protection: disable text selection */
+        body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+        input, textarea, select { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
+
+        /* Firebase Sync Indicator */
+        .sync-indicator { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 99px; transition: all 0.3s; cursor: pointer; }
+        .sync-indicator .sync-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .sync-indicator.connected { background: #dcfce7; color: #166534; }
+        .sync-indicator.connected .sync-dot { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.6); }
+        .sync-indicator.disconnected { background: #fee2e2; color: #991b1b; }
+        .sync-indicator.disconnected .sync-dot { background: #ef4444; }
+        .sync-indicator.syncing { background: #fef9c3; color: #854d0e; }
+        .sync-indicator.syncing .sync-dot { background: #eab308; animation: pulse 1s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 antialiased">
@@ -140,7 +190,12 @@
                     <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="news_heading">أخبار المؤتمر</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
                 </div>
-                <div id="news-container" class="grid sm:grid-cols-2 gap-6"></div>
+                <div id="news-container" class="carousel-container news-carousel">
+                    <div id="news-track" class="carousel-track"></div>
+                    <button class="carousel-btn carousel-prev" onclick="newsSlide(-1)" aria-label="Previous"><i class="fa-solid fa-chevron-right"></i></button>
+                    <button class="carousel-btn carousel-next" onclick="newsSlide(1)" aria-label="Next"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div id="news-dots" class="carousel-dots"></div>
+                </div>
             </section>
 
             <!-- Sponsorship Section -->
@@ -282,7 +337,12 @@
                     <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="gallery_heading">معرض الصور والفيديوهات</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
                 </div>
-                <div id="gallery-container" class="grid sm:grid-cols-2 gap-6"></div>
+                <div id="gallery-container" class="carousel-container">
+                    <div id="gallery-track" class="carousel-track"></div>
+                    <button class="carousel-btn carousel-prev" onclick="gallerySlide(-1)" aria-label="Previous"><i class="fa-solid fa-chevron-right"></i></button>
+                    <button class="carousel-btn carousel-next" onclick="gallerySlide(1)" aria-label="Next"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div id="gallery-dots" class="carousel-dots"></div>
+                </div>
             </section>
 
             <!-- Registration Section -->
@@ -451,6 +511,7 @@
                     <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-3">إعدادات المحتوى</div>
                     <button onclick="switchTab('site-settings')" id="tab-btn-site-settings" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm bg-vetBlue text-white flex items-center gap-2"><i class="fa-solid fa-gear w-4 text-center"></i> <span data-i18n="tab_site_settings">إعدادات ونصوص الصفحة</span></button>
                     <button onclick="switchTab('nav-manager')" id="tab-btn-nav-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-bars w-4 text-center"></i> <span>الأقسام الجانبية</span></button>
+                    <button onclick="switchTab('custom-sections')" id="tab-btn-custom-sections" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-layer-group w-4 text-center"></i> <span>أقسام مخصصة</span></button>
                     <button onclick="switchTab('about-manager')" id="tab-btn-about-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-circle-info w-4 text-center"></i> <span>قسم عن المؤتمر</span></button>
                     <button onclick="switchTab('venue-manager')" id="tab-btn-venue-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-location-dot w-4 text-center"></i> <span>مكان الانعقاد</span></button>
                     <button onclick="switchTab('vmg-manager')" id="tab-btn-vmg-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-eye w-4 text-center"></i> <span>الرؤية والرسالة والأهداف</span></button>
@@ -571,6 +632,43 @@
                     <div class="bg-white p-6 rounded-xl shadow border">
                         <h5 class="font-bold text-vetDark mb-4">الأقسام الحالية</h5>
                         <div id="admin-nav-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- Custom Sections Tab (الأقسام المخصصة) -->
+                <div id="tab-custom-sections" class="space-y-6 hidden max-w-4xl">
+                    <h4 class="text-xl font-bold text-vetDark">إدارة الأقسام المخصصة</h4>
+                    <p class="text-sm text-gray-500">يمكنك إضافة أقسام جديدة بمحتوى HTML مخصص. ستظهر تلقائياً في القائمة الجانبية وفي الصفحة الرئيسية.</p>
+                    <form onsubmit="handleSaveCustomSection(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <input type="hidden" id="edit-cs-id" value="">
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-1">عنوان القسم (عربي) *</label>
+                                <input type="text" id="cs-title-ar" required class="w-full px-4 py-2 border rounded-lg form-input-focus" placeholder="مثال: ورش العمل">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">Title (English) *</label>
+                                <input type="text" id="cs-title-en" required class="w-full px-4 py-2 border rounded-lg form-input-focus" placeholder="e.g. Workshops">
+                            </div>
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-1">المحتوى (عربي) *</label>
+                                <textarea id="cs-content-ar" rows="5" required class="w-full px-4 py-2 border rounded-lg form-input-focus" placeholder="اكتب المحتوى هنا... يمكنك استخدام HTML"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">Content (English) *</label>
+                                <textarea id="cs-content-en" rows="5" required class="w-full px-4 py-2 border rounded-lg form-input-focus" placeholder="Write content here... HTML is allowed"></textarea>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="submit" id="cs-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة قسم مخصص</button>
+                            <button type="button" onclick="resetCustomSectionForm()" class="bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-bold hidden" id="cs-cancel-btn">إلغاء التعديل</button>
+                        </div>
+                    </form>
+                    <div class="bg-white p-6 rounded-xl shadow border">
+                        <h5 class="font-bold text-vetDark mb-4">الأقسام المخصصة الحالية</h5>
+                        <div id="admin-cs-list" class="space-y-3"></div>
                     </div>
                 </div>
 
@@ -1575,22 +1673,36 @@
 
         // Navigation Buttons Manager Functions (أقسام المؤتمر الجانبية)
         function getNavButtons() {
-            return JSON.parse(localStorage.getItem('vet_conf_nav_buttons')) || [
-                { id: 'home', ar: 'الرئيسية', en: 'Home', href: '#home' },
-                { id: 'sponsorship', ar: 'رعاية المؤتمر والمؤسسات', en: 'Sponsors', href: '#sponsorship' },
-                { id: 'org-structure', ar: 'الهيكل التنظيمي للمؤتمر', en: 'Org Structure', href: '#org-structure' },
-                { id: 'venue', ar: 'مكان انعقاد المؤتمر', en: 'Venue', href: '#venue' },
-                { id: 'vision', ar: 'رؤية المؤتمر', en: 'Vision', href: '#vision' },
-                { id: 'mission', ar: 'رسالة المؤتمر', en: 'Mission', href: '#mission' },
-                { id: 'goals', ar: 'اهداف المؤتمر', en: 'Goals', href: '#goals' },
-                { id: 'axes', ar: 'محاور المؤتمر', en: 'Axes', href: '#axes' },
-                { id: 'journal', ar: 'مجلة نشر الأبحاث', en: 'Journal', href: '#journal' },
-                { id: 'fees', ar: 'رسوم الاشتراك', en: 'Fees', href: '#fees' },
-                { id: 'speakers', ar: 'المحاضرون', en: 'Speakers', href: '#speakers' },
-                { id: 'committees', ar: 'اللجان العلمية', en: 'Committees', href: '#committees' },
-                { id: 'accepted-papers', ar: 'البحوث المقبولة', en: 'Accepted Papers', href: '#accepted-papers' },
-                { id: 'contact-section', ar: 'التواصل', en: 'Contact', href: '#contact-section' }
+            const defaults = [
+                { id: 'home', ar: 'الرئيسية', en: 'Home', href: '#home', visible: true },
+                { id: 'about', ar: 'عن المؤتمر', en: 'About', href: '#about', visible: true },
+                { id: 'sponsorship', ar: 'رعاية المؤتمر والمؤسسات', en: 'Sponsors', href: '#sponsorship', visible: true },
+                { id: 'org-structure', ar: 'الهيكل التنظيمي للمؤتمر', en: 'Org Structure', href: '#org-structure', visible: true },
+                { id: 'venue', ar: 'مكان انعقاد المؤتمر', en: 'Venue', href: '#venue', visible: true },
+                { id: 'vision', ar: 'رؤية المؤتمر', en: 'Vision', href: '#vision', visible: true },
+                { id: 'mission', ar: 'رسالة المؤتمر', en: 'Mission', href: '#mission', visible: true },
+                { id: 'goals', ar: 'اهداف المؤتمر', en: 'Goals', href: '#goals', visible: true },
+                { id: 'axes', ar: 'محاور المؤتمر', en: 'Axes', href: '#axes', visible: true },
+                { id: 'journal', ar: 'مجلة نشر الأبحاث', en: 'Journal', href: '#journal', visible: true },
+                { id: 'fees', ar: 'رسوم الاشتراك', en: 'Fees', href: '#fees', visible: true },
+                { id: 'speakers', ar: 'المحاضرون', en: 'Speakers', href: '#speakers', visible: true },
+                { id: 'committees', ar: 'اللجان العلمية', en: 'Committees', href: '#committees', visible: true },
+                { id: 'accepted-papers', ar: 'البحوث المقبولة', en: 'Accepted Papers', href: '#accepted-papers', visible: true },
+                { id: 'schedule', ar: 'المواعيد الهامة', en: 'Schedule', href: '#schedule', visible: true },
+                { id: 'news', ar: 'الأخبار', en: 'News', href: '#news', visible: true, inNav: false },
+                { id: 'gallery', ar: 'معرض الصور', en: 'Gallery', href: '#gallery', visible: true, inNav: false },
+                { id: 'register', ar: 'التسجيل', en: 'Registration', href: '#register', visible: true, inNav: false },
+                { id: 'contact-section', ar: 'التواصل', en: 'Contact', href: '#contact-section', visible: true }
             ];
+            const stored = JSON.parse(localStorage.getItem('vet_conf_nav_buttons'));
+            if (!stored) return defaults;
+            // Merge: ensure all default entries exist (preserves user order + additions)
+            defaults.forEach(d => {
+                if (!stored.find(s => s.id === d.id)) {
+                    stored.push(d);
+                }
+            });
+            return stored;
         }
 
         function renderNavButtons() {
@@ -1598,6 +1710,8 @@
             const buttons = getNavButtons();
             container.innerHTML = '';
             buttons.forEach(btn => {
+                if (btn.visible === false) return;
+                if (btn.inNav === false) return;
                 const a = document.createElement('a');
                 a.href = btn.href;
                 a.className = "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-vetBlue transition border border-gray-100 shadow-sm bg-gray-50/50";
@@ -1628,7 +1742,8 @@
                     id: 'btn_' + Date.now(),
                     ar: nameAr,
                     en: nameEn,
-                    href: href
+                    href: href,
+                    visible: true
                 });
             }
 
@@ -1668,11 +1783,17 @@
             buttons.forEach(btn => {
                 const div = document.createElement('div');
                 div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
+                const isVisible = btn.visible !== false;
                 div.innerHTML = `
-                    <div>
-                        <span class="font-bold">${btn.ar}</span>
-                        <span class="text-xs text-gray-400 mr-1">| ${btn.en || ''}</span>
-                        <span class="text-xs text-gray-500 mr-1">(${btn.href})</span>
+                    <div class="flex items-center gap-3">
+                        <button onclick="toggleSectionVisibility('${btn.id}')" class="px-2 py-1 rounded text-xs font-bold ${isVisible ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}" title="${isVisible ? 'إخفاء القسم' : 'إظهار القسم'}">
+                            <i class="fa-solid ${isVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+                        </button>
+                        <div>
+                            <span class="font-bold">${btn.ar}</span>
+                            <span class="text-xs text-gray-400 mr-1">| ${btn.en || ''}</span>
+                            <span class="text-xs text-gray-500 mr-1">(${btn.href})</span>
+                        </div>
                     </div>
                     <div class="flex gap-2">
                         <button onclick="editNavButton('${btn.id}')" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i> تعديل</button>
@@ -1691,6 +1812,163 @@
                 loadAdminNavButtons();
                 renderNavButtons();
             }
+        }
+
+        function toggleSectionVisibility(id) {
+            let buttons = getNavButtons();
+            buttons = buttons.map(b => {
+                if (b.id === id) {
+                    return { ...b, visible: b.visible === false ? true : false };
+                }
+                return b;
+            });
+            localStorage.setItem('vet_conf_nav_buttons', JSON.stringify(buttons));
+            loadAdminNavButtons();
+            renderNavButtons();
+            applySectionVisibility();
+        }
+
+        function applySectionVisibility() {
+            const buttons = getNavButtons();
+            buttons.forEach(btn => {
+                const sectionId = btn.href.replace('#', '');
+                const el = document.getElementById(sectionId);
+                if (el) {
+                    el.style.display = btn.visible === false ? 'none' : '';
+                }
+            });
+            // Also handle custom sections
+            const customSections = getCustomSections();
+            customSections.forEach(s => {
+                const el = document.getElementById('cs-' + s.id);
+                if (el) {
+                    el.style.display = s.visible === false ? 'none' : '';
+                }
+            });
+        }
+
+        // ========== Custom Sections Management ==========
+        function getCustomSections() {
+            return JSON.parse(localStorage.getItem('vet_conf_custom_sections')) || [];
+        }
+
+        function handleSaveCustomSection(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-cs-id').value;
+            const titleAr = document.getElementById('cs-title-ar').value;
+            const titleEn = document.getElementById('cs-title-en').value;
+            const contentAr = document.getElementById('cs-content-ar').value;
+            const contentEn = document.getElementById('cs-content-en').value;
+            let sections = getCustomSections();
+            if (editId) {
+                sections = sections.map(s => s.id == editId ? { ...s, title: { ar: titleAr, en: titleEn }, content: { ar: contentAr, en: contentEn } } : s);
+                // Update nav button
+                let buttons = getNavButtons();
+                buttons = buttons.map(b => {
+                    if (b.href === '#cs-' + editId) {
+                        return { ...b, ar: titleAr, en: titleEn };
+                    }
+                    return b;
+                });
+                localStorage.setItem('vet_conf_nav_buttons', JSON.stringify(buttons));
+            } else {
+                const newId = Date.now();
+                sections.push({ id: newId, title: { ar: titleAr, en: titleEn }, content: { ar: contentAr, en: contentEn }, visible: true });
+                // Add to nav buttons
+                let buttons = getNavButtons();
+                buttons.push({ id: 'cs-' + newId, ar: titleAr, en: titleEn, href: '#cs-' + newId, visible: true });
+                localStorage.setItem('vet_conf_nav_buttons', JSON.stringify(buttons));
+            }
+            localStorage.setItem('vet_conf_custom_sections', JSON.stringify(sections));
+            showCustomAlert(editId ? "تم تعديل القسم المخصص بنجاح!" : "تم إضافة القسم المخصص بنجاح!");
+            resetCustomSectionForm();
+            loadAdminCustomSections();
+            renderCustomSections();
+            renderNavButtons();
+            applySectionVisibility();
+        }
+
+        function renderCustomSections() {
+            const sections = getCustomSections();
+            const main = document.querySelector('main');
+            // Remove old custom section elements
+            document.querySelectorAll('.custom-section-dynamic').forEach(el => el.remove());
+            sections.forEach(s => {
+                const section = document.createElement('section');
+                section.id = 'cs-' + s.id;
+                section.className = "custom-section-dynamic bg-white p-8 rounded-3xl shadow-sm border";
+                const title = s.title[currentLang] || s.title.ar;
+                const content = s.content[currentLang] || s.content.ar;
+                section.innerHTML = `
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-black text-vetDark mb-3">${title}</h3>
+                        <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
+                    </div>
+                    <div class="text-gray-600 leading-relaxed">${content}</div>
+                `;
+                main.appendChild(section);
+            });
+        }
+
+        function editCustomSection(id) {
+            const sections = getCustomSections();
+            const s = sections.find(x => x.id == id);
+            if (s) {
+                document.getElementById('edit-cs-id').value = s.id;
+                document.getElementById('cs-title-ar').value = s.title.ar || '';
+                document.getElementById('cs-title-en').value = s.title.en || '';
+                document.getElementById('cs-content-ar').value = s.content.ar || '';
+                document.getElementById('cs-content-en').value = s.content.en || '';
+                document.getElementById('cs-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
+                document.getElementById('cs-cancel-btn').classList.remove('hidden');
+            }
+        }
+
+        function resetCustomSectionForm() {
+            document.getElementById('edit-cs-id').value = '';
+            document.getElementById('cs-title-ar').value = '';
+            document.getElementById('cs-title-en').value = '';
+            document.getElementById('cs-content-ar').value = '';
+            document.getElementById('cs-content-en').value = '';
+            document.getElementById('cs-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة قسم مخصص';
+            document.getElementById('cs-cancel-btn').classList.add('hidden');
+        }
+
+        function deleteCustomSection(id) {
+            if (confirm("هل أنت متأكد من حذف هذا القسم المخصص؟")) {
+                let sections = getCustomSections();
+                sections = sections.filter(s => s.id != id);
+                localStorage.setItem('vet_conf_custom_sections', JSON.stringify(sections));
+                // Remove from nav buttons
+                let buttons = getNavButtons();
+                buttons = buttons.filter(b => b.href !== '#cs-' + id);
+                localStorage.setItem('vet_conf_nav_buttons', JSON.stringify(buttons));
+                loadAdminCustomSections();
+                renderCustomSections();
+                renderNavButtons();
+                applySectionVisibility();
+            }
+        }
+
+        function loadAdminCustomSections() {
+            const container = document.getElementById('admin-cs-list');
+            const sections = getCustomSections();
+            container.innerHTML = '';
+            sections.forEach(s => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="font-bold text-sm">${s.title.ar || ''}</span>
+                        <span class="text-xs text-gray-400">| ${s.title.en || ''}</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editCustomSection(${s.id})" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i> تعديل</button>
+                        <button onclick="deleteCustomSection(${s.id})" class="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
         }
 
         // Sponsorship / Logos Management Functions
@@ -1990,7 +2268,6 @@
                 document.getElementById('edit-ticker-id').value = item.id;
                 document.getElementById('ticker-text-ar').value = item.ar || '';
                 document.getElementById('ticker-text-en').value = item.en || '';
-                document.getElementById('ticker-text-de').value = item.de || '';
                 document.getElementById('ticker-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
                 document.getElementById('ticker-cancel-btn').classList.remove('hidden');
             }
@@ -2000,7 +2277,6 @@
             document.getElementById('edit-ticker-id').value = '';
             document.getElementById('ticker-text-ar').value = '';
             document.getElementById('ticker-text-en').value = '';
-            document.getElementById('ticker-text-de').value = '';
             document.getElementById('ticker-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة للشريط العاجل';
             document.getElementById('ticker-cancel-btn').classList.add('hidden');
         }
@@ -2161,6 +2437,8 @@
             renderAxes();
             renderSchedule();
             renderContact();
+            renderCustomSections();
+            applySectionVisibility();
             applyTranslations();
         }
 
@@ -2181,55 +2459,142 @@
             return JSON.parse(localStorage.getItem('vet_conf_regs')) || [];
         }
 
+        // Carousel state variables
+        let newsIndex = 0;
+        let galleryIndex = 0;
+        let newsAutoPlay = null;
+        let galleryAutoPlay = null;
+
+        function startNewsAutoPlay() {
+            if (newsAutoPlay) clearInterval(newsAutoPlay);
+            newsAutoPlay = setInterval(() => { newsSlide(1); }, 5000);
+        }
+        function startGalleryAutoPlay() {
+            if (galleryAutoPlay) clearInterval(galleryAutoPlay);
+            galleryAutoPlay = setInterval(() => { gallerySlide(1); }, 4000);
+        }
+
+        function newsSlide(dir) {
+            const track = document.getElementById('news-track');
+            const dots = document.getElementById('news-dots');
+            const slides = track ? track.children : [];
+            if (slides.length === 0) return;
+            const itemsPerView = window.innerWidth <= 640 ? 1 : 2;
+            const totalSlides = Math.ceil(slides.length / itemsPerView);
+            newsIndex = (newsIndex + dir + totalSlides) % totalSlides;
+            track.style.transform = 'translateX(-' + (newsIndex * 100) + '%)';
+            Array.from(dots.children).forEach((d, i) => d.classList.toggle('active', i === newsIndex));
+            startNewsAutoPlay();
+        }
+
+        function gallerySlide(dir) {
+            const track = document.getElementById('gallery-track');
+            const dots = document.getElementById('gallery-dots');
+            const slides = track ? track.children : [];
+            if (slides.length === 0) return;
+            galleryIndex = (galleryIndex + dir + slides.length) % slides.length;
+            track.style.transform = 'translateX(-' + (galleryIndex * 100) + '%)';
+            Array.from(dots.children).forEach((d, i) => d.classList.toggle('active', i === galleryIndex));
+            startGalleryAutoPlay();
+        }
+
         function renderNews() {
-            const container = document.getElementById('news-container');
+            const track = document.getElementById('news-track');
+            const dots = document.getElementById('news-dots');
             const newsList = getNews();
-            container.innerHTML = '';
+            track.innerHTML = '';
+            dots.innerHTML = '';
+            newsIndex = 0;
+            if (newsAutoPlay) clearInterval(newsAutoPlay);
+
+            if (newsList.length === 0) {
+                track.innerHTML = '<div class="carousel-slide text-center py-12 text-gray-400 text-sm">لا توجد أخبار حالياً</div>';
+                return;
+            }
+
             newsList.forEach(item => {
                 const lang = currentLang in item.title ? currentLang : 'ar';
                 const title = item.title[lang] || item.title.ar || "";
                 const desc = item.desc[lang] || item.desc.ar || "";
                 const isVideo = item.type === 'video';
 
-                const card = document.createElement('div');
-                card.className = "bg-white rounded-2xl shadow-sm border overflow-hidden flex flex-col cursor-pointer group hover:shadow-md transition";
-                card.onclick = () => openNewsDetailsModal(item.id);
-                card.innerHTML = `
-                    <div class="h-48 overflow-hidden relative">
-                        ${isVideo ? `<video src="${item.media}" class="w-full h-full object-cover"></video><div class="absolute inset-0 bg-black/30 flex items-center justify-center"><i class="fa-solid fa-play text-white text-3xl"></i></div>` : `<img src="${item.media}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">`}
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col justify-between">
-                        <div>
-                            <span class="text-xs text-vetBlue font-bold">${item.date}</span>
-                            <h4 class="font-bold text-lg text-vetDark mt-1 mb-2 group-hover:text-vetBlue transition">${title}</h4>
-                            <p class="text-sm text-gray-500 line-clamp-2">${desc}</p>
+                const slide = document.createElement('div');
+                slide.className = "carousel-slide";
+                slide.innerHTML = `
+                    <div class="bg-white rounded-2xl shadow-sm border overflow-hidden flex flex-col cursor-pointer group hover:shadow-md transition h-full" onclick="openNewsDetailsModal(${item.id})">
+                        <div class="h-48 overflow-hidden relative">
+                            ${isVideo ? `<video src="${item.media}" class="w-full h-full object-cover"></video><div class="absolute inset-0 bg-black/30 flex items-center justify-center"><i class="fa-solid fa-play text-white text-3xl"></i></div>` : `<img src="${item.media}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">`}
                         </div>
-                        <div class="mt-4 pt-3 border-t flex items-center justify-between text-xs font-bold text-vetBlue">
-                            <span>اقرأ التفاصيل كاملة</span>
-                            <i class="fa-solid fa-arrow-left"></i>
+                        <div class="p-6 flex-1 flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs text-vetBlue font-bold">${item.date}</span>
+                                <h4 class="font-bold text-lg text-vetDark mt-1 mb-2 group-hover:text-vetBlue transition">${title}</h4>
+                                <p class="text-sm text-gray-500 line-clamp-2">${desc}</p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t flex items-center justify-between text-xs font-bold text-vetBlue">
+                                <span>اقرأ التفاصيل كاملة</span>
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </div>
                         </div>
                     </div>
                 `;
-                container.appendChild(card);
+                track.appendChild(slide);
             });
+
+            const itemsPerView = window.innerWidth <= 640 ? 1 : 2;
+            const totalSlides = Math.ceil(newsList.length / itemsPerView);
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('button');
+                dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+                dot.onclick = () => { newsIndex = i; newsSlide(0); };
+                dots.appendChild(dot);
+            }
+            startNewsAutoPlay();
+            // Pause on hover
+            const c = document.getElementById('news-container');
+            c.onmouseenter = () => { if (newsAutoPlay) clearInterval(newsAutoPlay); };
+            c.onmouseleave = startNewsAutoPlay;
         }
 
         function renderGallery() {
-            const container = document.getElementById('gallery-container');
+            const track = document.getElementById('gallery-track');
+            const dots = document.getElementById('gallery-dots');
             const newsList = getNews();
-            container.innerHTML = '';
+            track.innerHTML = '';
+            dots.innerHTML = '';
+            galleryIndex = 0;
+            if (galleryAutoPlay) clearInterval(galleryAutoPlay);
+
+            if (newsList.length === 0) {
+                track.innerHTML = '<div class="carousel-slide text-center py-12 text-gray-400 text-sm">لا توجد صور أو فيديوهات حالياً</div>';
+                return;
+            }
+
             newsList.forEach(item => {
-                const lang = currentLang in item.title ? currentLang : 'ar';
-            
                 const isVideo = item.type === 'video';
-                const card = document.createElement('div');
-                card.className = "relative h-64 rounded-2xl overflow-hidden shadow-sm border cursor-pointer group";
-                card.innerHTML = `
-                    ${isVideo ? `<video src="${item.media}" class="w-full h-full object-cover"></video><div class="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/20 transition"><i class="fa-solid fa-play text-white text-4xl"></i></div>` : `<img src="${item.media}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">`}
+                const slide = document.createElement('div');
+                slide.className = "carousel-slide";
+                const contentDiv = document.createElement('div');
+                contentDiv.className = "relative h-80 md:h-96 rounded-2xl overflow-hidden shadow-sm border cursor-pointer group";
+                contentDiv.onclick = () => openMediaModal(item.media, item.type);
+                contentDiv.innerHTML = `
+                    ${isVideo ? `<video src="${item.media}" class="w-full h-full object-cover"></video><div class="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/20 transition"><i class="fa-solid fa-play text-white text-5xl"></i></div>` : `<img src="${item.media}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">`}
                 `;
-                card.onclick = () => openMediaModal(item.media, item.type);
-                container.appendChild(card);
+                slide.appendChild(contentDiv);
+                track.appendChild(slide);
             });
+
+            for (let i = 0; i < newsList.length; i++) {
+                const dot = document.createElement('button');
+                dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+                dot.onclick = () => { galleryIndex = i; gallerySlide(0); };
+                dots.appendChild(dot);
+            }
+            startGalleryAutoPlay();
+            // Pause on hover
+            const c = document.getElementById('gallery-container');
+            c.onmouseenter = () => { if (galleryAutoPlay) clearInterval(galleryAutoPlay); };
+            c.onmouseleave = startGalleryAutoPlay;
         }
 
         function openNewsDetailsModal(id) {
@@ -2341,7 +2706,7 @@
         }
 
         function switchTab(tabId) {
-            const allTabs = ['site-settings', 'nav-manager', 'about-manager', 'venue-manager', 'sponsorship-manager', 'org-manager', 'ticker-manager', 'add-news', 'manage-news', 'vmg-manager', 'axes-manager', 'journal-manager', 'fees-manager', 'speakers-manager', 'committees-manager', 'papers-manager', 'schedule-manager', 'contact-manager', 'change-password', 'registrations'];
+            const allTabs = ['site-settings', 'nav-manager', 'custom-sections', 'about-manager', 'venue-manager', 'sponsorship-manager', 'org-manager', 'ticker-manager', 'add-news', 'manage-news', 'vmg-manager', 'axes-manager', 'journal-manager', 'fees-manager', 'speakers-manager', 'committees-manager', 'papers-manager', 'schedule-manager', 'contact-manager', 'change-password', 'registrations'];
             allTabs.forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
                 const btn = document.getElementById(`tab-btn-${t}`);
@@ -2353,6 +2718,7 @@
             
             if (tabId === 'site-settings') loadSiteSettingsForm();
             if (tabId === 'nav-manager') loadAdminNavButtons();
+            if (tabId === 'custom-sections') loadAdminCustomSections();
             if (tabId === 'about-manager') loadAboutSettingsForm();
             if (tabId === 'venue-manager') loadVenueSettingsForm();
             if (tabId === 'sponsorship-manager') loadAdminSponsors();
@@ -3541,6 +3907,13 @@
             });
         }
 
+        window.addEventListener('resize', function() {
+            // Re-render news carousel on resize to adjust itemsPerView
+            if (document.getElementById('admin-dashboard').classList.contains('hidden')) {
+                renderNews();
+            }
+        });
+
         window.onload = function() {
             applySiteSettings();
             renderNavButtons();
@@ -3560,6 +3933,8 @@
             applyPapersSettings();
             renderSchedule();
             renderContact();
+            renderCustomSections();
+            applySectionVisibility();
             applyTranslations();
         };
     </script>
