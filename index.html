@@ -87,6 +87,32 @@
         .carousel-dot.active { background: #1d4ed8; width: 28px; border-radius: 99px; }
         .carousel-dot:hover { background: #93c5fd; }
 
+        /* ===== أيقونات أقسام المؤتمر المجسمة (Hero Nav Icons) ===== */
+        .hero-nav-icon-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 76px; text-decoration: none; cursor: pointer; }
+        .hero-nav-icon-circle {
+            width: 52px; height: 52px; border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(145deg, #2a5adf, #16327a);
+            box-shadow: 6px 6px 12px rgba(2,10,40,0.45), -4px -4px 10px rgba(255,255,255,0.12), inset 0 1px 1px rgba(255,255,255,0.25);
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            font-size: 20px; color: #fff;
+        }
+        .hero-nav-icon-btn:hover .hero-nav-icon-circle {
+            transform: translateY(-3px);
+            box-shadow: 8px 10px 16px rgba(2,10,40,0.5), -4px -4px 10px rgba(255,255,255,0.18), inset 0 1px 1px rgba(255,255,255,0.3);
+        }
+        .hero-nav-icon-btn:active .hero-nav-icon-circle {
+            transform: translateY(0px) scale(0.96);
+            box-shadow: inset 3px 3px 8px rgba(2,10,40,0.5), inset -2px -2px 6px rgba(255,255,255,0.12);
+        }
+        .hero-nav-icon-label { font-size: 11px; font-weight: 700; color: #eaf1ff; text-align: center; line-height: 1.2; }
+        @media (max-width: 480px) {
+            .hero-nav-icon-btn { width: 64px; }
+            .hero-nav-icon-circle { width: 44px; height: 44px; font-size: 16px; border-radius: 14px; }
+            .hero-nav-icon-label { font-size: 10px; }
+        }
+
         /* News Carousel - shows 2 slides on desktop */
         .news-carousel .carousel-slide { min-width: 50%; padding: 0 8px; }
         @media (max-width: 640px) {
@@ -138,27 +164,21 @@
         </button>
     </div>
 
-    <!-- Main Layout with Vertical Sections Column on Homepage -->
-    <div class="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-4 gap-8">
-        
-        <!-- Left/Right Vertical Sections Column (أقسام المؤتمر الجانبية - قابلة للتحكم بالكامل) -->
-        <aside class="lg:col-span-1 space-y-3">
-            <div class="bg-white p-5 rounded-2xl shadow-md border sticky top-24">
-                <h4 class="font-black text-vetDark text-base mb-4 pb-2 border-b flex items-center gap-2">
-                    <i class="fa-solid fa-list-ul text-vetBlue"></i> أقسام المؤتمر
-                </h4>
-                <div id="vertical-sections-column" class="flex flex-col space-y-2">
-                    <!-- Populated dynamically via JS -->
-                </div>
-            </div>
-        </aside>
+    <!-- Main Layout -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
 
         <!-- Main Content Area -->
-        <main class="lg:col-span-3 space-y-12">
+        <main class="space-y-12">
 
             <!-- Hero Section & Ticker -->
             <section id="home" class="home-only-section relative bg-gradient-to-r from-vetDark to-vetBlue text-white py-16 px-6 rounded-3xl overflow-hidden shadow-xl">
                 <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
+                <!-- أقسام المؤتمر - أيقونات مجسمة في صفين فوق نص البانر (populated via JS) -->
+                <div id="vertical-sections-column" class="relative z-10 flex flex-wrap justify-center gap-x-3 gap-y-4 mb-8 max-w-3xl mx-auto">
+                    <!-- Populated dynamically via JS -->
+                </div>
+
                 <div class="text-center relative z-10">
                     <span class="bg-vetGold/90 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block shadow" data-i18n="hero_badge" id="hero-badge-text">الحدث العلمي الأبرز</span>
                     <h2 class="text-3xl md:text-4xl font-black mb-4 leading-tight" data-i18n="hero_title" id="hero-title-text">المؤتمر العلمي الدولي التاسع لكلية الطب البيطري</h2>
@@ -615,7 +635,7 @@
                     <h4 class="text-xl font-bold text-vetDark">إدارة أقسام المؤتمر الجانبية (إضافة، تعديل، حذف)</h4>
                     <form onsubmit="handleSaveNavButton(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
                         <input type="hidden" id="edit-nav-id" value="">
-                        <div class="grid sm:grid-cols-3 gap-4">
+                        <div class="grid sm:grid-cols-4 gap-4">
                             <div>
                                 <label class="block text-sm font-bold mb-1">الاسم (عربي) *</label>
                                 <input type="text" id="nav-name-ar" required class="w-full px-4 py-2 border rounded-lg form-input-focus" placeholder="مثال: ورش العمل">
@@ -627,6 +647,11 @@
                             <div>
                                 <label class="block text-sm font-bold mb-1">الرابط (#section-id) *</label>
                                 <input type="text" id="nav-link-href" required class="w-full px-4 py-2 border rounded-lg form-input-focus" placeholder="#section-id">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">أيقونة (Font Awesome)</label>
+                                <input type="text" id="nav-icon-class" class="w-full px-4 py-2 border rounded-lg form-input-focus" placeholder="fa-star">
+                                <p class="text-[11px] text-gray-400 mt-1">اختياري - اسم كلاس من <a href="https://fontawesome.com/search?o=r&m=free" target="_blank" class="text-vetBlue underline">Font Awesome</a>، افتراضي: fa-circle</p>
                             </div>
                         </div>
                         <div class="flex gap-2">
@@ -1754,32 +1779,37 @@
         // Navigation Buttons Manager Functions (أقسام المؤتمر الجانبية)
         function getNavButtons() {
             const defaults = [
-                { id: 'home', ar: 'الرئيسية', en: 'Home', href: '#home', visible: true },
-                { id: 'about', ar: 'عن المؤتمر', en: 'About', href: '#about', visible: true },
-                { id: 'sponsorship', ar: 'رعاية المؤتمر والمؤسسات', en: 'Sponsors', href: '#sponsorship', visible: true },
-                { id: 'org-structure', ar: 'الهيكل التنظيمي للمؤتمر', en: 'Org Structure', href: '#org-structure', visible: true },
-                { id: 'venue', ar: 'مكان انعقاد المؤتمر', en: 'Venue', href: '#venue', visible: true },
-                { id: 'vision', ar: 'رؤية المؤتمر', en: 'Vision', href: '#vision', visible: true },
-                { id: 'mission', ar: 'رسالة المؤتمر', en: 'Mission', href: '#mission', visible: true },
-                { id: 'goals', ar: 'اهداف المؤتمر', en: 'Goals', href: '#goals', visible: true },
-                { id: 'axes', ar: 'محاور المؤتمر', en: 'Axes', href: '#axes', visible: true },
-                { id: 'journal', ar: 'مجلة نشر الأبحاث', en: 'Journal', href: '#journal', visible: true },
-                { id: 'fees', ar: 'رسوم الاشتراك', en: 'Fees', href: '#fees', visible: true },
-                { id: 'speakers', ar: 'المحاضرون', en: 'Speakers', href: '#speakers', visible: true },
-                { id: 'committees', ar: 'اللجان العلمية', en: 'Committees', href: '#committees', visible: true },
-                { id: 'accepted-papers', ar: 'البحوث المقبولة', en: 'Accepted Papers', href: '#accepted-papers', visible: true },
-                { id: 'schedule', ar: 'المواعيد الهامة', en: 'Schedule', href: '#schedule', visible: true },
-                { id: 'news', ar: 'الأخبار', en: 'News', href: '#news', visible: true, inNav: false },
-                { id: 'gallery', ar: 'معرض الصور', en: 'Gallery', href: '#gallery', visible: true, inNav: false },
-                { id: 'register', ar: 'التسجيل', en: 'Registration', href: '#register', visible: true, inNav: false },
-                { id: 'contact-section', ar: 'التواصل', en: 'Contact', href: '#contact-section', visible: true }
+                { id: 'home', ar: 'الرئيسية', en: 'Home', href: '#home', visible: true, icon: 'fa-house' },
+                { id: 'about', ar: 'عن المؤتمر', en: 'About', href: '#about', visible: true, icon: 'fa-circle-info' },
+                { id: 'sponsorship', ar: 'رعاية المؤتمر والمؤسسات', en: 'Sponsors', href: '#sponsorship', visible: true, icon: 'fa-handshake' },
+                { id: 'org-structure', ar: 'الهيكل التنظيمي للمؤتمر', en: 'Org Structure', href: '#org-structure', visible: true, icon: 'fa-sitemap' },
+                { id: 'venue', ar: 'مكان انعقاد المؤتمر', en: 'Venue', href: '#venue', visible: true, icon: 'fa-location-dot' },
+                { id: 'vision', ar: 'رؤية المؤتمر', en: 'Vision', href: '#vision', visible: true, icon: 'fa-eye' },
+                { id: 'mission', ar: 'رسالة المؤتمر', en: 'Mission', href: '#mission', visible: true, icon: 'fa-bullseye' },
+                { id: 'goals', ar: 'اهداف المؤتمر', en: 'Goals', href: '#goals', visible: true, icon: 'fa-flag' },
+                { id: 'axes', ar: 'محاور المؤتمر', en: 'Axes', href: '#axes', visible: true, icon: 'fa-layer-group' },
+                { id: 'journal', ar: 'مجلة نشر الأبحاث', en: 'Journal', href: '#journal', visible: true, icon: 'fa-book-open' },
+                { id: 'fees', ar: 'رسوم الاشتراك', en: 'Fees', href: '#fees', visible: true, icon: 'fa-money-bill-wave' },
+                { id: 'speakers', ar: 'المحاضرون', en: 'Speakers', href: '#speakers', visible: true, icon: 'fa-microphone' },
+                { id: 'committees', ar: 'اللجان العلمية', en: 'Committees', href: '#committees', visible: true, icon: 'fa-users-gear' },
+                { id: 'accepted-papers', ar: 'البحوث المقبولة', en: 'Accepted Papers', href: '#accepted-papers', visible: true, icon: 'fa-file-circle-check' },
+                { id: 'schedule', ar: 'المواعيد الهامة', en: 'Schedule', href: '#schedule', visible: true, icon: 'fa-calendar-days' },
+                { id: 'news', ar: 'الأخبار', en: 'News', href: '#news', visible: true, inNav: false, icon: 'fa-newspaper' },
+                { id: 'gallery', ar: 'معرض الصور', en: 'Gallery', href: '#gallery', visible: true, inNav: false, icon: 'fa-images' },
+                { id: 'register', ar: 'التسجيل', en: 'Registration', href: '#register', visible: true, inNav: false, icon: 'fa-clipboard-user' },
+                { id: 'contact-section', ar: 'التواصل', en: 'Contact', href: '#contact-section', visible: true, icon: 'fa-phone' }
             ];
             const stored = JSON.parse(localStorage.getItem('vet_conf_nav_buttons'));
             if (!stored) return defaults;
             // Merge: ensure all default entries exist (preserves user order + additions)
             defaults.forEach(d => {
-                if (!stored.find(s => s.id === d.id)) {
+                const existing = stored.find(s => s.id === d.id);
+                if (!existing) {
                     stored.push(d);
+                } else {
+                    // ترجمة إنجليزية أو أيقونة ناقصة من بيانات محفوظة قديمًا: نكمّلها من القيم الافتراضية
+                    if (!existing.en || !existing.en.trim()) existing.en = d.en;
+                    if (!existing.icon) existing.icon = d.icon;
                 }
             });
             return stored;
@@ -1794,6 +1824,7 @@
                 if (btn.inNav === false) return;
                 const a = document.createElement('a');
                 const label = btn[currentLang] || btn.ar;
+                const icon = btn.icon || 'fa-circle';
                 if (STANDALONE_SECTION_IDS.includes(btn.id)) {
                     a.href = 'javascript:void(0)';
                     a.onclick = function() { openStandaloneSection(btn.id); };
@@ -1813,8 +1844,11 @@
                         }
                     };
                 }
-                a.className = "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-vetBlue transition border border-gray-100 shadow-sm bg-gray-50/50";
-                a.innerHTML = `<i class="fa-solid fa-chevron-left text-xs text-vetBlue"></i> <span>${label}</span>`;
+                a.className = "hero-nav-icon-btn";
+                a.innerHTML = `
+                    <span class="hero-nav-icon-circle"><i class="fa-solid ${icon}"></i></span>
+                    <span class="hero-nav-icon-label">${label}</span>
+                `;
                 container.appendChild(a);
             });
         }
@@ -1843,13 +1877,15 @@
             const nameAr = document.getElementById('nav-name-ar').value;
             const nameEn = document.getElementById('nav-name-en').value;
             const href = document.getElementById('nav-link-href').value;
+            const iconRaw = document.getElementById('nav-icon-class').value.trim();
+            const icon = iconRaw ? (iconRaw.startsWith('fa-') ? iconRaw : 'fa-' + iconRaw) : 'fa-circle';
 
             let buttons = getNavButtons();
 
             if (editId) {
                 buttons = buttons.map(b => {
                     if (b.id === editId) {
-                        return { ...b, ar: nameAr, en: nameEn, href: href };
+                        return { ...b, ar: nameAr, en: nameEn, href: href, icon: icon };
                     }
                     return b;
                 });
@@ -1859,6 +1895,7 @@
                     ar: nameAr,
                     en: nameEn,
                     href: href,
+                    icon: icon,
                     visible: true
                 });
             }
@@ -1878,6 +1915,7 @@
                 document.getElementById('nav-name-ar').value = btn.ar;
                 document.getElementById('nav-name-en').value = btn.en || '';
                 document.getElementById('nav-link-href').value = btn.href;
+                document.getElementById('nav-icon-class').value = btn.icon || '';
                 document.getElementById('nav-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
                 document.getElementById('nav-cancel-btn').classList.remove('hidden');
             }
@@ -1888,6 +1926,7 @@
             document.getElementById('nav-name-ar').value = '';
             document.getElementById('nav-name-en').value = '';
             document.getElementById('nav-link-href').value = '';
+            document.getElementById('nav-icon-class').value = '';
             document.getElementById('nav-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة القسم للقائمة';
             document.getElementById('nav-cancel-btn').classList.add('hidden');
         }
@@ -1905,6 +1944,7 @@
                         <button onclick="toggleSectionVisibility('${btn.id}')" class="px-2 py-1 rounded text-xs font-bold ${isVisible ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}" title="${isVisible ? 'إخفاء القسم' : 'إظهار القسم'}">
                             <i class="fa-solid ${isVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
                         </button>
+                        <span class="w-8 h-8 rounded-lg bg-vetBlue/10 text-vetBlue flex items-center justify-center shrink-0"><i class="fa-solid ${btn.icon || 'fa-circle'}"></i></span>
                         <div>
                             <span class="font-bold">${btn.ar}</span>
                             <span class="text-xs text-gray-400 mr-1">| ${btn.en || ''}</span>
@@ -1925,6 +1965,7 @@
                 let buttons = getNavButtons();
                 buttons = buttons.filter(b => b.id !== id);
                 localStorage.setItem('vet_conf_nav_buttons', JSON.stringify(buttons));
+                showCustomAlert("تم حذف القسم بنجاح!");
                 loadAdminNavButtons();
                 renderNavButtons();
             }
@@ -2059,6 +2100,7 @@
                 let buttons = getNavButtons();
                 buttons = buttons.filter(b => b.href !== '#cs-' + id);
                 localStorage.setItem('vet_conf_nav_buttons', JSON.stringify(buttons));
+                showCustomAlert("تم حذف القسم المخصص بنجاح!");
                 loadAdminCustomSections();
                 renderCustomSections();
                 renderNavButtons();
@@ -2184,6 +2226,7 @@
                 let sponsors = getSponsors();
                 sponsors = sponsors.filter(s => s.id != id);
                 localStorage.setItem('vet_conf_sponsors', JSON.stringify(sponsors));
+                showCustomAlert("تم حذف جهة الرعاية بنجاح!");
                 loadAdminSponsors();
                 renderSponsors();
             }
@@ -2318,6 +2361,7 @@
                 let items = getOrgItems();
                 items = items.filter(i => i.id != id);
                 localStorage.setItem('vet_conf_org', JSON.stringify(items));
+                showCustomAlert("تم حذف العضو بنجاح!");
                 loadAdminOrgItems();
                 renderOrgItems();
             }
@@ -2404,6 +2448,7 @@
                 let tickers = getTickerItems();
                 tickers = tickers.filter(t => t.id != id);
                 localStorage.setItem('vet_conf_ticker', JSON.stringify(tickers));
+                showCustomAlert("تم حذف خبر الشريط العاجل بنجاح!");
                 loadAdminTicker();
                 renderTicker();
             }
@@ -3061,6 +3106,7 @@
                 let news = getNews();
                 news = news.filter(n => n.id != id);
                 localStorage.setItem('vet_conf_news', JSON.stringify(news));
+                showCustomAlert("تم حذف الخبر بنجاح!");
                 loadAdminNews();
                 renderNews();
                 renderGallery();
@@ -3117,6 +3163,7 @@
                 let regs = getRegistrations();
                 regs = regs.filter(r => r.id != id);
                 localStorage.setItem('vet_conf_regs', JSON.stringify(regs));
+                showCustomAlert("تم حذف المسجّل بنجاح!");
                 loadAdminRegs();
             }
         }
@@ -3463,6 +3510,7 @@
                 let axes = getAxes();
                 axes = axes.filter(a => a.id != id);
                 localStorage.setItem('vet_conf_axes', JSON.stringify(axes));
+                showCustomAlert("تم حذف المحور بنجاح!");
                 loadAdminAxes();
                 renderAxes();
             }
@@ -3701,6 +3749,7 @@
                 let items = getJournalItems();
                 items = items.filter(i => i.id != id);
                 localStorage.setItem('vet_conf_jitems', JSON.stringify(items));
+                showCustomAlert("تم حذف المجلة بنجاح!");
                 loadAdminJournalItems();
                 renderJournalItems();
             }
@@ -3805,6 +3854,7 @@
                 let fees = getFees();
                 fees = fees.filter(f => f.id != id);
                 localStorage.setItem('vet_conf_fees', JSON.stringify(fees));
+                showCustomAlert("تم حذف فئة الرسوم بنجاح!");
                 loadAdminFees();
                 renderFees();
             }
@@ -3921,6 +3971,7 @@
                 let speakers = getSpeakers();
                 speakers = speakers.filter(s => s.id != id);
                 localStorage.setItem('vet_conf_speakers', JSON.stringify(speakers));
+                showCustomAlert("تم حذف المحاضر بنجاح!");
                 loadAdminSpeakers();
                 renderSpeakers();
             }
@@ -4019,6 +4070,7 @@
                 let committees = getCommittees();
                 committees = committees.filter(c => c.id != id);
                 localStorage.setItem('vet_conf_committees', JSON.stringify(committees));
+                showCustomAlert("تم حذف اللجنة بنجاح!");
                 loadAdminCommittees();
                 renderCommittees();
             }
@@ -4144,6 +4196,7 @@
                 let items = getScheduleItems();
                 items = items.filter(i => i.id != id);
                 localStorage.setItem('vet_conf_schedule', JSON.stringify(items));
+                showCustomAlert("تم حذف الموعد بنجاح!");
                 loadAdminSchedule();
                 renderSchedule();
             }
@@ -4235,6 +4288,7 @@
                 let items = getContactItems();
                 items = items.filter(i => i.id != id);
                 localStorage.setItem('vet_conf_contact', JSON.stringify(items));
+                showCustomAlert("تم حذف وسيلة التواصل بنجاح!");
                 loadAdminContact();
                 renderContact();
             }
