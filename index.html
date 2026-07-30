@@ -36,15 +36,12 @@
         .ticker-move { display: inline-block; animation: ticker 35s linear infinite; }
         @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
         
-        /* Glowing Animated Border Effect */
         @keyframes glowing {
             0% { box-shadow: 0 0 5px rgba(29, 78, 216, 0.5), 0 0 10px rgba(29, 78, 216, 0.3); border-color: rgba(29, 78, 216, 0.6); }
             50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.9), 0 0 30px rgba(37, 99, 235, 0.7); border-color: rgba(96, 165, 250, 1); }
             100% { box-shadow: 0 0 5px rgba(29, 78, 216, 0.5), 0 0 10px rgba(29, 78, 216, 0.3); border-color: rgba(29, 78, 216, 0.6); }
         }
-        .glow-box {
-            animation: glowing 3s infinite ease-in-out;
-        }
+        .glow-box { animation: glowing 3s infinite ease-in-out; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 antialiased">
@@ -53,10 +50,10 @@
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <!-- Logo & Title on Right Side -->
+                <!-- Logo & Title on Right Side (لوجو المؤتمر في أقصى اليمين بجوار العنوان) -->
                 <div class="flex items-center space-x-3 space-x-reverse">
-                    <div class="bg-vetBlue text-white p-2 rounded-xl shadow-lg flex items-center justify-center w-14 h-14 overflow-hidden shrink-0">
-                        <img id="header-logo" src="logo.png" alt="Logo" class="w-full h-full object-contain" onerror="this.onerror=null; this.src=''; this.parentNode.innerHTML='<i class='fa-solid fa-graduation-cap text-2xl'></i>';">
+                    <div class="bg-white p-1 rounded-2xl shadow-md border w-14 h-14 flex items-center justify-center overflow-hidden shrink-0" title="لوجو المؤتمر">
+                        <img src="لوجو المؤتمر.png" alt="Conference Logo" class="w-full h-full object-contain" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop'">
                     </div>
                     <div>
                         <h1 class="font-bold text-base md:text-lg text-vetDark" id="site-title-text" data-i18n="nav_title">المؤتمر الدولي التاسع للطب البيطري</h1>
@@ -64,26 +61,11 @@
                     </div>
                 </div>
 
-                <!-- Clean Dropdown Menu / Quick Navigation Button on Right/Center -->
-                <div class="relative">
-                    <button onclick="toggleMenuDropdown()" class="glow-box bg-vetBlue text-white px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 shadow-md hover:bg-blue-700 transition">
-                        <i class="fa-solid fa-bars-staggered"></i>
-                        <span data-i18n="menu_sections">أقسام المؤتمر</span>
-                        <i class="fa-solid fa-chevron-down text-xs"></i>
-                    </button>
-                    <!-- Dropdown Panel -->
-                    <div id="nav-dropdown-menu" class="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-gray-100 hidden p-3 z-50 max-h-[70vh] overflow-y-auto space-y-1.5">
-                        <div id="nav-links-container" class="flex flex-col space-y-1.5">
-                            <!-- Populated dynamically via JS -->
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Actions: Language Switcher & Admin -->
                 <div class="flex items-center space-x-2 space-x-reverse shrink-0">
                     <div class="flex bg-gray-100 p-1 rounded-lg border border-gray-200">
                         <button onclick="changeLang('ar')" id="btn-ar" class="px-2 py-1 text-xs font-bold rounded bg-vetBlue text-white shadow">AR</button>
-                        <button onclick="changeLang('en')" id="btn-en" class="px-2 py-1 text-xs font-bold rounded text-gray-600 hover:text-vetBlue">EN</button>
+                        <button onclick="changeLang('en')" id="btn-en" class="px-2.5 py-1 text-xs font-bold rounded text-gray-600 hover:text-vetBlue">EN</button>
                         <button onclick="changeLang('fr')" id="btn-fr" class="px-2.5 py-1 text-xs font-bold rounded text-gray-600 hover:text-vetBlue">FR</button>
                         <button onclick="changeLang('de')" id="btn-de" class="px-2.5 py-1 text-xs font-bold rounded text-gray-600 hover:text-vetBlue">DE</button>
                     </div>
@@ -95,380 +77,354 @@
         </div>
     </header>
 
-    <!-- Hero Section & Ticker -->
-    <section id="home" class="relative bg-gradient-to-r from-vetDark to-vetBlue text-white py-20 overflow-hidden">
-        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
-        <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
-            <span class="bg-vetGold/90 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block shadow" data-i18n="hero_badge" id="hero-badge-text">الحدث العلمي الأبرز</span>
-            <h2 class="text-3xl md:text-5xl font-black mb-6 leading-tight" data-i18n="hero_title" id="hero-title-text">المؤتمر العلمي الدولي التاسع لكلية الطب البيطري</h2>
-            <p class="text-base md:text-xl text-blue-100 max-w-3xl mx-auto mb-10" data-i18n="hero_desc" id="hero-desc-text">نحو آفاق جديدة في البحث العلمي البيطري وتنمية الثروة الحيوانية وتحقيق الأمن الغذائي المستدام.</p>
-            <div class="flex justify-center gap-4">
-                <a href="#register" class="bg-white text-vetDark hover:bg-blue-50 px-8 py-3.5 rounded-xl font-bold shadow-lg transition" data-i18n="hero_btn_reg">سجل حضورك الآن</a>
-                <a href="#about" class="border-2 border-white/40 hover:border-white text-white px-8 py-3.5 rounded-xl font-bold transition" data-i18n="hero_btn_more">اعرف المزيد</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Continuous News Ticker -->
-    <div class="bg-blue-950 text-blue-100 py-3 border-b border-blue-900 overflow-hidden shadow-inner">
-        <div class="max-w-7xl mx-auto flex items-center px-4">
-            <span class="bg-vetGold text-white text-xs font-black px-2.5 py-1 rounded ml-4 uppercase tracking-wider shrink-0" data-i18n="ticker_label">شريط عاجل</span>
-            <div class="ticker-wrap w-full">
-                <div class="ticker-move text-sm font-semibold whitespace-nowrap" id="ticker-content-container">
-                    <!-- Dynamically populated ticker items -->
+    <!-- Main Layout with Vertical Sections Column on Homepage -->
+    <div class="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-4 gap-8">
+        
+        <!-- Left/Right Vertical Sections Column (أقسام المؤتمر عمودياً) -->
+        <aside class="lg:col-span-1 space-y-3">
+            <div class="bg-white p-5 rounded-2xl shadow-md border sticky top-24">
+                <h4 class="font-black text-vetDark text-base mb-4 pb-2 border-b flex items-center gap-2">
+                    <i class="fa-solid fa-list-ul text-vetBlue"></i> أقسام المؤتمر
+                </h4>
+                <div id="vertical-sections-column" class="flex flex-col space-y-2">
+                    <!-- Populated dynamically via JS -->
                 </div>
             </div>
-        </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="lg:col-span-3 space-y-12">
+
+            <!-- Hero Section & Ticker -->
+            <section id="home" class="relative bg-gradient-to-r from-vetDark to-vetBlue text-white py-16 px-6 rounded-3xl overflow-hidden shadow-xl">
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <div class="text-center relative z-10">
+                    <span class="bg-vetGold/90 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block shadow" data-i18n="hero_badge" id="hero-badge-text">الحدث العلمي الأبرز</span>
+                    <h2 class="text-3xl md:text-4xl font-black mb-4 leading-tight" data-i18n="hero_title" id="hero-title-text">المؤتمر العلمي الدولي التاسع لكلية الطب البيطري</h2>
+                    <p class="text-sm md:text-base text-blue-100 max-w-2xl mx-auto mb-8" data-i18n="hero_desc" id="hero-desc-text">نحو آفاق جديدة في البحث العلمي البيطري وتنمية الثروة الحيوانية وتحقيق الأمن الغذائي المستدام.</p>
+                    <div class="flex justify-center gap-4">
+                        <a href="#register" class="bg-white text-vetDark hover:bg-blue-50 px-6 py-3 rounded-xl font-bold shadow-lg transition text-sm" data-i18n="hero_btn_reg">سجل حضورك الآن</a>
+                        <a href="#about" class="border-2 border-white/40 hover:border-white text-white px-6 py-3 rounded-xl font-bold transition text-sm" data-i18n="hero_btn_more">اعرف المزيد</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Continuous News Ticker -->
+            <div class="bg-blue-950 text-blue-100 py-3 rounded-2xl overflow-hidden shadow-inner">
+                <div class="flex items-center px-4">
+                    <span class="bg-vetGold text-white text-xs font-black px-2.5 py-1 rounded ml-4 uppercase tracking-wider shrink-0" data-i18n="ticker_label">شريط عاجل</span>
+                    <div class="ticker-wrap w-full">
+                        <div class="ticker-move text-sm font-semibold whitespace-nowrap" id="ticker-content-container">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sponsorship Section (يتم تعبئتها ديناميكياً لتتيح التحكم الكامل في اللوجوهات والأسماء) -->
+            <section id="sponsorship" class="bg-white p-8 rounded-3xl shadow-sm border">
+                <div class="text-center">
+                    <h3 class="text-2xl font-black text-vetDark mb-3">رعاية ومؤسسات المؤتمر</h3>
+                    <div class="w-16 h-1 bg-vetGold mx-auto rounded-full mb-6"></div>
+                    <p class="text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">يُقام المؤتمر تحت رعاية ومصادقة كبرى المؤسسات الأكاديمية والبحثية والجهات الداعمة للقطاع البيطري.</p>
+                    
+                    <!-- عرض شعارات الرعاية والجهات ديناميكياً من لوحة التحكم -->
+                    <div id="sponsorship-logos-container" class="grid grid-cols-2 sm:grid-cols-4 gap-6 items-center justify-center max-w-4xl mx-auto">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Org Structure Section (يتم تعبئتها ديناميكياً لتتيح التحكم في المسميات والوصف بالكامل) -->
+            <section id="org-structure" class="bg-white p-8 rounded-3xl shadow-sm border">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black text-vetDark mb-3">الهيكل التنظيمي للمؤتمر</h3>
+                    <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
+                </div>
+                <div id="org-structure-container" class="grid md:grid-cols-3 gap-6">
+                    <!-- Populated dynamically -->
+                </div>
+            </section>
+
+            <!-- Venue Section -->
+            <section id="venue" class="bg-white p-8 rounded-3xl shadow-sm border text-center">
+                <h3 class="text-2xl font-black text-vetDark mb-3">مكان انعقاد المؤتمر</h3>
+                <div class="w-16 h-1 bg-vetGold mx-auto rounded-full mb-6"></div>
+                <p class="text-gray-600 max-w-2xl mx-auto leading-relaxed mb-4">تُعقد جلسات وفعاليات المؤتمر في رحاب حرم جامعة كفرالشيخ - قاعة المؤتمرات الكبرى بكلية الطب البيطري.</p>
+                <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl inline-block text-vetDark font-bold text-sm">
+                    <i class="fa-solid fa-location-dot text-vetBlue ml-2"></i> جامعة كفرالشيخ، مدينة كفرالشيخ، مصر.
+                </div>
+            </section>
+
+            <!-- Vision & Mission & Goals -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <section id="vision" class="bg-white p-6 rounded-3xl shadow-sm border">
+                    <h3 class="text-xl font-black text-vetDark mb-2 flex items-center gap-2"><i class="fa-solid fa-eye text-vetBlue"></i> رؤية المؤتمر</h3>
+                    <div class="w-10 h-1 bg-vetGold rounded-full mb-3"></div>
+                    <p class="text-gray-600 text-sm leading-relaxed">الريادة الإقليمية والدولية في الابتكار البحثي والتطبيقي لعلوم الطب البيطري.</p>
+                </section>
+                <section id="mission" class="bg-white p-6 rounded-3xl shadow-sm border">
+                    <h3 class="text-xl font-black text-vetDark mb-2 flex items-center gap-2"><i class="fa-solid fa-bullseye text-vetBlue"></i> رسالة المؤتمر</h3>
+                    <div class="w-10 h-1 bg-vetGold rounded-full mb-3"></div>
+                    <p class="text-gray-600 text-sm leading-relaxed">توفير بيئة علمية تفاعلية لتبادل الخبرات وتطوير استراتيجيات بحثية وعلاجية حديثة.</p>
+                </section>
+                <section id="goals" class="bg-white p-6 rounded-3xl shadow-sm border">
+                    <h3 class="text-xl font-black text-vetDark mb-2 flex items-center gap-2"><i class="fa-solid fa-flag text-vetBlue"></i> أهداف المؤتمر</h3>
+                    <div class="w-10 h-1 bg-vetGold rounded-full mb-3"></div>
+                    <p class="text-gray-600 text-sm leading-relaxed">تفعيل دور البحث العلمي في إيجاد حلول عملية للمشكلات البيطرية.</p>
+                </section>
+            </div>
+
+            <!-- About Section -->
+            <section id="about" class="bg-white p-8 rounded-3xl shadow-sm border">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="about_heading">عن المؤتمر</h3>
+                    <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="space-y-4 text-gray-600 leading-relaxed text-base">
+                        <p data-i18n="about_p1" id="about-p1-text">يُعد المؤتمر العلمي الدولي التاسع لكلية الطب البيطري بجامعة كفر الشيخ منصة عالمية تجمع نخبة من العلماء، الباحثين، والأطباء البيطريين.</p>
+                        <p data-i18n="about_p2" id="about-p2-text">يهدف المؤتمر إلى تسليط الضوء على الابتكارات الحديثة في تشخيص وعلاج الأمراض الحيوانية وسلامة الغذاء.</p>
+                    </div>
+                    <div class="bg-blue-50/50 p-6 rounded-2xl border border-blue-100">
+                        <ul class="space-y-3 font-semibold text-vetDark text-sm">
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-vetBlue"></i> <span data-i18n="about_li1">جلسات بحثية معتمدة دولياً</span></li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-vetBlue"></i> <span data-i18n="about_li2">ورش عمل تطبيقية متقدمة</span></li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-vetBlue"></i> <span data-i18n="about_li3">فرصة فريدة للتواصل الأكاديمي والمهني</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Axes Section -->
+            <section id="axes" class="bg-white p-8 rounded-3xl shadow-sm border">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="axes_heading">محاور المؤتمر</h3>
+                    <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
+                </div>
+                <div class="grid sm:grid-cols-3 gap-6">
+                    <div class="bg-gray-50 p-6 rounded-2xl border">
+                        <div class="w-10 h-10 bg-blue-100 text-vetBlue rounded-lg flex items-center justify-center text-lg mb-3"><i class="fa-solid fa-notes-medical"></i></div>
+                        <h4 class="font-bold text-base mb-1 text-vetDark" data-i18n="axis_1_title">أمراض الحيوان والدواجن</h4>
+                        <p class="text-xs text-gray-500" data-i18n="axis_1_desc">التشخيص الحديث وعلاج الأمراض.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-2xl border">
+                        <div class="w-10 h-10 bg-blue-100 text-vetBlue rounded-lg flex items-center justify-center text-lg mb-3"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h4 class="font-bold text-base mb-1 text-vetDark" data-i18n="axis_2_title">سلامة الغذاء والصحة العامة</h4>
+                        <p class="text-xs text-gray-500" data-i18n="axis_2_desc">الرقابة على الأغذية ذات الأصل الحيواني.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-2xl border">
+                        <div class="w-10 h-10 bg-blue-100 text-vetBlue rounded-lg flex items-center justify-center text-lg mb-3"><i class="fa-solid fa-dna"></i></div>
+                        <h4 class="font-bold text-base mb-1 text-vetDark" data-i18n="axis_3_title">التكنولوجيا الحيوية والجينوم</h4>
+                        <p class="text-xs text-gray-500" data-i18n="axis_3_desc">تطبيقات الهندسة الوراثية.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Journal Section -->
+            <section id="journal" class="bg-white p-8 rounded-3xl shadow-sm border text-center">
+                <h3 class="text-2xl font-black text-vetDark mb-3">مجلة نشر الأبحاث</h3>
+                <div class="w-16 h-1 bg-vetGold mx-auto rounded-full mb-6"></div>
+                <p class="text-gray-600 max-w-2xl mx-auto leading-relaxed mb-4">يتم نشر الأبحاث المقبولة في المؤتمر بالتعاون مع المجلات العلمية المعتمدة لكلية الطب البيطري جامعة كفرالشيخ والمجلات الدولية المصنفة.</p>
+            </section>
+
+            <!-- Fees Section -->
+            <section id="fees" class="bg-white p-8 rounded-3xl shadow-sm border text-center">
+                <h3 class="text-2xl font-black text-vetDark mb-3">رسوم الاشتراك</h3>
+                <div class="w-16 h-1 bg-vetGold mx-auto rounded-full mb-8"></div>
+                <div class="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+                    <div class="bg-gray-50 p-6 rounded-2xl border">
+                        <h4 class="font-bold text-base mb-2 text-vetDark">المشاركون ببحث</h4>
+                        <p class="text-xl font-black text-vetBlue mb-2">1500 ج.م</p>
+                        <p class="text-xs text-gray-500">يشمل نشر البحث وحقيبة المؤتمر.</p>
+                    </div>
+                    <div class="bg-blue-50 p-6 rounded-2xl border border-vetBlue shadow">
+                        <h4 class="font-bold text-base mb-2 text-vetDark">حضور فقط</h4>
+                        <p class="text-xl font-black text-vetBlue mb-2">800 ج.م</p>
+                        <p class="text-xs text-gray-500">شهادة حضور وجلسات المؤتمر.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-2xl border">
+                        <h4 class="font-bold text-base mb-2 text-vetDark">المشاركون الدوليون</h4>
+                        <p class="text-xl font-black text-vetBlue mb-2">250 دولار</p>
+                        <p class="text-xs text-gray-500">من خارج جمهورية مصر العربية.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Speakers Section -->
+            <section id="speakers" class="bg-white p-8 rounded-3xl shadow-sm border">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black text-vetDark mb-3">المحاضرون</h3>
+                    <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
+                </div>
+                <div class="grid sm:grid-cols-3 gap-6">
+                    <div class="bg-gray-50 p-6 rounded-2xl border text-center">
+                        <div class="w-20 h-20 bg-blue-200 rounded-full mx-auto mb-3 overflow-hidden shadow">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <h4 class="font-bold text-base text-vetDark">أ.د. نخبة العلماء</h4>
+                        <p class="text-xs text-vetBlue font-semibold mb-1">جامعات عالمية</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-2xl border text-center">
+                        <div class="w-20 h-20 bg-blue-200 rounded-full mx-auto mb-3 overflow-hidden shadow">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <h4 class="font-bold text-base text-vetDark">أ.د. خبراء الطب البيطري</h4>
+                        <p class="text-xs text-vetBlue font-semibold mb-1">جامعة كفرالشيخ</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-2xl border text-center">
+                        <div class="w-20 h-20 bg-blue-200 rounded-full mx-auto mb-3 overflow-hidden shadow">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <h4 class="font-bold text-base text-vetDark">أ.د. رواد البحوث</h4>
+                        <p class="text-xs text-vetBlue font-semibold mb-1">مراكز البحث العلمي</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Committees Section -->
+            <section id="committees" class="bg-white p-8 rounded-3xl shadow-sm border">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black text-vetDark mb-3">اللجان العلمية</h3>
+                    <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-gray-50 p-6 rounded-2xl border">
+                        <h4 class="font-bold text-base text-vetDark mb-2 flex items-center gap-2"><i class="fa-solid fa-award text-vetBlue"></i> اللجنة العلمية الاستشارية</h4>
+                        <p class="text-xs text-gray-600 leading-relaxed">كبار أساتذة الطب البيطري لوضع المحاور وتحكيم الأبحاث.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-2xl border">
+                        <h4 class="font-bold text-base text-vetDark mb-2 flex items-center gap-2"><i class="fa-solid fa-laptop-file text-vetBlue"></i> لجنة التحكيم والنشر</h4>
+                        <p class="text-xs text-gray-600 leading-relaxed">مراجعة الملخصات والأبحاث الكاملة الواردة للمؤتمر.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Accepted Papers Section -->
+            <section id="accepted-papers" class="bg-white p-8 rounded-3xl shadow-sm border text-center">
+                <h3 class="text-2xl font-black text-vetDark mb-3">البحوث المقبولة</h3>
+                <div class="w-16 h-1 bg-vetGold mx-auto rounded-full mb-6"></div>
+                <p class="text-gray-600 max-w-xl mx-auto text-sm leading-relaxed mb-4">سيتم الإعلان تباعاً عن قوائم البحوث العلمية المقبولة بعد اجتياز التحكيم العلمي.</p>
+                <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl inline-block text-amber-800 font-bold text-xs">
+                    <i class="fa-solid fa-clock ml-2"></i> جارٍ تحديث القوائم قريباً...
+                </div>
+            </section>
+
+            <!-- Schedule / Timeline Section -->
+            <section id="schedule" class="bg-white p-8 rounded-3xl shadow-sm border">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="schedule_heading">المواعيد الهامة</h3>
+                    <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
+                </div>
+                <div class="max-w-2xl mx-auto space-y-4">
+                    <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border">
+                        <div class="bg-vetBlue text-white font-bold px-3 py-1.5 rounded-xl text-xs text-center shrink-0" data-i18n="date_1">15 أغسطس</div>
+                        <div>
+                            <h4 class="font-bold text-sm text-vetDark" data-i18n="sched_1_title">آخر موعد لتلقي الملخصات والأبحاث</h4>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border">
+                        <div class="bg-vetBlue text-white font-bold px-3 py-1.5 rounded-xl text-xs text-center shrink-0" data-i18n="date_2">01 سبتمبر</div>
+                        <div>
+                            <h4 class="font-bold text-sm text-vetDark" data-i18n="sched_2_title">إخطار الباحثين بقبول الأبحاث</h4>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border">
+                        <div class="bg-vetBlue text-white font-bold px-3 py-1.5 rounded-xl text-xs text-center shrink-0" data-i18n="date_3">20-22 أكتوبر</div>
+                        <div>
+                            <h4 class="font-bold text-sm text-vetDark" data-i18n="sched_3_title">انطلاق فعاليات المؤتمر الدولي التاسع</h4>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- News Section -->
+            <section id="news" class="bg-white p-8 rounded-3xl shadow-sm border">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="news_heading">أخبار المؤتمر</h3>
+                    <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
+                </div>
+                <div id="news-container" class="grid sm:grid-cols-2 gap-6">
+                    <!-- Dynamically injected news -->
+                </div>
+            </section>
+
+            <!-- Gallery Section -->
+            <section id="gallery" class="bg-white p-8 rounded-3xl shadow-sm border">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="gallery_heading">معرض الصور والفيديوهات</h3>
+                    <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
+                </div>
+                <div id="gallery-container" class="grid sm:grid-cols-2 gap-6">
+                    <!-- Dynamically injected media -->
+                </div>
+            </section>
+
+            <!-- Registration Section -->
+            <section id="register" class="bg-gradient-to-br from-vetDark to-blue-900 text-white p-8 rounded-3xl shadow-xl">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black mb-2" data-i18n="reg_heading">تسجيل الحضور والمشاركة</h3>
+                    <p class="text-blue-100 text-sm" data-i18n="reg_sub">يرجى استيفاء البيانات بدقة لتسجيل حضورك في المؤتمر</p>
+                </div>
+                <form id="registration-form" onsubmit="handleRegistration(event)" class="bg-white text-gray-800 p-6 rounded-2xl shadow-xl space-y-4 max-w-2xl mx-auto">
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold mb-1" data-i18n="form_name">الاسم الكامل *</label>
+                            <input type="text" id="reg-name" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold mb-1" data-i18n="form_email">البريد الإلكتروني *</label>
+                            <input type="email" id="reg-email" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                    </div>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold mb-1" data-i18n="form_phone">رقم الهاتف *</label>
+                            <input type="tel" id="reg-phone" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold mb-1" data-i18n="form_country">الدولة *</label>
+                            <input type="text" id="reg-country" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                    </div>
+                    <div class="grid sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold mb-1" data-i18n="form_org">الجهة / المؤسسة *</label>
+                            <input type="text" id="reg-org" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold mb-1" data-i18n="form_category">الفئة *</label>
+                            <select id="reg-category" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                <option value="باحث/أكاديمي" data-i18n="cat_researcher">باحث / أكاديمي</option>
+                                <option value="طبيب بيطري" data-i18n="cat_vet">طبيب بيطري</option>
+                                <option value="طالب" data-i18n="cat_student">طالب</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold mb-1" data-i18n="form_type">نوع الحضور *</label>
+                            <select id="reg-type" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                <option value="حضور فقط" data-i18n="type_attend">حضور فقط</option>
+                                <option value="تقديم بحث" data-i18n="type_paper">تقديم بحث</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-1" data-i18n="form_notes">ملاحظات أو عنوان البحث</label>
+                        <textarea id="reg-notes" rows="2" class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-vetBlue hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow text-sm" data-i18n="form_submit">إرسال التسجيل</button>
+                </form>
+            </section>
+
+        </main>
     </div>
 
-    <!-- Sponsorship Section -->
-    <section id="sponsorship" class="py-16 bg-white border-b">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <h3 class="text-3xl font-black text-vetDark mb-3">رعاية المؤتمر</h3>
-            <div class="w-20 h-1.5 bg-vetGold mx-auto rounded-full mb-8"></div>
-            <p class="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed">يُقام المؤتمر تحت رعاية ومصادقة كبرى المؤسسات الأكاديمية والبحثية والجهات الداعمة للقطاع البيطري في مصر والوطن العربي.</p>
-        </div>
-    </section>
-
-    <!-- Org Structure Section -->
-    <section id="org-structure" class="py-16 bg-gray-50 border-b">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-12">
-                <h3 class="text-3xl font-black text-vetDark mb-3">الهيكل التنظيمي للمؤتمر</h3>
-                <div class="w-20 h-1.5 bg-vetGold mx-auto rounded-full"></div>
-            </div>
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-xl shadow border text-center">
-                    <div class="w-12 h-12 bg-blue-100 text-vetBlue rounded-full flex items-center justify-center mx-auto text-xl mb-4"><i class="fa-solid fa-user-tie"></i></div>
-                    <h4 class="font-bold text-lg mb-2 text-vetDark">رئيس المؤتمر</h4>
-                    <p class="text-sm text-gray-500">عميد كلية الطب البيطري - جامعة كفرالشيخ</p>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow border text-center">
-                    <div class="w-12 h-12 bg-blue-100 text-vetBlue rounded-full flex items-center justify-center mx-auto text-xl mb-4"><i class="fa-solid fa-users-gear"></i></div>
-                    <h4 class="font-bold text-lg mb-2 text-vetDark">أمين المؤتمر</h4>
-                    <p class="text-sm text-gray-500">وكيل الكلية لشئون الدراسات العليا والبحوث</p>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow border text-center">
-                    <div class="w-12 h-12 bg-blue-100 text-vetBlue rounded-full flex items-center justify-center mx-auto text-xl mb-4"><i class="fa-solid fa-sitemap"></i></div>
-                    <h4 class="font-bold text-lg mb-2 text-vetDark">اللجنة التنظيمية</h4>
-                    <p class="text-sm text-gray-500">نخبة من أعضاء هيئة التدريس والباحثين</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Venue Section -->
-    <section id="venue" class="py-16 bg-white border-b">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <h3 class="text-3xl font-black text-vetDark mb-3">مكان انعقاد المؤتمر</h3>
-            <div class="w-20 h-1.5 bg-vetGold mx-auto rounded-full mb-8"></div>
-            <p class="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed mb-6">تُعقد جلسات وفعاليات المؤتمر في رحاب حرم جامعة كفرالشيخ - قاعة المؤتمرات الكبرى بكلية الطب البيطري، محافظة كفرالشيخ، مصر.</p>
-            <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl inline-block text-vetDark font-bold">
-                <i class="fa-solid fa-location-dot text-vetBlue ml-2"></i> جامعة كفرالشيخ، مدينة كفرالشيخ، مصر.
-            </div>
-        </div>
-    </section>
-
-    <!-- Vision & Mission & Goals Sections -->
-    <section id="vision" class="py-16 bg-gray-50 border-b">
-        <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-8">
-            <div class="bg-white p-8 rounded-2xl shadow border">
-                <h3 class="text-2xl font-black text-vetDark mb-3 flex items-center gap-2"><i class="fa-solid fa-eye text-vetBlue"></i> رؤية المؤتمر</h3>
-                <div class="w-12 h-1 bg-vetGold rounded-full mb-4"></div>
-                <p class="text-gray-600 leading-relaxed">الريادة الإقليمية والدولية في الابتكار البحثي والتطبيقي لعلوم الطب البيطري ودعم الاقتصاد الزراعي والحيواني.</p>
-            </div>
-            <div id="mission" class="bg-white p-8 rounded-2xl shadow border">
-                <h3 class="text-2xl font-black text-vetDark mb-3 flex items-center gap-2"><i class="fa-solid fa-bullseye text-vetBlue"></i> رسالة المؤتمر</h3>
-                <div class="w-12 h-1 bg-vetGold rounded-full mb-4"></div>
-                <p class="text-gray-600 leading-relaxed">توفير بيئة علمية تفاعلية لتبادل الخبرات وتطوير استراتيجيات بحثية وعلاجية حديثة تخدم سلامة الغذاء وصحة الحيوان.</p>
-            </div>
-            <div id="goals" class="bg-white p-8 rounded-2xl shadow border">
-                <h3 class="text-2xl font-black text-vetDark mb-3 flex items-center gap-2"><i class="fa-solid fa-flag text-vetBlue"></i> أهداف المؤتمر</h3>
-                <div class="w-12 h-1 bg-vetGold rounded-full mb-4"></div>
-                <p class="text-gray-600 leading-relaxed">تفعيل دور البحث العلمي في إيجاد حلول عملية للمشكلات البيطرية وتطوير أساليب الرقابة على الأغذية ذات الأصل الحيواني.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-12">
-                <h3 class="text-3xl font-black text-vetDark mb-3" data-i18n="about_heading">عن المؤتمر</h3>
-                <div class="w-20 h-1.5 bg-vetGold mx-auto rounded-full"></div>
-            </div>
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div class="space-y-4 text-gray-600 leading-relaxed text-lg" id="about-text-container">
-                    <p data-i18n="about_p1" id="about-p1-text">يُعد المؤتمر العلمي الدولي التاسع لكلية الطب البيطري بجامعة كفر الشيخ منصة عالمية تجمع نخبة من العلماء، الباحثين، والأطباء البيطريين لتبادل الخبرات والرؤى حول أحدث التقنيات الطبية والبحثية.</p>
-                    <p data-i18n="about_p2" id="about-p2-text">يهدف المؤتمر إلى تسليط الضوء على الابتكارات الحديثة في تشخيص وعلاج الأمراض الحيوانية، سلامة الغذاء، والبحث العلمي التطبيقي الذي يخدم التنمية المستدامة.</p>
-                </div>
-                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl border border-blue-100 shadow-lg">
-                    <ul class="space-y-4 font-semibold text-vetDark">
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-vetBlue text-xl"></i> <span data-i18n="about_li1">جلسات بحثية وعلمية معتمدة دولياً</span></li>
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-vetBlue text-xl"></i> <span data-i18n="about_li2">ورش عمل تطبيقية متقدمة</span></li>
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-vetBlue text-xl"></i> <span data-i18n="about_li3">فرصة فريدة للتواصل الأكاديمي والمهني</span></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Axes Section -->
-    <section id="axes" class="py-16 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-12">
-                <h3 class="text-3xl font-black text-vetDark mb-3" data-i18n="axes_heading">محاور المؤتمر</h3>
-                <div class="w-20 h-1.5 bg-vetGold mx-auto rounded-full"></div>
-            </div>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-xl shadow border border-gray-100 hover:shadow-lg transition">
-                    <div class="w-12 h-12 bg-blue-100 text-vetBlue rounded-lg flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-notes-medical"></i></div>
-                    <h4 class="font-bold text-lg mb-2 text-vetDark" data-i18n="axis_1_title">أمراض الحيوان والدواجن</h4>
-                    <p class="text-sm text-gray-500" data-i18n="axis_1_desc">التشخيص الحديث، طرق العلاج المتطورة، وبرامج التحصين الفعالة.</p>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow border border-gray-100 hover:shadow-lg transition">
-                    <div class="w-12 h-12 bg-blue-100 text-vetBlue rounded-lg flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-shield-halved"></i></div>
-                    <h4 class="font-bold text-lg mb-2 text-vetDark" data-i18n="axis_2_title">سلامة الغذاء والصحة العامة</h4>
-                    <p class="text-sm text-gray-500" data-i18n="axis_2_desc">الرقابة على الأغذية ذات الأصل الحيواني والأمراض المشتركة.</p>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow border border-gray-100 hover:shadow-lg transition">
-                    <div class="w-12 h-12 bg-blue-100 text-vetBlue rounded-lg flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-dna"></i></div>
-                    <h4 class="font-bold text-lg mb-2 text-vetDark" data-i18n="axis_3_title">التكنولوجيا الحيوية والجينوم</h4>
-                    <p class="text-sm text-gray-500" data-i18n="axis_3_desc">تطبيقات الهندسة الوراثية والبيوتكنولوجي في الطب البيطري.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Research Journal Section -->
-    <section id="journal" class="py-16 bg-white border-b">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <h3 class="text-3xl font-black text-vetDark mb-3">مجلة نشر الأبحاث</h3>
-            <div class="w-20 h-1.5 bg-vetGold mx-auto rounded-full mb-8"></div>
-            <p class="text-gray-600 max-w-3xl mx-auto text-lg leading-relaxed mb-6">يتم نشر الأبحاث المقبولة في المؤتمر بالتعاون مع المجلات العلمية المعتمدة لكلية الطب البيطري جامعة كفرالشيخ والمجلات الدولية المصنفة.</p>
-            <a href="#register" class="inline-block bg-vetBlue text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 transition shadow">إرشادات النشر العلمي</a>
-        </div>
-    </section>
-
-    <!-- Fees Section -->
-    <section id="fees" class="py-16 bg-gray-50 border-b">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <h3 class="text-3xl font-black text-vetDark mb-3">رسوم الاشتراك</h3>
-            <div class="w-20 h-1.5 bg-vetGold mx-auto rounded-full mb-12"></div>
-            <div class="grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                <div class="bg-white p-6 rounded-2xl shadow border">
-                    <h4 class="font-bold text-lg mb-2 text-vetDark">المشاركون ببحث</h4>
-                    <p class="text-2xl font-black text-vetBlue mb-4">1500 ج.م</p>
-                    <p class="text-xs text-gray-500">يشمل نشر البحث وحقيبة المؤتمر وحفل الاستقبال.</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow border border-vetBlue ring-2 ring-vetBlue/20">
-                    <span class="bg-vetGold text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">الأكثر إقبالاً</span>
-                    <h4 class="font-bold text-lg mt-2 mb-2 text-vetDark">حضور فقط</h4>
-                    <p class="text-2xl font-black text-vetBlue mb-4">800 ج.م</p>
-                    <p class="text-xs text-gray-500">شهادة حضور وجلسات المؤتمر وورش العمل.</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow border">
-                    <h4 class="font-bold text-lg mb-2 text-vetDark">المشاركون الدوليون</h4>
-                    <p class="text-2xl font-black text-vetBlue mb-4">250 دولار</p>
-                    <p class="text-xs text-gray-500">للباحثين الوافدين من خارج جمهورية مصر العربية.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Speakers Section -->
-    <section id="speakers" class="py-16 bg-white border-b">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-12">
-                <h3 class="text-3xl font-black text-vetDark mb-3">المحاضرون</h3>
-                <div class="w-20 h-1.5 bg-vetGold mx-auto rounded-full"></div>
-            </div>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                <div class="bg-gray-50 p-6 rounded-xl border text-center">
-                    <div class="w-24 h-24 bg-blue-200 rounded-full mx-auto mb-4 overflow-hidden shadow">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop" class="w-full h-full object-cover">
-                    </div>
-                    <h4 class="font-bold text-lg text-vetDark">أ.د. نخبة العلماء الدوليين</h4>
-                    <p class="text-xs text-vetBlue font-semibold mb-2">جامعات عالمية متخصصة</p>
-                    <p class="text-sm text-gray-500">خبير دولي في أحدث تقنيات التشخيص البيطري والتكنولوجيا الحيوية.</p>
-                </div>
-                <div class="bg-gray-50 p-6 rounded-xl border text-center">
-                    <div class="w-24 h-24 bg-blue-200 rounded-full mx-auto mb-4 overflow-hidden shadow">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop" class="w-full h-full object-cover">
-                    </div>
-                    <h4 class="font-bold text-lg text-vetDark">أ.د. خبراء الطب البيطري بمصر</h4>
-                    <p class="text-xs text-vetBlue font-semibold mb-2">جامعة كفرالشيخ والجامعات المصرية</p>
-                    <p class="text-sm text-gray-500">استشاري أمراض الدواجن والحيوان وسلامة الغذاء.</p>
-                </div>
-                <div class="bg-gray-50 p-6 rounded-xl border text-center">
-                    <div class="w-24 h-24 bg-blue-200 rounded-full mx-auto mb-4 overflow-hidden shadow">
-                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop" class="w-full h-full object-cover">
-                    </div>
-                    <h4 class="font-bold text-lg text-vetDark">أ.د. رواد البحوث التطبيقية</h4>
-                    <p class="text-xs text-vetBlue font-semibold mb-2">مراكز البحث العلمي</p>
-                    <p class="text-sm text-gray-500">متخصصون في تطوير برامج التحصين والوقاية الحيوية.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Committees Section -->
-    <section id="committees" class="py-16 bg-gray-50 border-b">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-12">
-                <h3 class="text-3xl font-black text-vetDark mb-3">اللجان العلمية</h3>
-                <div class="w-20 h-1.5 bg-vetGold mx-auto rounded-full"></div>
-            </div>
-            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                <div class="bg-white p-6 rounded-xl shadow border">
-                    <h4 class="font-bold text-lg text-vetDark mb-3 flex items-center gap-2"><i class="fa-solid fa-award text-vetBlue"></i> اللجنة العلمية الاستشارية</h4>
-                    <p class="text-sm text-gray-600 leading-relaxed">تضم نخبة من كبار أساتذة الطب البيطري لوضع المحاور العلمية وتحكيم الأبحاث والمراجعة الأكاديمية.</p>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow border">
-                    <h4 class="font-bold text-lg text-vetDark mb-3 flex items-center gap-2"><i class="fa-solid fa-laptop-file text-vetBlue"></i> لجنة التحكيم والنشر</h4>
-                    <p class="text-sm text-gray-600 leading-relaxed">مختصة بمراجعة الملخصات والأبحاث الكاملة الواردة للمؤتمر والتأكد من مطابقتها لشروط النشر.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Accepted Papers Section -->
-    <section id="accepted-papers" class="py-16 bg-white border-b">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <h3 class="text-3xl font-black text-vetDark mb-3">البحوث المقبولة</h3>
-            <div class="w-20 h-1.5 bg-vetGold mx-auto rounded-full mb-8"></div>
-            <p class="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed mb-6">سيتم الإعلان تباعاً عن قوائم البحوث العلمية المقبولة بعد اجتياز التحكيم العلمي فور انتهاء المواعيد المحددة.</p>
-            <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl inline-block text-amber-800 font-bold">
-                <i class="fa-solid fa-clock ml-2"></i> جارٍ تحديث القوائم قريباً...
-            </div>
-        </div>
-    </section>
-
-    <!-- Schedule / Timeline Section -->
-    <section id="schedule" class="py-16 bg-white border-b">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-12">
-                <h3 class="text-3xl font-black text-vetDark mb-3" data-i18n="schedule_heading">المواعيد الهامة</h3>
-                <div class="w-20 h-1.5 bg-vetGold mx-auto rounded-full"></div>
-            </div>
-            <div class="max-w-3xl mx-auto space-y-6">
-                <div class="flex items-center gap-4 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-                    <div class="bg-vetBlue text-white font-bold px-4 py-2 rounded-lg text-center shrink-0" data-i18n="date_1">15 أغسطس</div>
-                    <div>
-                        <h4 class="font-bold text-vetDark" data-i18n="sched_1_title">آخر موعد لتلقي الملخصات والأبحاث</h4>
-                        <p class="text-sm text-gray-500" data-i18n="sched_1_desc">يتم إرسال الأبحاث الكاملة عبر نظام التسجيل.</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-                    <div class="bg-vetBlue text-white font-bold px-4 py-2 rounded-lg text-center shrink-0" data-i18n="date_2">01 سبتمبر</div>
-                    <div>
-                        <h4 class="font-bold text-vetDark" data-i18n="sched_2_title">إخطار الباحثين بقبول الأبحاث</h4>
-                        <p class="text-sm text-gray-500" data-i18n="sched_2_desc">إرسال خطابات القبول الرسمية للمشاركين.</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-                    <div class="bg-vetBlue text-white font-bold px-4 py-2 rounded-lg text-center shrink-0" data-i18n="date_3">20-22 أكتوبر</div>
-                    <div>
-                        <h4 class="font-bold text-vetDark" data-i18n="sched_3_title">انطلاق فعاليات المؤتمر الدولي التاسع</h4>
-                        <p class="text-sm text-gray-500" data-i18n="sched_3_desc">بمقر جامعة كفر الشيخ - مصر.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- News Section -->
-    <section id="news" class="py-16 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-12">
-                <h3 class="text-3xl font-black text-vetDark mb-3" data-i18n="news_heading">أخبار المؤتمر</h3>
-                <div class="w-20 h-1.5 bg-vetGold mx-auto rounded-full"></div>
-            </div>
-            <div id="news-container" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Dynamically injected news -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Gallery Section -->
-    <section id="gallery" class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-12">
-                <h3 class="text-3xl font-black text-vetDark mb-3" data-i18n="gallery_heading">معرض الصور والفيديوهات</h3>
-                <div class="w-20 h-1.5 bg-vetGold mx-auto rounded-full"></div>
-            </div>
-            <div id="gallery-container" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Dynamically injected media from news -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Registration Section -->
-    <section id="register" class="py-16 bg-gradient-to-br from-vetDark to-blue-900 text-white">
-        <div class="max-w-3xl mx-auto px-4">
-            <div class="text-center mb-10">
-                <h3 class="text-3xl font-black mb-3" data-i18n="reg_heading">تسجيل الحضور والمشاركة</h3>
-                <p class="text-blue-100" data-i18n="reg_sub">يرجى استيفاء البيانات بدقة لتسجيل حضورك في المؤتمر</p>
-            </div>
-            <form id="registration-form" onsubmit="handleRegistration(event)" class="bg-white text-gray-800 p-8 rounded-2xl shadow-xl space-y-4">
-                <div class="grid sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-bold mb-1" data-i18n="form_name">الاسم الكامل *</label>
-                        <input type="text" id="reg-name" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-vetBlue">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold mb-1" data-i18n="form_email">البريد الإلكتروني *</label>
-                        <input type="email" id="reg-email" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-vetBlue">
-                    </div>
-                </div>
-                <div class="grid sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-bold mb-1" data-i18n="form_phone">رقم الهاتف *</label>
-                        <input type="tel" id="reg-phone" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-vetBlue">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold mb-1" data-i18n="form_country">الدولة *</label>
-                        <input type="text" id="reg-country" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-vetBlue">
-                    </div>
-                </div>
-                <div class="grid sm:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-sm font-bold mb-1" data-i18n="form_org">الجهة / المؤسسة *</label>
-                        <input type="text" id="reg-org" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-vetBlue">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold mb-1" data-i18n="form_category">الفئة *</label>
-                        <select id="reg-category" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-vetBlue">
-                            <option value="باحث/أكاديمي" data-i18n="cat_researcher">باحث / أكاديمي</option>
-                            <option value="طبيب بيطري" data-i18n="cat_vet">طبيب بيطري</option>
-                            <option value="طالب" data-i18n="cat_student">طالب</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold mb-1" data-i18n="form_type">نوع الحضور *</label>
-                        <select id="reg-type" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-vetBlue">
-                            <option value="حضور فقط" data-i18n="type_attend">حضور فقط</option>
-                            <option value="تقديم بحث" data-i18n="type_paper">تقديم بحث</option>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-1" data-i18n="form_notes">ملاحظات أو عنوان البحث</label>
-                    <textarea id="reg-notes" rows="3" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-vetBlue"></textarea>
-                </div>
-                <button type="submit" class="w-full bg-vetBlue hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition shadow-md" data-i18n="form_submit">إرسال التسجيل</button>
-            </form>
-        </div>
-    </section>
-
     <!-- Footer -->
-    <footer id="contact" class="bg-vetDark text-gray-300 py-10 border-t border-blue-950">
+    <footer id="contact" class="bg-vetDark text-gray-300 py-10 border-t border-blue-950 mt-12">
         <div class="max-w-7xl mx-auto px-4 flex flex-col items-center gap-6">
-            <!-- Glowing Box for Credits -->
             <div class="glow-box bg-blue-950/80 border-2 border-blue-500 text-blue-100 px-6 py-3 rounded-2xl text-center shadow-lg transition duration-300">
                 <p class="text-sm md:text-base font-bold tracking-wide" data-i18n="credits_text">تمت البرمجة والتصميم بواسطة دكتور محمود اللواتي © 2026</p>
             </div>
-
             <div class="flex flex-col md:flex-row items-center justify-between w-full gap-4 pt-4 border-t border-blue-950/50">
                 <p class="text-sm" data-i18n="footer_copy">© 2026 كلية الطب البيطري - جامعة كفرالشيخ. جميع الحقوق محفوظة.</p>
                 <div class="flex items-center space-x-4 space-x-reverse text-xl">
@@ -482,7 +438,7 @@
 
     <!-- Custom Center Modal Notification -->
     <div id="custom-alert-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden p-4">
-        <div class="bg-white max-w-sm w-full p-6 rounded-2xl shadow-2xl text-center space-y-4 transform transition-all scale-100">
+        <div class="bg-white max-w-sm w-full p-6 rounded-2xl shadow-2xl text-center space-y-4">
             <div class="w-14 h-14 bg-blue-100 text-vetBlue rounded-full flex items-center justify-center mx-auto text-2xl shadow-inner">
                 <i class="fa-solid fa-circle-check"></i>
             </div>
@@ -499,6 +455,28 @@
         <div class="relative max-w-4xl w-full bg-black rounded-xl overflow-hidden shadow-2xl">
             <button onclick="closeModal()" class="absolute top-4 left-4 text-white bg-black/60 hover:bg-black w-10 h-10 rounded-full flex items-center justify-center z-10 font-bold"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div id="modal-content" class="flex items-center justify-center p-4 max-h-[85vh]"></div>
+        </div>
+    </div>
+
+    <!-- News Details Modal -->
+    <div id="news-details-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="bg-white max-w-2xl w-full rounded-3xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
+            <button onclick="closeNewsModal()" class="absolute top-4 left-4 text-gray-700 bg-white/80 hover:bg-white w-10 h-10 rounded-full flex items-center justify-center z-10 shadow font-bold transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="news-modal-image-container" class="w-full h-64 sm:h-80 bg-gray-100 overflow-hidden relative shrink-0"></div>
+            <div class="p-6 sm:p-8 overflow-y-auto space-y-4">
+                <div class="flex items-center justify-between text-xs text-vetBlue font-bold">
+                    <span id="news-modal-date"></span>
+                    <span class="bg-blue-50 px-3 py-1 rounded-full border border-blue-100">أخبار المؤتمر</span>
+                </div>
+                <h3 id="news-modal-title" class="text-xl sm:text-2xl font-black text-vetDark leading-tight"></h3>
+                <div class="w-12 h-1 bg-vetGold rounded-full"></div>
+                <p id="news-modal-desc" class="text-gray-600 text-sm sm:text-base leading-relaxed whitespace-pre-line"></p>
+            </div>
+            <div class="bg-gray-50 px-6 py-4 border-t text-center">
+                <button onclick="closeNewsModal()" class="bg-vetDark hover:bg-vetBlue text-white px-6 py-2 rounded-xl text-sm font-bold transition">إغلاق النافذة</button>
+            </div>
         </div>
     </div>
 
@@ -527,6 +505,8 @@
             <!-- Sidebar Tabs -->
             <aside class="w-64 bg-white border-r border-gray-200 p-4 space-y-2 overflow-y-auto">
                 <button onclick="switchTab('site-settings')" id="tab-btn-site-settings" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm bg-vetBlue text-white flex items-center gap-2"><i class="fa-solid fa-gear"></i> <span data-i18n="tab_site_settings">إعدادات ونصوص الصفحة</span></button>
+                <button onclick="switchTab('sponsorship-manager')" id="tab-btn-sponsorship-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-handshake"></i> <span>إدارة رعاية المؤتمر والشعارات</span></button>
+                <button onclick="switchTab('org-manager')" id="tab-btn-org-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-sitemap"></i> <span>إدارة الهيكل التنظيمي</span></button>
                 <button onclick="switchTab('ticker-manager')" id="tab-btn-ticker-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-bullhorn"></i> <span data-i18n="tab_ticker_manager">إدارة الشريط العاجل</span></button>
                 <button onclick="switchTab('add-news')" id="tab-btn-add-news" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-plus-circle"></i> <span data-i18n="tab_add_news">إضافة خبر</span></button>
                 <button onclick="switchTab('manage-news')" id="tab-btn-manage-news" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-newspaper"></i> <span data-i18n="tab_manage_news">إدارة الأخبار</span></button>
@@ -574,6 +554,61 @@
                     </form>
                 </div>
 
+                <!-- Sponsorship Manager Tab (التحكم الكامل في رعاية ومؤسسات المؤتمر - إضافة، تعديل، حذف، تغيير الصور) -->
+                <div id="tab-sponsorship-manager" class="space-y-6 max-w-3xl hidden">
+                    <h4 class="text-xl font-bold text-vetDark">إدارة رعاية ومؤسسات المؤتمر والشعارات</h4>
+                    <form onsubmit="handleSaveSponsor(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <input type="hidden" id="edit-sponsor-id" value="">
+                        <div>
+                            <label class="block text-sm font-bold mb-1">اسم الجهة / المؤسسة *</label>
+                            <input type="text" id="sponsor-name" required class="w-full px-4 py-2 border rounded-lg" placeholder="مثال: جامعة كفرالشيخ">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">رفع شعار الجهة (صورة) *</label>
+                            <input type="file" id="sponsor-file" accept="image/*" class="w-full px-4 py-2 border rounded-lg bg-gray-50">
+                            <p class="text-xs text-gray-500 mt-1">عند التعديل، ترك الحقل فارغاً يبقي الصورة الحالية.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="submit" id="sponsor-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة جهة راعية</button>
+                            <button type="button" id="sponsor-cancel-btn" onclick="resetSponsorForm()" class="bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-bold hidden">إلغاء التعديل</button>
+                        </div>
+                    </form>
+                    <div class="bg-white p-6 rounded-xl shadow border">
+                        <h5 class="font-bold text-vetDark mb-4">الجهات والمؤسسات الحالية</h5>
+                        <div id="admin-sponsor-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- Org Structure Manager Tab (التحكم الكامل في الهيكل التنظيمي للمؤتمر - المسميات والوصف) -->
+                <div id="tab-org-manager" class="space-y-6 max-w-3xl hidden">
+                    <h4 class="text-xl font-bold text-vetDark">إدارة الهيكل التنظيمي للمؤتمر</h4>
+                    <form onsubmit="handleSaveOrgItem(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <input type="hidden" id="edit-org-id" value="">
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-1">المسمى الوظيفي / الدور *</label>
+                                <input type="text" id="org-title" required class="w-full px-4 py-2 border rounded-lg" placeholder="مثال: رئيس المؤتمر">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">أيقونة FontAwesome (مثال: fa-user-tie) *</label>
+                                <input type="text" id="org-icon" required class="w-full px-4 py-2 border rounded-lg" placeholder="fa-user-tie">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">وصف المنصب / الجهة التابعة *</label>
+                            <input type="text" id="org-desc" required class="w-full px-4 py-2 border rounded-lg" placeholder="مثال: عميد كلية الطب البيطري - جامعة كفرالشيخ">
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="submit" id="org-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة عنصر للهيكل</button>
+                            <button type="button" id="org-cancel-btn" onclick="resetOrgForm()" class="bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-bold hidden">إلغاء التعديل</button>
+                        </div>
+                    </form>
+                    <div class="bg-white p-6 rounded-xl shadow border">
+                        <h5 class="font-bold text-vetDark mb-4">عناصر الهيكل الحاليّة</h5>
+                        <div id="admin-org-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
                 <!-- Ticker Manager Tab -->
                 <div id="tab-ticker-manager" class="space-y-6 max-w-3xl hidden">
                     <h4 class="text-xl font-bold text-vetDark">إدارة أخبار الشريط العاجل المتحرك</h4>
@@ -594,10 +629,11 @@
                     </div>
                 </div>
 
-                <!-- Add News Tab -->
+                <!-- Add/Edit News Tab -->
                 <div id="tab-add-news" class="space-y-6 max-w-3xl hidden">
-                    <h4 class="text-xl font-bold text-vetDark" data-i18n="add_news_heading">إضافة خبر جديد (باللغة العربية وسيتم ترجمته تلقائياً)</h4>
+                    <h4 class="text-xl font-bold text-vetDark" id="news-form-heading">إضافة خبر جديد</h4>
                     <form onsubmit="handleSaveNews(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <input type="hidden" id="edit-news-id" value="">
                         <div>
                             <label class="block text-sm font-bold mb-1" data-i18n="news_ar_title">عنوان الخبر (عربي) *</label>
                             <input type="text" id="news-title-ar" required class="w-full px-4 py-2 border rounded-lg">
@@ -608,26 +644,32 @@
                         </div>
                         <div>
                             <label class="block text-sm font-bold mb-1" data-i18n="news_media_file">رفع صورة أو فيديو *</label>
-                            <input type="file" id="news-file" accept="image/*,video/*" required class="w-full px-4 py-2 border rounded-lg bg-gray-50">
+                            <input type="file" id="news-file" accept="image/*,video/*" class="w-full px-4 py-2 border rounded-lg bg-gray-50">
+                            <p class="text-xs text-gray-500 mt-1">إذا كنت تقوم بتعديل خبر ولا تريد تغيير الصورة، يمكنك ترك هذا الحقل فارغاً.</p>
                         </div>
-                        <button type="submit" id="publish-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow flex items-center justify-center gap-2" data-i18n="btn_publish">
-                            <i class="fa-solid fa-globe"></i> <span>نشر فوري وسريع</span>
-                        </button>
+                        <div class="flex gap-2">
+                            <button type="submit" id="news-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-globe"></i> <span>نشر فوري وسريع</span>
+                            </button>
+                            <button type="button" id="news-cancel-btn" onclick="resetNewsForm()" class="bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-bold hidden">إلغاء التعديل</button>
+                        </div>
                     </form>
                 </div>
+
                 <!-- Manage News Tab -->
                 <div id="tab-manage-news" class="space-y-6 hidden">
                     <h4 class="text-xl font-bold text-vetDark" data-i18n="manage_news_heading">الأخبار المنشورة</h4>
                     <div id="admin-news-list" class="space-y-4"></div>
                 </div>
+
                 <!-- Navigation Buttons Manager Tab -->
                 <div id="tab-nav-manager" class="space-y-6 hidden max-w-3xl">
-                    <h4 class="text-xl font-bold text-vetDark" data-i18n="nav_manager_heading">إضافة وتعديل أزرار شريط التنقل العلوي</h4>
+                    <h4 class="text-xl font-bold text-vetDark" data-i18n="nav_manager_heading">إضافة وتعديل أزرار الأقسام</h4>
                     <form onsubmit="handleSaveNavButton(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
                         <input type="hidden" id="edit-nav-id" value="">
                         <div class="grid sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-bold mb-1">اسم الزر (عربي) *</label>
+                                <label class="block text-sm font-bold mb-1">اسم القسم (عربي) *</label>
                                 <input type="text" id="nav-name-ar" required class="w-full px-4 py-2 border rounded-lg" placeholder="مثال: ورش العمل">
                             </div>
                             <div>
@@ -636,15 +678,16 @@
                             </div>
                         </div>
                         <div class="flex gap-2">
-                            <button type="submit" id="nav-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة الزر للشريط</button>
+                            <button type="submit" id="nav-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة القسم</button>
                             <button type="button" id="nav-cancel-btn" onclick="resetNavForm()" class="bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-bold hidden">إلغاء التعديل</button>
                         </div>
                     </form>
                     <div class="bg-white p-6 rounded-xl shadow border">
-                        <h5 class="font-bold text-vetDark mb-4">الأزرار الحالية</h5>
+                        <h5 class="font-bold text-vetDark mb-4">الأقسام الحالية</h5>
                         <div id="admin-nav-list" class="space-y-3"></div>
                     </div>
                 </div>
+
                 <!-- Change Password Tab -->
                 <div id="tab-change-password" class="space-y-6 hidden max-w-md">
                     <h4 class="text-xl font-bold text-vetDark">تغيير كلمة مرور لوحة التحكم</h4>
@@ -664,6 +707,7 @@
                         <button type="submit" class="w-full bg-vetBlue text-white py-3 rounded-xl font-bold shadow"><i class="fa-solid fa-key"></i> تحديث كلمة المرور</button>
                     </form>
                 </div>
+
                 <!-- Registrations Tab -->
                 <div id="tab-registrations" class="space-y-6 hidden">
                     <div class="flex items-center justify-between">
@@ -697,7 +741,6 @@
 
     <!-- Script Application Logic -->
     <script>
-        // Custom Center Alert Modal function replacing standard alert()
         function showCustomAlert(message) {
             document.getElementById('custom-alert-message').innerText = message;
             document.getElementById('custom-alert-modal').classList.remove('hidden');
@@ -706,35 +749,17 @@
             document.getElementById('custom-alert-modal').classList.add('hidden');
         }
 
-        // Dropdown menu toggle for sections on right side
-        function toggleMenuDropdown() {
-            const menu = document.getElementById('nav-dropdown-menu');
-            menu.classList.toggle('hidden');
-        }
-
-        // Close dropdown when clicking outside
-        window.addEventListener('click', function(e) {
-            const dropdown = document.getElementById('nav-dropdown-menu');
-            const btn = dropdown.previousElementSibling;
-            if (!dropdown.contains(e.target) && !btn.contains(e.target)) {
-                dropdown.classList.add('hidden');
-            }
-        });
-
-        // Get stored admin password or default 'admin123'
         function getAdminPassword() {
             return localStorage.getItem('vet_conf_admin_pass') || "admin123";
         }
 
         let currentLang = 'ar';
 
-        // Static UI Translations Dictionary (AR, EN, FR, DE)
         const translations = {
             ar: {
                 nav_title: "المؤتمر الدولي التاسع للطب البيطري",
                 nav_subtitle: "جامعة كفر الشيخ - مصر",
                 menu_admin: "لوحة التحكم",
-                menu_sections: "أقسام المؤتمر",
                 hero_badge: "الحدث العلمي الأبرز",
                 hero_title: "المؤتمر العلمي الدولي التاسع لكلية الطب البيطري",
                 hero_desc: "نحو آفاق جديدة في البحث العلمي البيطري وتنمية الثروة الحيوانية وتحقيق الأمن الغذائي المستدام.",
@@ -759,11 +784,8 @@
                 date_2: "01 سبتمبر",
                 date_3: "20-22 أكتوبر",
                 sched_1_title: "آخر موعد لتلقي الملخصات والأبحاث",
-                sched_1_desc: "يتم إرسال الأبحاث الكاملة عبر نظام التسجيل.",
                 sched_2_title: "إخطار الباحثين بقبول الأبحاث",
-                sched_2_desc: "إرسال خطابات القبول الرسمية للمشاركين.",
                 sched_3_title: "انطلاق فعاليات المؤتمر الدولي التاسع",
-                sched_3_desc: "بمقر جامعة كفر الشيخ - مصر.",
                 news_heading: "أخبار المؤتمر",
                 gallery_heading: "معرض الصور والفيديوهات",
                 reg_heading: "تسجيل الحضور والمشاركة",
@@ -794,7 +816,7 @@
                 tab_ticker_manager: "إدارة الشريط العاجل",
                 tab_add_news: "إضافة خبر",
                 tab_manage_news: "إدارة الأخبار",
-                tab_nav_manager: "إدارة الأزرار",
+                tab_nav_manager: "دارة الأزرار",
                 tab_change_pass: "تغيير كلمة المرور",
                 tab_regs: "قائمة المسجّلين",
                 nav_manager_heading: "إدارة أزرار شريط التنقل العلوي",
@@ -818,7 +840,6 @@
                 nav_title: "9th International Veterinary Conference",
                 nav_subtitle: "Kafrelsheikh University - Egypt",
                 menu_admin: "Admin Panel",
-                menu_sections: "Conference Sections",
                 hero_badge: "Premier Scientific Event",
                 hero_title: "The 9th International Scientific Conference of Veterinary Medicine",
                 hero_desc: "Towards new horizons in veterinary scientific research, livestock development, and sustainable food security.",
@@ -843,11 +864,8 @@
                 date_2: "September 01",
                 date_3: "October 20-22",
                 sched_1_title: "Deadline for Abstract Submission",
-                sched_1_desc: "Full papers are submitted via the registration system.",
                 sched_2_title: "Notification of Acceptance",
-                sched_2_desc: "Sending official acceptance letters to participants.",
                 sched_3_title: "Conference Kickoff",
-                sched_3_desc: "At Kafrelsheikh University, Egypt.",
                 news_heading: "Conference News",
                 gallery_heading: "Photo & Video Gallery",
                 reg_heading: "Attendance & Participation",
@@ -902,7 +920,6 @@
                 nav_title: "9e Conférence Internationale Vétérinaire",
                 nav_subtitle: "Université de Kafrelsheikh - Égypte",
                 menu_admin: "Admin",
-                menu_sections: "Sections",
                 hero_badge: "Événement Scientifique Majeur",
                 hero_title: "La 9e Conférence Scientifique Internationale de Médecine Vétérinaire",
                 hero_desc: "Vers de nouveaux horizons dans la recherche scientifique vétérinaire et la sécurité alimentaire.",
@@ -927,11 +944,8 @@
                 date_2: "01 septembre",
                 date_3: "20-22 octobre",
                 sched_1_title: "Date limite de soumission des résumés",
-                sched_1_desc: "Soumission via le système d'inscription.",
                 sched_2_title: "Notification d'acceptation",
-                sched_2_desc: "Envoi des lettres officielles.",
                 sched_3_title: "Ouverture de la Conférence",
-                sched_3_desc: "À l'Université de Kafrelsheikh, Égypte.",
                 news_heading: "Actualités",
                 gallery_heading: "Galerie Photos & Vidéos",
                 reg_heading: "Inscription & Participation",
@@ -986,7 +1000,6 @@
                 nav_title: "9. Internationale Veterinärmedizinische Konferenz",
                 nav_subtitle: "Universität Kafrelsheikh - Ägypten",
                 menu_admin: "Admin",
-                menu_sections: "Abschnitte",
                 hero_badge: "Wichtigstes Wissenschaftliches Ereignis",
                 hero_title: "Die 9. Internationale Wissenschaftliche Konferenz für Veterinärmedizin",
                 hero_desc: "Hin zu neuen Horizonten in der veterinärmedizinischen Forschung und nachhaltigen Ernährungssicherheit.",
@@ -1011,11 +1024,8 @@
                 date_2: "01. September",
                 date_3: "20.-22. Oktober",
                 sched_1_title: "Frist für die Einreichung von Abstracts",
-                sched_1_desc: "Die Einreichung erfolgt über das Registrierungssystem.",
                 sched_2_title: "Benachrichtigung über die Annahme",
-                sched_2_desc: "Versand offizieller Annahmeschreiben.",
                 sched_3_title: "Beginn der Konferenz",
-                sched_3_desc: "An der Universität Kafrelsheikh, Ägypten.",
                 news_heading: "Konferenznachrichten",
                 gallery_heading: "Foto- und Videogalerie",
                 reg_heading: "Teilnahme und Registrierung",
@@ -1066,11 +1076,221 @@
             }
         };
 
-        // Instant & Safe Translation Helper
-        async function translateText(text, targetLang) {
-            if (!text) return "";
-            if (targetLang === 'ar') return text;
-            return text;
+        // Sponsorship / Logos Management Functions
+        function getSponsors() {
+            return JSON.parse(localStorage.getItem('vet_conf_sponsors')) || [
+                { id: 1, name: "جامعة كفرالشيخ", image: "لوجو الجامعة.png" },
+                { id: 2, name: "كلية الطب البيطري", image: "لوجو الكلية.png" },
+                { id: 3, name: "النقابة العامة", image: "لوجو النقابة.png" },
+                { id: 4, name: "المؤتمر الدولي التاسع", image: "لوجو المؤتمر.png" }
+            ];
+        }
+
+        function renderSponsors() {
+            const container = document.getElementById('sponsorship-logos-container');
+            const sponsors = getSponsors();
+            container.innerHTML = '';
+            sponsors.forEach(s => {
+                const div = document.createElement('div');
+                div.className = "bg-gray-50 p-4 rounded-2xl border shadow-sm hover:shadow-md transition flex flex-col items-center";
+                div.innerHTML = `
+                    <div class="w-20 h-20 bg-white p-2 rounded-xl shadow-inner border flex items-center justify-center overflow-hidden mb-3">
+                        <img src="${s.image}" alt="${s.name}" class="w-full h-full object-contain" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop'">
+                    </div>
+                    <span class="font-bold text-xs text-vetDark text-center">${s.name}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function handleSaveSponsor(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-sponsor-id').value;
+            const name = document.getElementById('sponsor-name').value;
+            const fileInput = document.getElementById('sponsor-file');
+            const file = fileInput.files[0];
+
+            let sponsors = getSponsors();
+
+            function saveRecord(imageUrl) {
+                if (editId) {
+                    sponsors = sponsors.map(s => {
+                        if (s.id == editId) {
+                            return { ...s, name: name, image: imageUrl || s.image };
+                        }
+                        return s;
+                    });
+                } else {
+                    sponsors.push({
+                        id: Date.now(),
+                        name: name,
+                        image: imageUrl || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop"
+                    });
+                }
+                localStorage.setItem('vet_conf_sponsors', JSON.stringify(sponsors));
+                showCustomAlert("تم حفظ جهة الرعاية بنجاح!");
+                resetSponsorForm();
+                loadAdminSponsors();
+                renderSponsors();
+            }
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    saveRecord(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                saveRecord(null);
+            }
+        }
+
+        function editSponsor(id) {
+            const sponsors = getSponsors();
+            const s = sponsors.find(item => item.id == id);
+            if (s) {
+                document.getElementById('edit-sponsor-id').value = s.id;
+                document.getElementById('sponsor-name').value = s.name;
+                document.getElementById('sponsor-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
+                document.getElementById('sponsor-cancel-btn').classList.remove('hidden');
+            }
+        }
+
+        function resetSponsorForm() {
+            document.getElementById('edit-sponsor-id').value = '';
+            document.getElementById('sponsor-name').value = '';
+            document.getElementById('sponsor-file').value = '';
+            document.getElementById('sponsor-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة جهة راعية';
+            document.getElementById('sponsor-cancel-btn').classList.add('hidden');
+        }
+
+        function deleteSponsor(id) {
+            if (confirm("هل أنت متأكد من حذف هذه الجهة؟")) {
+                let sponsors = getSponsors();
+                sponsors = sponsors.filter(s => s.id != id);
+                localStorage.setItem('vet_conf_sponsors', JSON.stringify(sponsors));
+                loadAdminSponsors();
+                renderSponsors();
+            }
+        }
+
+        function loadAdminSponsors() {
+            const container = document.getElementById('admin-sponsor-list');
+            const sponsors = getSponsors();
+            container.innerHTML = '';
+            sponsors.forEach(s => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <img src="${s.image}" class="w-12 h-12 object-contain bg-white p-1 rounded border">
+                        <span class="font-bold text-sm">${s.name}</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editSponsor(${s.id})" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i> تعديل</button>
+                        <button onclick="deleteSponsor(${s.id})" class="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Org Structure Management Functions
+        function getOrgItems() {
+            return JSON.parse(localStorage.getItem('vet_conf_org')) || [
+                { id: 1, title: "رئيس المؤتمر", desc: "عميد كلية الطب البيطري - جامعة كفرالشيخ", icon: "fa-user-tie" },
+                { id: 2, title: "أمين المؤتمر", desc: "وكيل الكلية لشئون الدراسات العليا والبحوث", icon: "fa-users-gear" },
+                { id: 3, title: "اللجنة التنظيمية", desc: "نخبة من أعضاء هيئة التدريس والباحثين", icon: "fa-sitemap" }
+            ];
+        }
+
+        function renderOrgItems() {
+            const container = document.getElementById('org-structure-container');
+            const items = getOrgItems();
+            container.innerHTML = '';
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = "bg-gray-50 p-6 rounded-2xl border text-center";
+                div.innerHTML = `
+                    <div class="w-12 h-12 bg-blue-100 text-vetBlue rounded-full flex items-center justify-center mx-auto text-xl mb-3"><i class="fa-solid ${item.icon}"></i></div>
+                    <h4 class="font-bold text-base mb-1 text-vetDark">${item.title}</h4>
+                    <p class="text-xs text-gray-500">${item.desc}</p>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function handleSaveOrgItem(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-org-id').value;
+            const title = document.getElementById('org-title').value;
+            const desc = document.getElementById('org-desc').value;
+            const icon = document.getElementById('org-icon').value;
+
+            let items = getOrgItems();
+            if (editId) {
+                items = items.map(i => i.id == editId ? { ...i, title, desc, icon } : i);
+            } else {
+                items.push({ id: Date.now(), title, desc, icon });
+            }
+
+            localStorage.setItem('vet_conf_org', JSON.stringify(items));
+            showCustomAlert("تم حفظ عنصر الهيكل التنظيمي بنجاح!");
+            resetOrgForm();
+            loadAdminOrgItems();
+            renderOrgItems();
+        }
+
+        function editOrgItem(id) {
+            const items = getOrgItems();
+            const item = items.find(i => i.id == id);
+            if (item) {
+                document.getElementById('edit-org-id').value = item.id;
+                document.getElementById('org-title').value = item.title;
+                document.getElementById('org-desc').value = item.desc;
+                document.getElementById('org-icon').value = item.icon;
+                document.getElementById('org-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
+                document.getElementById('org-cancel-btn').classList.remove('hidden');
+            }
+        }
+
+        function resetOrgForm() {
+            document.getElementById('edit-org-id').value = '';
+            document.getElementById('org-title').value = '';
+            document.getElementById('org-desc').value = '';
+            document.getElementById('org-icon').value = '';
+            document.getElementById('org-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة عنصر للهيكل';
+            document.getElementById('org-cancel-btn').classList.add('hidden');
+        }
+
+        function deleteOrgItem(id) {
+            if (confirm("هل أنت متأكد من حذف هذا العنصر؟")) {
+                let items = getOrgItems();
+                items = items.filter(i => i.id != id);
+                localStorage.setItem('vet_conf_org', JSON.stringify(items));
+                loadAdminOrgItems();
+                renderOrgItems();
+            }
+        }
+
+        function loadAdminOrgItems() {
+            const container = document.getElementById('admin-org-list');
+            const items = getOrgItems();
+            container.innerHTML = '';
+            items.forEach(i => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
+                div.innerHTML = `
+                    <div>
+                        <span class="font-bold text-sm">${i.title}</span> - <span class="text-xs text-gray-500">${i.desc}</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editOrgItem(${i.id})" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i> تعديل</button>
+                        <button onclick="deleteOrgItem(${i.id})" class="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
         }
 
         // Ticker Management Functions
@@ -1092,25 +1312,11 @@
             submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
             submitBtn.disabled = true;
 
-            const textEn = textAr, textFr = textAr, textDe = textAr;
-
             let tickers = getTickerItems();
-
             if (editId) {
-                tickers = tickers.map(t => {
-                    if (t.id == editId) {
-                        return { ...t, ar: textAr, en: textEn, fr: textFr, de: textDe };
-                    }
-                    return t;
-                });
+                tickers = tickers.map(t => t.id == editId ? { ...t, ar: textAr, en: textAr, fr: textAr, de: textAr } : t);
             } else {
-                tickers.push({
-                    id: Date.now(),
-                    ar: textAr,
-                    en: textEn,
-                    fr: textFr,
-                    de: textDe
-                });
+                tickers.push({ id: Date.now(), ar: textAr, en: textAr, fr: textAr, de: textAr });
             }
 
             localStorage.setItem('vet_conf_ticker', JSON.stringify(tickers));
@@ -1255,11 +1461,10 @@
             document.getElementById('set-about-p2').value = s.aboutP2.ar;
         }
 
-        // Updated Default Navigation Buttons corresponding to the requested sections list
         function getNavButtons() {
             return JSON.parse(localStorage.getItem('vet_conf_nav_buttons')) || [
                 { id: 'home', ar: 'الرئيسية', en: 'Home', fr: 'Accueil', de: 'Startseite', href: '#home' },
-                { id: 'sponsorship', ar: 'رعاية المؤتمر', en: 'Sponsorship', fr: 'Parrainage', de: 'Sponsoring', href: '#sponsorship' },
+                { id: 'sponsorship', ar: 'رعاية المؤتمر والمؤسسات', en: 'Sponsorship', fr: 'Parrainage', de: 'Sponsoring', href: '#sponsorship' },
                 { id: 'org-structure', ar: 'الهيكل التنظيمي للمؤتمر', en: 'Org Structure', fr: 'Structure Org.', de: 'Struktur', href: '#org-structure' },
                 { id: 'venue', ar: 'مكان انعقاد المؤتمر', en: 'Venue', fr: 'Lieu', de: 'Veranstaltungsort', href: '#venue' },
                 { id: 'vision', ar: 'رؤية المؤتمر', en: 'Vision', fr: 'Vision', de: 'Vision', href: '#vision' },
@@ -1270,25 +1475,20 @@
                 { id: 'fees', ar: 'رسوم الاشتراك', en: 'Fees', fr: 'Frais', de: 'Gebühren', href: '#fees' },
                 { id: 'speakers', ar: 'المحاضرون', en: 'Speakers', fr: 'Conférenciers', de: 'Sprecher', href: '#speakers' },
                 { id: 'committees', ar: 'اللجان العلمية', en: 'Committees', fr: 'Comités', de: 'Komitees', href: '#committees' },
-                { id: 'accepted-papers', ar: 'البحوث المقبولة', en: 'Accepted Papers', fr: 'Articles Acceptés', de: 'Angenommene Arbeiten', href: '#accepted-papers' },
-                { id: 'schedule', ar: 'المواعيد', en: 'Schedule', fr: 'Calendrier', de: 'Zeitplan', href: '#schedule' },
-                { id: 'news', ar: 'الأخبار', en: 'News', fr: 'Actualités', de: 'Nachrichten', href: '#news' },
-                { id: 'gallery', ar: 'الصور وفيديو', en: 'Gallery', fr: 'Galerie', de: 'Galerie', href: '#gallery' },
-                { id: 'register', ar: 'التسجيل', en: 'Register', fr: 'Inscription', de: 'Registrierung', href: '#register' }
+                { id: 'accepted-papers', ar: 'البحوث المقبولة', en: 'Accepted Papers', fr: 'Articles Acceptés', de: 'Angenommene Arbeiten', href: '#accepted-papers' }
             ];
         }
 
         function renderNavButtons() {
-            const container = document.getElementById('nav-links-container');
+            const container = document.getElementById('vertical-sections-column');
             const buttons = getNavButtons();
             container.innerHTML = '';
             buttons.forEach(btn => {
                 const text = btn[currentLang] || btn.ar;
                 const a = document.createElement('a');
                 a.href = btn.href;
-                a.className = "block px-4 py-2 rounded-xl text-xs font-bold text-gray-700 hover:bg-blue-50 hover:text-vetBlue transition border-b border-gray-50 last:border-0";
-                a.innerText = text;
-                a.onclick = () => document.getElementById('nav-dropdown-menu').classList.add('hidden');
+                a.className = "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-vetBlue transition border border-gray-100 shadow-sm bg-gray-50/50";
+                a.innerHTML = `<i class="fa-solid fa-chevron-left text-xs text-vetBlue"></i> <span>${text}</span>`;
                 container.appendChild(a);
             });
         }
@@ -1321,7 +1521,6 @@
             renderGallery();
         }
 
-        // Local Storage Data Management
         function getNews() {
             return JSON.parse(localStorage.getItem('vet_conf_news')) || [
                 {
@@ -1339,7 +1538,6 @@
             return JSON.parse(localStorage.getItem('vet_conf_regs')) || [];
         }
 
-        // Render News & Gallery
         function renderNews() {
             const container = document.getElementById('news-container');
             const newsList = getNews();
@@ -1350,16 +1548,21 @@
                 const isVideo = item.type === 'video';
 
                 const card = document.createElement('div');
-                card.className = "bg-white rounded-xl shadow border overflow-hidden flex flex-col";
+                card.className = "bg-white rounded-2xl shadow-sm border overflow-hidden flex flex-col cursor-pointer group hover:shadow-md transition";
+                card.onclick = () => openNewsDetailsModal(item.id);
                 card.innerHTML = `
-                    <div class="h-48 overflow-hidden relative cursor-pointer" onclick="openMediaModal('${item.media}', '${item.type}')">
-                        ${isVideo ? `<video src="${item.media}" class="w-full h-full object-cover"></video><div class="absolute inset-0 bg-black/30 flex items-center justify-center"><i class="fa-solid fa-play text-white text-3xl"></i></div>` : `<img src="${item.media}" class="w-full h-full object-cover hover:scale-105 transition duration-300">`}
+                    <div class="h-48 overflow-hidden relative">
+                        ${isVideo ? `<video src="${item.media}" class="w-full h-full object-cover"></video><div class="absolute inset-0 bg-black/30 flex items-center justify-center"><i class="fa-solid fa-play text-white text-3xl"></i></div>` : `<img src="${item.media}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">`}
                     </div>
                     <div class="p-6 flex-1 flex flex-col justify-between">
                         <div>
                             <span class="text-xs text-vetBlue font-bold">${item.date}</span>
-                            <h4 class="font-bold text-lg text-vetDark mt-1 mb-2">${title}</h4>
+                            <h4 class="font-bold text-lg text-vetDark mt-1 mb-2 group-hover:text-vetBlue transition">${title}</h4>
                             <p class="text-sm text-gray-500 line-clamp-2">${desc}</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t flex items-center justify-between text-xs font-bold text-vetBlue">
+                            <span>اقرأ التفاصيل كاملة</span>
+                            <i class="fa-solid fa-arrow-left"></i>
                         </div>
                     </div>
                 `;
@@ -1374,7 +1577,7 @@
             newsList.forEach(item => {
                 const isVideo = item.type === 'video';
                 const card = document.createElement('div');
-                card.className = "relative h-64 rounded-xl overflow-hidden shadow cursor-pointer group";
+                card.className = "relative h-64 rounded-2xl overflow-hidden shadow-sm border cursor-pointer group";
                 card.innerHTML = `
                     ${isVideo ? `<video src="${item.media}" class="w-full h-full object-cover"></video><div class="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/20 transition"><i class="fa-solid fa-play text-white text-4xl"></i></div>` : `<img src="${item.media}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">`}
                 `;
@@ -1383,7 +1586,33 @@
             });
         }
 
-        // Modal View
+        function openNewsDetailsModal(id) {
+            const newsList = getNews();
+            const item = newsList.find(n => n.id == id);
+            if (!item) return;
+
+            const title = (item.title && item.title[currentLang]) ? item.title[currentLang] : (item.title ? item.title.ar : "");
+            const desc = (item.desc && item.desc[currentLang]) ? item.desc[currentLang] : (item.desc ? item.desc.ar : "");
+            const isVideo = item.type === 'video';
+
+            const imgContainer = document.getElementById('news-modal-image-container');
+            if (isVideo) {
+                imgContainer.innerHTML = `<video src="${item.media}" controls autoplay class="w-full h-full object-cover"></video>`;
+            } else {
+                imgContainer.innerHTML = `<img src="${item.media}" class="w-full h-full object-cover">`;
+            }
+
+            document.getElementById('news-modal-date').innerText = item.date;
+            document.getElementById('news-modal-title').innerText = title;
+            document.getElementById('news-modal-desc').innerText = desc;
+
+            document.getElementById('news-details-modal').classList.remove('hidden');
+        }
+
+        function closeNewsModal() {
+            document.getElementById('news-details-modal').classList.add('hidden');
+        }
+
         function openMediaModal(src, type) {
             const modal = document.getElementById('media-modal');
             const content = document.getElementById('modal-content');
@@ -1399,7 +1628,6 @@
             document.getElementById('media-modal').classList.add('hidden');
         }
 
-        // Registration Submission
         function handleRegistration(e) {
             e.preventDefault();
             const newReg = {
@@ -1421,7 +1649,6 @@
             document.getElementById('registration-form').reset();
         }
 
-        // Admin Auth & Dashboard
         function openAdminModal() {
             document.getElementById('admin-login-modal').classList.remove('hidden');
         }
@@ -1438,6 +1665,8 @@
                 document.getElementById('admin-pass-input').value = '';
                 document.getElementById('admin-dashboard').classList.remove('hidden');
                 loadSiteSettingsForm();
+                loadAdminSponsors();
+                loadAdminOrgItems();
                 loadAdminTicker();
                 loadAdminNews();
                 loadAdminNavButtons();
@@ -1452,57 +1681,103 @@
         }
 
         function switchTab(tabId) {
-            ['site-settings', 'ticker-manager', 'add-news', 'manage-news', 'nav-manager', 'change-password', 'registrations'].forEach(t => {
+            ['site-settings', 'sponsorship-manager', 'org-manager', 'ticker-manager', 'add-news', 'manage-news', 'nav-manager', 'change-password', 'registrations'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
                 document.getElementById(`tab-btn-${t}`).className = "w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2";
             });
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
             document.getElementById(`tab-btn-${tabId}`).className = "w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm bg-vetBlue text-white flex items-center gap-2";
             if (tabId === 'site-settings') loadSiteSettingsForm();
+            if (tabId === 'sponsorship-manager') loadAdminSponsors();
+            if (tabId === 'org-manager') loadAdminOrgItems();
             if (tabId === 'ticker-manager') loadAdminTicker();
             if (tabId === 'manage-news') loadAdminNews();
             if (tabId === 'nav-manager') loadAdminNavButtons();
             if (tabId === 'registrations') loadAdminRegs();
         }
 
-        // Instant Lightning-Fast News Publishing (Bypasses network delay completely)
         function handleSaveNews(e) {
             e.preventDefault();
+            const editId = document.getElementById('edit-news-id').value;
             const fileInput = document.getElementById('news-file');
             const file = fileInput.files[0];
             const titleAr = document.getElementById('news-title-ar').value;
             const descAr = document.getElementById('news-desc-ar').value;
 
-            const submitBtn = document.getElementById('publish-btn');
+            const submitBtn = document.getElementById('news-submit-btn');
+            const orig = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري النشر الفوري...`;
 
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const mediaUrl = event.target.result;
-                const fileType = file.type.startsWith('video') ? 'video' : 'image';
+            let newsList = getNews();
 
-                const newNews = {
-                    id: Date.now(),
-                    title: { ar: titleAr, en: titleAr, fr: titleAr, de: titleAr },
-                    desc: { ar: descAr, en: descAr, fr: descAr, de: descAr },
-                    media: mediaUrl,
-                    type: fileType,
-                    date: new Date().toISOString().split('T')[0]
-                };
+            function saveRecord(mediaUrl) {
+                if (editId) {
+                    newsList = newsList.map(item => {
+                        if (item.id == editId) {
+                            return {
+                                ...item,
+                                title: { ar: titleAr, en: titleAr, fr: titleAr, de: titleAr },
+                                desc: { ar: descAr, en: descAr, fr: descAr, de: descAr },
+                                media: mediaUrl || item.media
+                            };
+                        }
+                        return item;
+                    });
+                } else {
+                    newsList.unshift({
+                        id: Date.now(),
+                        title: { ar: titleAr, en: titleAr, fr: titleAr, de: titleAr },
+                        desc: { ar: descAr, en: descAr, fr: descAr, de: descAr },
+                        media: mediaUrl || "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop",
+                        type: file && file.type.startsWith('video') ? 'video' : 'image',
+                        date: new Date().toISOString().split('T')[0]
+                    });
+                }
 
-                const news = getNews();
-                news.unshift(newNews);
-                localStorage.setItem('vet_conf_news', JSON.stringify(news));
-                
-                showCustomAlert("تم نشر الخبر بنجاح وبسرعة فائقة!");
-                e.target.reset();
-                submitBtn.innerHTML = `<i class="fa-solid fa-globe"></i> <span>نشر فوري وسريع</span>`;
-                submitBtn.disabled = false;
+                localStorage.setItem('vet_conf_news', JSON.stringify(newsList));
+                showCustomAlert("تم حفظ الخبر بنجاح!");
+                resetNewsForm();
+                loadAdminNews();
                 renderNews();
                 renderGallery();
-            };
-            reader.readAsDataURL(file);
+                submitBtn.innerHTML = orig;
+                submitBtn.disabled = false;
+            }
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    saveRecord(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                saveRecord(null);
+            }
+        }
+
+        function editNews(id) {
+            const newsList = getNews();
+            const item = newsList.find(n => n.id == id);
+            if (item) {
+                document.getElementById('edit-news-id').value = item.id;
+                document.getElementById('news-title-ar').value = item.title.ar;
+                document.getElementById('news-desc-ar').value = item.desc.ar;
+                document.getElementById('news-form-heading').innerText = "تعديل الخبر";
+                document.getElementById('news-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
+                document.getElementById('news-cancel-btn').classList.remove('hidden');
+                switchTab('add-news');
+            }
+        }
+
+        function resetNewsForm() {
+            document.getElementById('edit-news-id').value = '';
+            document.getElementById('news-title-ar').value = '';
+            document.getElementById('news-desc-ar').value = '';
+            document.getElementById('news-file').value = '';
+            document.getElementById('news-form-heading').innerText = "إضافة خبر جديد";
+            document.getElementById('news-submit-btn').innerHTML = '<i class="fa-solid fa-globe"></i> نشر فوري وسريع';
+            document.getElementById('news-cancel-btn').classList.add('hidden');
         }
 
         function loadAdminNews() {
@@ -1520,7 +1795,10 @@
                             <span class="text-xs text-gray-500">${item.date}</span>
                         </div>
                     </div>
-                    <button onclick="deleteNews(${item.id})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold"><i class="fa-solid fa-trash"></i> حذف</button>
+                    <div class="flex gap-2">
+                        <button onclick="editNews(${item.id})" class="bg-vetBlue hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1"><i class="fa-solid fa-pen"></i> تعديل</button>
+                        <button onclick="deleteNews(${item.id})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </div>
                 `;
                 container.appendChild(div);
             });
@@ -1529,7 +1807,7 @@
         function deleteNews(id) {
             if (confirm("هل أنت متأكد من حذف هذا الخبر؟")) {
                 let news = getNews();
-                news = news.filter(n => n.id !== id);
+                news = news.filter(n => n.id != id);
                 localStorage.setItem('vet_conf_news', JSON.stringify(news));
                 loadAdminNews();
                 renderNews();
@@ -1537,7 +1815,6 @@
             }
         }
 
-        // Change Password Handler
         function handleChangePassword(e) {
             e.preventDefault();
             const currentPass = document.getElementById('current-pass').value;
@@ -1562,7 +1839,6 @@
             e.target.reset();
         }
 
-        // Navbar Buttons Manager functions (Add / Edit)
         function handleSaveNavButton(e) {
             e.preventDefault();
             const editId = document.getElementById('edit-nav-id').value;
@@ -1590,7 +1866,7 @@
             }
 
             localStorage.setItem('vet_conf_nav_buttons', JSON.stringify(buttons));
-            showCustomAlert("تم حفظ الزر بنجاح!");
+            showCustomAlert("تم حفظ القسم بنجاح!");
             resetNavForm();
             loadAdminNavButtons();
             renderNavButtons();
@@ -1612,7 +1888,7 @@
             document.getElementById('edit-nav-id').value = '';
             document.getElementById('nav-name-ar').value = '';
             document.getElementById('nav-link-href').value = '';
-            document.getElementById('nav-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة الزر للشريط';
+            document.getElementById('nav-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة القسم';
             document.getElementById('nav-cancel-btn').classList.add('hidden');
         }
 
@@ -1637,7 +1913,7 @@
         }
 
         function deleteNavButton(id) {
-            if (confirm("هل أنت متأكد من حذف هذا الزر؟")) {
+            if (confirm("هل أنت متأكد من حذف هذا القسم؟")) {
                 let buttons = getNavButtons();
                 buttons = buttons.filter(b => b.id !== id);
                 localStorage.setItem('vet_conf_nav_buttons', JSON.stringify(buttons));
@@ -1670,13 +1946,12 @@
         function deleteReg(id) {
             if (confirm("هل أنت متأكد من حذف هذا المسجّل؟")) {
                 let regs = getRegistrations();
-                regs = regs.filter(r => r.id !== id);
+                regs = regs.filter(r => r.id != id);
                 localStorage.setItem('vet_conf_regs', JSON.stringify(regs));
                 loadAdminRegs();
             }
         }
 
-        // Export Functions
         function exportToExcel() {
             const regs = getRegistrations();
             if (regs.length === 0) {
@@ -1742,10 +2017,11 @@
             setTimeout(() => { printWindow.print(); }, 500);
         }
 
-        // Initial Load
         window.onload = function() {
             applySiteSettings();
             renderNavButtons();
+            renderSponsors();
+            renderOrgItems();
             renderTicker();
             renderNews();
             renderGallery();
