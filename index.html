@@ -54,6 +54,13 @@
             #global-sync-badge { font-size: 10px; padding: 6px 10px; }
         }
 
+        /* ===== وضع الصفحة المستقلة (عرض قسم واحد فقط بعيدًا عن الرئيسية) ===== */
+        .standalone-section { display: none; }
+        .standalone-section.active { display: block; }
+        #standalone-back-bar { display: none; }
+        body.mode-standalone .home-only-section { display: none !important; }
+        body.mode-standalone #standalone-back-bar { display: flex; }
+
         /* Admin Dashboard Professional Styling */
         .admin-sidebar { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
         .admin-sidebar::-webkit-scrollbar { width: 4px; }
@@ -126,6 +133,14 @@
         </div>
     </header>
 
+    <!-- Back to Home Bar (يظهر فقط عند فتح قسم كصفحة مستقلة) -->
+    <div id="standalone-back-bar" class="bg-vetGold text-white items-center justify-between px-4 py-3 max-w-7xl mx-auto mt-4 rounded-xl shadow">
+        <span class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-file-lines"></i> عرض القسم كصفحة مستقلة</span>
+        <button onclick="closeStandaloneSection()" class="bg-white text-vetDark px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-100 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-house"></i> العودة للرئيسية
+        </button>
+    </div>
+
     <!-- Main Layout with Vertical Sections Column on Homepage -->
     <div class="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-4 gap-8">
         
@@ -145,7 +160,7 @@
         <main class="lg:col-span-3 space-y-12">
 
             <!-- Hero Section & Ticker -->
-            <section id="home" class="relative bg-gradient-to-r from-vetDark to-vetBlue text-white py-16 px-6 rounded-3xl overflow-hidden shadow-xl">
+            <section id="home" class="home-only-section relative bg-gradient-to-r from-vetDark to-vetBlue text-white py-16 px-6 rounded-3xl overflow-hidden shadow-xl">
                 <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
                 <div class="text-center relative z-10">
                     <span class="bg-vetGold/90 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block shadow" data-i18n="hero_badge" id="hero-badge-text">الحدث العلمي الأبرز</span>
@@ -153,13 +168,13 @@
                     <p class="text-sm md:text-base text-blue-100 max-w-2xl mx-auto mb-8" data-i18n="hero_desc" id="hero-desc-text">نحو آفاق جديدة في البحث العلمي البيطري وتنمية الثروة الحيوانية وتحقيق الأمن الغذائي المستدام.</p>
                     <div class="flex justify-center gap-4">
                         <a href="#register" class="bg-white text-vetDark hover:bg-blue-50 px-6 py-3 rounded-xl font-bold shadow-lg transition text-sm" data-i18n="hero_btn_reg">سجل حضورك الآن</a>
-                        <a href="#about" class="border-2 border-white/40 hover:border-white text-white px-6 py-3 rounded-xl font-bold transition text-sm" data-i18n="hero_btn_more">اعرف المزيد</a>
+                        <a href="javascript:void(0)" onclick="openStandaloneSection('about')" class="border-2 border-white/40 hover:border-white text-white px-6 py-3 rounded-xl font-bold transition text-sm" data-i18n="hero_btn_more">اعرف المزيد</a>
                     </div>
                 </div>
             </section>
 
             <!-- Continuous News Ticker -->
-            <div class="bg-blue-950 text-blue-100 py-3 rounded-2xl overflow-hidden shadow-inner">
+            <div class="home-only-section bg-blue-950 text-blue-100 py-3 rounded-2xl overflow-hidden shadow-inner">
                 <div class="flex items-center px-4">
                     <span class="bg-vetGold text-white text-xs font-black px-2.5 py-1 rounded ml-4 uppercase tracking-wider shrink-0" data-i18n="ticker_label">شريط عاجل</span>
                     <div class="ticker-wrap w-full">
@@ -171,7 +186,7 @@
             </div>
 
             <!-- News Section -->
-            <section id="news" class="bg-white p-8 rounded-3xl shadow-sm border">
+            <section id="news" class="home-only-section bg-white p-8 rounded-3xl shadow-sm border">
                 <div class="text-center mb-8">
                     <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="news_heading">أخبار المؤتمر</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
@@ -185,7 +200,7 @@
             </section>
 
             <!-- Sponsorship Section -->
-            <section id="sponsorship" class="bg-white p-8 rounded-3xl shadow-sm border">
+            <section id="sponsorship" class="standalone-section bg-white p-8 rounded-3xl shadow-sm border">
                 <div class="text-center">
                     <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="sponsorship_title">رعاية ومؤسسات المؤتمر</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full mb-6"></div>
@@ -195,7 +210,7 @@
             </section>
 
             <!-- Org Structure Section -->
-            <section id="org-structure" class="bg-white p-8 rounded-3xl shadow-sm border">
+            <section id="org-structure" class="standalone-section bg-white p-8 rounded-3xl shadow-sm border">
                 <div class="text-center mb-8">
                     <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="org_heading">الهيكل التنظيمي للمؤتمر</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
@@ -204,7 +219,7 @@
             </section>
 
             <!-- Venue Section (قابل للتحكم الكامل من لوحة التحكم) -->
-            <section id="venue" class="bg-white p-8 rounded-3xl shadow-sm border text-center">
+            <section id="venue" class="standalone-section bg-white p-8 rounded-3xl shadow-sm border text-center">
                 <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="venue_heading" id="venue-title-text">مكان انعقاد المؤتمر</h3>
                 <div class="w-16 h-1 bg-vetGold mx-auto rounded-full mb-6"></div>
                 <p class="text-gray-600 max-w-2xl mx-auto leading-relaxed mb-4" id="venue-desc-text">تُعقد جلسات وفعاليات المؤتمر في رحاب حرم جامعة كفرالشيخ - قاعة المؤتمرات الكبرى بكلية الطب البيطري.</p>
@@ -215,17 +230,17 @@
 
             <!-- Vision & Mission & Goals -->
             <div class="grid md:grid-cols-3 gap-6">
-                <section id="vision" class="bg-white p-6 rounded-3xl shadow-sm border">
+                <section id="vision" class="standalone-section bg-white p-6 rounded-3xl shadow-sm border">
                     <h3 class="text-xl font-black text-vetDark mb-2 flex items-center gap-2" data-i18n="vmg_vision"><i class="fa-solid fa-eye text-vetBlue"></i> رؤية المؤتمر</h3>
                     <div class="w-10 h-1 bg-vetGold rounded-full mb-3"></div>
                     <p class="text-gray-600 text-sm leading-relaxed">الريادة الإقليمية والدولية في الابتكار البحثي والتطبيقي لعلوم الطب البيطري.</p>
                 </section>
-                <section id="mission" class="bg-white p-6 rounded-3xl shadow-sm border">
+                <section id="mission" class="standalone-section bg-white p-6 rounded-3xl shadow-sm border">
                     <h3 class="text-xl font-black text-vetDark mb-2 flex items-center gap-2" data-i18n="vmg_mission"><i class="fa-solid fa-bullseye text-vetBlue"></i> رسالة المؤتمر</h3>
                     <div class="w-10 h-1 bg-vetGold rounded-full mb-3"></div>
                     <p class="text-gray-600 text-sm leading-relaxed">توفير بيئة علمية تفاعلية لتبادل الخبرات وتطوير استراتيجيات بحثية وعلاجية حديثة.</p>
                 </section>
-                <section id="goals" class="bg-white p-6 rounded-3xl shadow-sm border">
+                <section id="goals" class="standalone-section bg-white p-6 rounded-3xl shadow-sm border">
                     <h3 class="text-xl font-black text-vetDark mb-2 flex items-center gap-2" data-i18n="vmg_goals"><i class="fa-solid fa-flag text-vetBlue"></i> أهداف المؤتمر</h3>
                     <div class="w-10 h-1 bg-vetGold rounded-full mb-3"></div>
                     <p class="text-gray-600 text-sm leading-relaxed">تفعيل دور البحث العلمي في إيجاد حلول عملية للمشكلات البيطرية.</p>
@@ -233,7 +248,7 @@
             </div>
 
             <!-- About Section (قابل للتحكم الكامل من لوحة التحكم) -->
-            <section id="about" class="bg-white p-8 rounded-3xl shadow-sm border">
+            <section id="about" class="standalone-section bg-white p-8 rounded-3xl shadow-sm border">
                 <div class="text-center mb-8">
                     <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="about_heading" id="about-heading-text">عن المؤتمر</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
@@ -252,7 +267,7 @@
             </section>
 
             <!-- Axes Section -->
-            <section id="axes" class="bg-white p-8 rounded-3xl shadow-sm border">
+            <section id="axes" class="standalone-section bg-white p-8 rounded-3xl shadow-sm border">
                 <div class="text-center mb-8">
                     <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="axes_heading">محاور المؤتمر</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
@@ -261,7 +276,7 @@
             </section>
 
             <!-- Journal Section -->
-            <section id="journal" class="bg-white p-8 rounded-3xl shadow-sm border text-center">
+            <section id="journal" class="standalone-section bg-white p-8 rounded-3xl shadow-sm border text-center">
                 <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="journal_title">مجلة نشر الأبحاث</h3>
                 <div class="w-16 h-1 bg-vetGold mx-auto rounded-full mb-6"></div>
                 <p class="text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">يتم نشر الأبحاث المقبولة في المؤتمر بالتعاون مع المجلات العلمية المعتمدة لكلية الطب البيطري جامعة كفرالشيخ والمجلات الدولية المصنفة.</p>
@@ -274,14 +289,14 @@
             </section>
 
             <!-- Fees Section -->
-            <section id="fees" class="bg-white p-8 rounded-3xl shadow-sm border text-center">
+            <section id="fees" class="standalone-section bg-white p-8 rounded-3xl shadow-sm border text-center">
                 <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="fees_title">رسوم الاشتراك</h3>
                 <div class="w-16 h-1 bg-vetGold mx-auto rounded-full mb-8"></div>
                 <div id="fees-container" class="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto"></div>
             </section>
 
             <!-- Speakers Section -->
-            <section id="speakers" class="bg-white p-8 rounded-3xl shadow-sm border">
+            <section id="speakers" class="standalone-section bg-white p-8 rounded-3xl shadow-sm border">
                 <div class="text-center mb-8">
                     <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="speakers_title">المحاضرون</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
@@ -290,7 +305,7 @@
             </section>
 
             <!-- Committees Section -->
-            <section id="committees" class="bg-white p-8 rounded-3xl shadow-sm border">
+            <section id="committees" class="standalone-section bg-white p-8 rounded-3xl shadow-sm border">
                 <div class="text-center mb-8">
                     <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="committees_title">اللجان العلمية</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
@@ -299,7 +314,7 @@
             </section>
 
             <!-- Accepted Papers Section -->
-            <section id="accepted-papers" class="bg-white p-8 rounded-3xl shadow-sm border text-center">
+            <section id="accepted-papers" class="standalone-section bg-white p-8 rounded-3xl shadow-sm border text-center">
                 <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="papers_title">البحوث المقبولة</h3>
                 <div class="w-16 h-1 bg-vetGold mx-auto rounded-full mb-6"></div>
                 <p class="text-gray-600 max-w-xl mx-auto text-sm leading-relaxed mb-4">سيتم الإعلان تباعاً عن قوائم البحوث العلمية المقبولة بعد اجتياز التحكيم العلمي.</p>
@@ -309,7 +324,7 @@
             </section>
 
             <!-- Schedule / Timeline Section -->
-            <section id="schedule" class="bg-white p-8 rounded-3xl shadow-sm border">
+            <section id="schedule" class="standalone-section bg-white p-8 rounded-3xl shadow-sm border">
                 <div class="text-center mb-8">
                     <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="schedule_heading">المواعيد الهامة</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
@@ -318,7 +333,7 @@
             </section>
 
             <!-- Gallery Section -->
-            <section id="gallery" class="bg-white p-8 rounded-3xl shadow-sm border">
+            <section id="gallery" class="home-only-section bg-white p-8 rounded-3xl shadow-sm border">
                 <div class="text-center mb-8">
                     <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="gallery_heading">معرض الصور والفيديوهات</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
@@ -332,7 +347,7 @@
             </section>
 
             <!-- Registration Section -->
-            <section id="register" class="bg-gradient-to-br from-vetDark to-blue-900 text-white p-8 rounded-3xl shadow-xl">
+            <section id="register" class="home-only-section bg-gradient-to-br from-vetDark to-blue-900 text-white p-8 rounded-3xl shadow-xl">
                 <div class="text-center mb-8">
                     <h3 class="text-2xl font-black mb-2" data-i18n="reg_heading">تسجيل الحضور والمشاركة</h3>
                     <p class="text-blue-100 text-sm" data-i18n="reg_sub">يرجى استيفاء البيانات بدقة لتسجيل حضورك في المؤتمر</p>
@@ -392,7 +407,7 @@
     </div>
 
     <!-- Contact Section -->
-    <section id="contact-section" class="bg-white p-8 rounded-3xl shadow-sm border max-w-7xl mx-auto px-4 mb-6">
+    <section id="contact-section" class="home-only-section bg-white p-8 rounded-3xl shadow-sm border max-w-7xl mx-auto px-4 mb-6">
         <div class="text-center mb-8">
             <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="contact_heading">تواصل مع المؤتمر</h3>
             <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
@@ -1706,12 +1721,48 @@
                 if (btn.visible === false) return;
                 if (btn.inNav === false) return;
                 const a = document.createElement('a');
-                a.href = btn.href;
-                a.className = "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-vetBlue transition border border-gray-100 shadow-sm bg-gray-50/50";
                 const label = btn[currentLang] || btn.ar;
+                if (STANDALONE_SECTION_IDS.includes(btn.id)) {
+                    a.href = 'javascript:void(0)';
+                    a.onclick = function() { openStandaloneSection(btn.id); };
+                } else {
+                    a.href = btn.href;
+                    // لو المستخدم فاتح قسم كصفحة مستقلة (مثلا "عن المؤتمر") وضغط على
+                    // "الرئيسية" أو "التواصل"، لازم نقفل وضع الصفحة المستقلة الأول
+                    // عشان يظهر القسم المطلوب (كان بيفضل مخفي وكأن الزرار مش شغال)
+                    a.onclick = function(e) {
+                        if (document.body.classList.contains('mode-standalone')) {
+                            e.preventDefault();
+                            closeStandaloneSection();
+                            setTimeout(function() {
+                                const target = document.querySelector(btn.href);
+                                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }, 60);
+                        }
+                    };
+                }
+                a.className = "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-vetBlue transition border border-gray-100 shadow-sm bg-gray-50/50";
                 a.innerHTML = `<i class="fa-solid fa-chevron-left text-xs text-vetBlue"></i> <span>${label}</span>`;
                 container.appendChild(a);
             });
+        }
+
+        // ===== الأقسام اللي بتتفتح كصفحة مستقلة بعيدًا عن الرئيسية =====
+        const STANDALONE_SECTION_IDS = ['sponsorship', 'org-structure', 'venue', 'vision', 'mission', 'goals',
+            'about', 'axes', 'journal', 'fees', 'speakers', 'committees', 'accepted-papers', 'schedule'];
+
+        function openStandaloneSection(id) {
+            document.body.classList.add('mode-standalone');
+            document.querySelectorAll('.standalone-section.active').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById(id);
+            if (target) target.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        function closeStandaloneSection() {
+            document.body.classList.remove('mode-standalone');
+            document.querySelectorAll('.standalone-section.active').forEach(el => el.classList.remove('active'));
+            window.scrollTo({ top: 0, behavior: 'instant' });
         }
 
         function handleSaveNavButton(e) {
@@ -4021,6 +4072,11 @@
             renderCustomSections();
             applySectionVisibility();
             applyTranslations();
+
+            // إعادة رسم احتياطية للقائمة الجانبية لضمان ظهورها من أول تحميل
+            setTimeout(function() {
+                renderNavButtons();
+            }, 300);
         };
     </script>
 
