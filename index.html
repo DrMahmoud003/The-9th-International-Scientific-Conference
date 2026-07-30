@@ -33,7 +33,8 @@
     <style>
         body { font-family: 'Cairo', sans-serif; }
         .ticker-wrap { overflow: hidden; white-space: nowrap; }
-        .ticker-move { display: inline-block; animation: ticker 35s linear infinite; }
+        .ticker-move { display: inline-flex; animation: ticker 40s linear infinite; will-change: transform; animation-play-state: running !important; }
+        .ticker-move.paused { animation-play-state: paused !important; }
         @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
         
         @keyframes glowing {
@@ -42,6 +43,19 @@
             100% { box-shadow: 0 0 5px rgba(29, 78, 216, 0.5), 0 0 10px rgba(29, 78, 216, 0.3); border-color: rgba(29, 78, 216, 0.6); }
         }
         .glow-box { animation: glowing 3s infinite ease-in-out; }
+
+        /* Admin Dashboard Professional Styling */
+        .admin-sidebar { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+        .admin-sidebar::-webkit-scrollbar { width: 4px; }
+        .admin-sidebar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+        .admin-tab-btn { transition: all 0.2s ease; position: relative; }
+        .admin-tab-btn:hover { transform: translateX(-2px); }
+        .admin-tab-btn.active::before { content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 3px; height: 60%; background: #1d4ed8; border-radius: 99px; }
+        .form-input-focus:focus { border-color: #1d4ed8; box-shadow: 0 0 0 3px rgba(29,78,216,0.1); }
+        .card-hover { transition: all 0.2s ease; }
+        .card-hover:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+        .list-item-enter { animation: slideIn 0.25s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 antialiased">
@@ -121,6 +135,15 @@
                 </div>
             </div>
 
+            <!-- News Section -->
+            <section id="news" class="bg-white p-8 rounded-3xl shadow-sm border">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="news_heading">أخبار المؤتمر</h3>
+                    <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
+                </div>
+                <div id="news-container" class="grid sm:grid-cols-2 gap-6"></div>
+            </section>
+
             <!-- Sponsorship Section -->
             <section id="sponsorship" class="bg-white p-8 rounded-3xl shadow-sm border">
                 <div class="text-center">
@@ -194,23 +217,7 @@
                     <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="axes_heading">محاور المؤتمر</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
                 </div>
-                <div class="grid sm:grid-cols-3 gap-6">
-                    <div class="bg-gray-50 p-6 rounded-2xl border">
-                        <div class="w-10 h-10 bg-blue-100 text-vetBlue rounded-lg flex items-center justify-center text-lg mb-3"><i class="fa-solid fa-notes-medical"></i></div>
-                        <h4 class="font-bold text-base mb-1 text-vetDark" data-i18n="axis_1_title">أمراض الحيوان والدواجن</h4>
-                        <p class="text-xs text-gray-500" data-i18n="axis_1_desc">التشخيص الحديث وعلاج الأمراض.</p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-2xl border">
-                        <div class="w-10 h-10 bg-blue-100 text-vetBlue rounded-lg flex items-center justify-center text-lg mb-3"><i class="fa-solid fa-shield-halved"></i></div>
-                        <h4 class="font-bold text-base mb-1 text-vetDark" data-i18n="axis_2_title">سلامة الغذاء والصحة العامة</h4>
-                        <p class="text-xs text-gray-500" data-i18n="axis_2_desc">الرقابة على الأغذية ذات الأصل الحيواني.</p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-2xl border">
-                        <div class="w-10 h-10 bg-blue-100 text-vetBlue rounded-lg flex items-center justify-center text-lg mb-3"><i class="fa-solid fa-dna"></i></div>
-                        <h4 class="font-bold text-base mb-1 text-vetDark" data-i18n="axis_3_title">التكنولوجيا الحيوية والجينوم</h4>
-                        <p class="text-xs text-gray-500" data-i18n="axis_3_desc">تطبيقات الهندسة الوراثية.</p>
-                    </div>
-                </div>
+                <div id="axes-container" class="grid sm:grid-cols-3 gap-6"></div>
             </section>
 
             <!-- Journal Section -->
@@ -224,23 +231,7 @@
             <section id="fees" class="bg-white p-8 rounded-3xl shadow-sm border text-center">
                 <h3 class="text-2xl font-black text-vetDark mb-3">رسوم الاشتراك</h3>
                 <div class="w-16 h-1 bg-vetGold mx-auto rounded-full mb-8"></div>
-                <div class="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
-                    <div class="bg-gray-50 p-6 rounded-2xl border">
-                        <h4 class="font-bold text-base mb-2 text-vetDark">المشاركون ببحث</h4>
-                        <p class="text-xl font-black text-vetBlue mb-2">1500 ج.م</p>
-                        <p class="text-xs text-gray-500">يشمل نشر البحث وحقيبة المؤتمر.</p>
-                    </div>
-                    <div class="bg-blue-50 p-6 rounded-2xl border border-vetBlue shadow">
-                        <h4 class="font-bold text-base mb-2 text-vetDark">حضور فقط</h4>
-                        <p class="text-xl font-black text-vetBlue mb-2">800 ج.م</p>
-                        <p class="text-xs text-gray-500">شهادة حضور وجلسات المؤتمر.</p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-2xl border">
-                        <h4 class="font-bold text-base mb-2 text-vetDark">المشاركون الدوليون</h4>
-                        <p class="text-xl font-black text-vetBlue mb-2">250 دولار</p>
-                        <p class="text-xs text-gray-500">من خارج جمهورية مصر العربية.</p>
-                    </div>
-                </div>
+                <div id="fees-container" class="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto"></div>
             </section>
 
             <!-- Speakers Section -->
@@ -249,29 +240,7 @@
                     <h3 class="text-2xl font-black text-vetDark mb-3">المحاضرون</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
                 </div>
-                <div class="grid sm:grid-cols-3 gap-6">
-                    <div class="bg-gray-50 p-6 rounded-2xl border text-center">
-                        <div class="w-20 h-20 bg-blue-200 rounded-full mx-auto mb-3 overflow-hidden shadow">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop" class="w-full h-full object-cover">
-                        </div>
-                        <h4 class="font-bold text-base text-vetDark">أ.د. نخبة العلماء</h4>
-                        <p class="text-xs text-vetBlue font-semibold mb-1">جامعات عالمية</p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-2xl border text-center">
-                        <div class="w-20 h-20 bg-blue-200 rounded-full mx-auto mb-3 overflow-hidden shadow">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop" class="w-full h-full object-cover">
-                        </div>
-                        <h4 class="font-bold text-base text-vetDark">أ.د. خبراء الطب البيطري</h4>
-                        <p class="text-xs text-vetBlue font-semibold mb-1">جامعة كفرالشيخ</p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-2xl border text-center">
-                        <div class="w-20 h-20 bg-blue-200 rounded-full mx-auto mb-3 overflow-hidden shadow">
-                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop" class="w-full h-full object-cover">
-                        </div>
-                        <h4 class="font-bold text-base text-vetDark">أ.د. رواد البحوث</h4>
-                        <p class="text-xs text-vetBlue font-semibold mb-1">مراكز البحث العلمي</p>
-                    </div>
-                </div>
+                <div id="speakers-container" class="grid sm:grid-cols-3 gap-6"></div>
             </section>
 
             <!-- Committees Section -->
@@ -280,16 +249,7 @@
                     <h3 class="text-2xl font-black text-vetDark mb-3">اللجان العلمية</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
                 </div>
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div class="bg-gray-50 p-6 rounded-2xl border">
-                        <h4 class="font-bold text-base text-vetDark mb-2 flex items-center gap-2"><i class="fa-solid fa-award text-vetBlue"></i> اللجنة العلمية الاستشارية</h4>
-                        <p class="text-xs text-gray-600 leading-relaxed">كبار أساتذة الطب البيطري لوضع المحاور وتحكيم الأبحاث.</p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-2xl border">
-                        <h4 class="font-bold text-base text-vetDark mb-2 flex items-center gap-2"><i class="fa-solid fa-laptop-file text-vetBlue"></i> لجنة التحكيم والنشر</h4>
-                        <p class="text-xs text-gray-600 leading-relaxed">مراجعة الملخصات والأبحاث الكاملة الواردة للمؤتمر.</p>
-                    </div>
-                </div>
+                <div id="committees-container" class="grid md:grid-cols-2 gap-6"></div>
             </section>
 
             <!-- Accepted Papers Section -->
@@ -298,7 +258,7 @@
                 <div class="w-16 h-1 bg-vetGold mx-auto rounded-full mb-6"></div>
                 <p class="text-gray-600 max-w-xl mx-auto text-sm leading-relaxed mb-4">سيتم الإعلان تباعاً عن قوائم البحوث العلمية المقبولة بعد اجتياز التحكيم العلمي.</p>
                 <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl inline-block text-amber-800 font-bold text-xs">
-                    <i class="fa-solid fa-clock ml-2"></i> جارٍ تحديث القوائم قريباً...
+                    <i class="fa-solid fa-clock ml-2"></i> <span id="papers-status-text">جارٍ تحديث القوائم قريباً...</span>
                 </div>
             </section>
 
@@ -308,35 +268,7 @@
                     <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="schedule_heading">المواعيد الهامة</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
                 </div>
-                <div class="max-w-2xl mx-auto space-y-4">
-                    <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border">
-                        <div class="bg-vetBlue text-white font-bold px-3 py-1.5 rounded-xl text-xs text-center shrink-0" data-i18n="date_1">15 أغسطس</div>
-                        <div>
-                            <h4 class="font-bold text-sm text-vetDark" data-i18n="sched_1_title">آخر موعد لتلقي الملخصات والأبحاث</h4>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border">
-                        <div class="bg-vetBlue text-white font-bold px-3 py-1.5 rounded-xl text-xs text-center shrink-0" data-i18n="date_2">01 سبتمبر</div>
-                        <div>
-                            <h4 class="font-bold text-sm text-vetDark" data-i18n="sched_2_title">إخطار الباحثين بقبول الأبحاث</h4>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border">
-                        <div class="bg-vetBlue text-white font-bold px-3 py-1.5 rounded-xl text-xs text-center shrink-0" data-i18n="date_3">20-22 أكتوبر</div>
-                        <div>
-                            <h4 class="font-bold text-sm text-vetDark" data-i18n="sched_3_title">انطلاق فعاليات المؤتمر الدولي التاسع</h4>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- News Section -->
-            <section id="news" class="bg-white p-8 rounded-3xl shadow-sm border">
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="news_heading">أخبار المؤتمر</h3>
-                    <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
-                </div>
-                <div id="news-container" class="grid sm:grid-cols-2 gap-6"></div>
+                <div id="schedule-container" class="max-w-2xl mx-auto space-y-4"></div>
             </section>
 
             <!-- Gallery Section -->
@@ -485,24 +417,53 @@
 
     <!-- Admin Dashboard Panel (Full Modal) -->
     <div id="admin-dashboard" class="fixed inset-0 z-50 bg-gray-100 hidden flex flex-col">
-        <header class="bg-vetDark text-white px-6 py-4 flex items-center justify-between shadow">
-            <h3 class="text-lg font-bold flex items-center gap-2"><i class="fa-solid fa-gauge-high"></i> <span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-            <button onclick="closeDashboard()" class="bg-red-600 hover:bg-red-700 px-4 py-1.5 rounded-lg text-sm font-bold"><i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="dash_logout">خروج</span></button>
+        <header class="bg-gradient-to-l from-vetDark to-vetBlue text-white px-6 py-3 flex items-center justify-between shadow-lg shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
+                <div>
+                    <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <span id="dash-clock" class="text-xs bg-white/10 px-3 py-1.5 rounded-lg font-mono"></span>
+                <button onclick="closeDashboard()" class="bg-red-600/90 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="dash_logout">خروج</span></button>
+            </div>
         </header>
         <div class="flex flex-1 overflow-hidden">
             <!-- Sidebar Tabs -->
-            <aside class="w-64 bg-white border-r border-gray-200 p-4 space-y-2 overflow-y-auto">
-                <button onclick="switchTab('site-settings')" id="tab-btn-site-settings" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm bg-vetBlue text-white flex items-center gap-2"><i class="fa-solid fa-gear"></i> <span data-i18n="tab_site_settings">إعدادات ونصوص الصفحة</span></button>
-                <button onclick="switchTab('nav-manager')" id="tab-btn-nav-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-bars"></i> <span>إدارة أقسام المؤتمر الجانبية</span></button>
-                <button onclick="switchTab('about-manager')" id="tab-btn-about-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-circle-info"></i> <span>إدارة قسم عن المؤتمر</span></button>
-                <button onclick="switchTab('venue-manager')" id="tab-btn-venue-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-location-dot"></i> <span>إدارة مكان الانعقاد</span></button>
-                <button onclick="switchTab('sponsorship-manager')" id="tab-btn-sponsorship-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-handshake"></i> <span>إدارة رعاية المؤتمر والشعارات</span></button>
-                <button onclick="switchTab('org-manager')" id="tab-btn-org-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-sitemap"></i> <span>إدارة الهيكل التنظيمي</span></button>
-                <button onclick="switchTab('ticker-manager')" id="tab-btn-ticker-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-bullhorn"></i> <span data-i18n="tab_ticker_manager">إدارة الشريط العاجل</span></button>
-                <button onclick="switchTab('add-news')" id="tab-btn-add-news" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-plus-circle"></i> <span data-i18n="tab_add_news">إضافة خبر</span></button>
-                <button onclick="switchTab('manage-news')" id="tab-btn-manage-news" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-newspaper"></i> <span data-i18n="tab_manage_news">إدارة الأخبار</span></button>
-                <button onclick="switchTab('change-password')" id="tab-btn-change-password" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-key"></i> <span data-i18n="tab_change_pass">تغيير كلمة المرور</span></button>
-                <button onclick="switchTab('registrations')" id="tab-btn-registrations" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-users"></i> <span data-i18n="tab_regs">قائمة المسجّلين</span></button>
+            <aside class="w-64 bg-white border-r border-gray-200 p-4 overflow-y-auto admin-sidebar" style="scrollbar-width:thin;">
+                <div class="mb-4">
+                    <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-3">إعدادات المحتوى</div>
+                    <button onclick="switchTab('site-settings')" id="tab-btn-site-settings" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm bg-vetBlue text-white flex items-center gap-2"><i class="fa-solid fa-gear w-4 text-center"></i> <span data-i18n="tab_site_settings">إعدادات ونصوص الصفحة</span></button>
+                    <button onclick="switchTab('nav-manager')" id="tab-btn-nav-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-bars w-4 text-center"></i> <span>الأقسام الجانبية</span></button>
+                    <button onclick="switchTab('about-manager')" id="tab-btn-about-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-circle-info w-4 text-center"></i> <span>قسم عن المؤتمر</span></button>
+                    <button onclick="switchTab('venue-manager')" id="tab-btn-venue-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-location-dot w-4 text-center"></i> <span>مكان الانعقاد</span></button>
+                    <button onclick="switchTab('vmg-manager')" id="tab-btn-vmg-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-eye w-4 text-center"></i> <span>الرؤية والرسالة والأهداف</span></button>
+                    <button onclick="switchTab('axes-manager')" id="tab-btn-axes-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-cubes w-4 text-center"></i> <span>محاور المؤتمر</span></button>
+                </div>
+                <div class="mb-4">
+                    <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-3">المؤسسة والتنظيم</div>
+                    <button onclick="switchTab('sponsorship-manager')" id="tab-btn-sponsorship-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-handshake w-4 text-center"></i> <span>الجهات الراعية والشعارات</span></button>
+                    <button onclick="switchTab('org-manager')" id="tab-btn-org-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-sitemap w-4 text-center"></i> <span>الهيكل التنظيمي</span></button>
+                    <button onclick="switchTab('committees-manager')" id="tab-btn-committees-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-people-group w-4 text-center"></i> <span>اللجان العلمية</span></button>
+                    <button onclick="switchTab('speakers-manager')" id="tab-btn-speakers-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-chalkboard-user w-4 text-center"></i> <span>المحاضرون</span></button>
+                </div>
+                <div class="mb-4">
+                    <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-3">المحتوى الإعلامي</div>
+                    <button onclick="switchTab('ticker-manager')" id="tab-btn-ticker-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-bullhorn w-4 text-center"></i> <span data-i18n="tab_ticker_manager">الشريط العاجل</span></button>
+                    <button onclick="switchTab('add-news')" id="tab-btn-add-news" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-plus-circle w-4 text-center"></i> <span data-i18n="tab_add_news">إضافة خبر</span></button>
+                    <button onclick="switchTab('manage-news')" id="tab-btn-manage-news" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-newspaper w-4 text-center"></i> <span data-i18n="tab_manage_news">إدارة الأخبار</span></button>
+                    <button onclick="switchTab('journal-manager')" id="tab-btn-journal-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-book-open w-4 text-center"></i> <span>مجلة نشر الأبحاث</span></button>
+                </div>
+                <div class="mb-4">
+                    <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-3">الخدمات والتسجيل</div>
+                    <button onclick="switchTab('fees-manager')" id="tab-btn-fees-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-coins w-4 text-center"></i> <span>رسوم الاشتراك</span></button>
+                    <button onclick="switchTab('papers-manager')" id="tab-btn-papers-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-file-lines w-4 text-center"></i> <span>البحوث المقبولة</span></button>
+                    <button onclick="switchTab('schedule-manager')" id="tab-btn-schedule-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-calendar-days w-4 text-center"></i> <span>المواعيد الهامة</span></button>
+                    <button onclick="switchTab('registrations')" id="tab-btn-registrations" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-users w-4 text-center"></i> <span data-i18n="tab_regs">قائمة المسجّلين</span></button>
+                    <button onclick="switchTab('change-password')" id="tab-btn-change-password" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-key w-4 text-center"></i> <span data-i18n="tab_change_pass">تغيير كلمة المرور</span></button>
+                </div>
             </aside>
             <!-- Main Content Area -->
             <main class="flex-1 p-8 overflow-y-auto">
@@ -710,6 +671,214 @@
                     <div id="admin-news-list" class="space-y-4"></div>
                 </div>
 
+                <!-- VMG Manager Tab (Vision, Mission, Goals) -->
+                <div id="tab-vmg-manager" class="space-y-6 hidden max-w-3xl">
+                    <h4 class="text-xl font-bold text-vetDark">إدارة الرؤية والرسالة والأهداف</h4>
+                    <form onsubmit="handleSaveVmg(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-1">نص الرؤية *</label>
+                            <textarea id="set-vision" rows="3" required class="w-full px-4 py-2 border rounded-lg"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">نص الرسالة *</label>
+                            <textarea id="set-mission" rows="3" required class="w-full px-4 py-2 border rounded-lg"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">نص الأهداف *</label>
+                            <textarea id="set-goals" rows="3" required class="w-full px-4 py-2 border rounded-lg"></textarea>
+                        </div>
+                        <button type="submit" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-save"></i> حفظ وتحديث الرؤية والرسالة والأهداف</button>
+                    </form>
+                </div>
+
+                <!-- Axes Manager Tab -->
+                <div id="tab-axes-manager" class="space-y-6 hidden max-w-3xl">
+                    <h4 class="text-xl font-bold text-vetDark">إدارة محاور المؤتمر (إضافة، تعديل، حذف)</h4>
+                    <form onsubmit="handleSaveAxis(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <input type="hidden" id="edit-axis-id" value="">
+                        <div class="grid sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-1">أيقونة FontAwesome *</label>
+                                <input type="text" id="axis-icon" required class="w-full px-4 py-2 border rounded-lg" placeholder="fa-notes-medical">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">عنوان المحور *</label>
+                                <input type="text" id="axis-title" required class="w-full px-4 py-2 border rounded-lg" placeholder="أمراض الحيوان والدواجن">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">وصف المحور *</label>
+                                <input type="text" id="axis-desc" required class="w-full px-4 py-2 border rounded-lg" placeholder="التشخيص الحديث وعلاج الأمراض">
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="submit" id="axis-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة محور</button>
+                            <button type="button" onclick="resetAxisForm()" class="bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-bold hidden" id="axis-cancel-btn">إلغاء التعديل</button>
+                        </div>
+                    </form>
+                    <div class="bg-white p-6 rounded-xl shadow border">
+                        <h5 class="font-bold text-vetDark mb-4">المحاور الحالية</h5>
+                        <div id="admin-axis-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- Journal Manager Tab -->
+                <div id="tab-journal-manager" class="space-y-6 hidden max-w-3xl">
+                    <h4 class="text-xl font-bold text-vetDark">إدارة مجلة نشر الأبحاث</h4>
+                    <form onsubmit="handleSaveJournal(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-1">عنوان القسم *</label>
+                            <input type="text" id="set-journal-title" required class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">وصف المجلة *</label>
+                            <textarea id="set-journal-desc" rows="3" required class="w-full px-4 py-2 border rounded-lg"></textarea>
+                        </div>
+                        <button type="submit" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-save"></i> حفظ وتحديث قسم المجلة</button>
+                    </form>
+                </div>
+
+                <!-- Fees Manager Tab -->
+                <div id="tab-fees-manager" class="space-y-6 hidden max-w-3xl">
+                    <h4 class="text-xl font-bold text-vetDark">إدارة رسوم الاشتراك (إضافة، تعديل، حذف)</h4>
+                    <form onsubmit="handleSaveFee(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <input type="hidden" id="edit-fee-id" value="">
+                        <div class="grid sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-1">اسم الفئة *</label>
+                                <input type="text" id="fee-name" required class="w-full px-4 py-2 border rounded-lg" placeholder="المشاركون ببحث">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">السعر *</label>
+                                <input type="text" id="fee-price" required class="w-full px-4 py-2 border rounded-lg" placeholder="1500 ج.م">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">وصف قصير *</label>
+                                <input type="text" id="fee-desc" required class="w-full px-4 py-2 border rounded-lg" placeholder="يشمل نشر البحث وحقيبة المؤتمر">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <label class="flex items-center gap-2 text-sm font-bold">
+                                <input type="checkbox" id="fee-highlight" class="w-4 h-4"> تمييز باللون الأزرق
+                            </label>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="submit" id="fee-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة فئة</button>
+                            <button type="button" onclick="resetFeeForm()" class="bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-bold hidden" id="fee-cancel-btn">إلغاء التعديل</button>
+                        </div>
+                    </form>
+                    <div class="bg-white p-6 rounded-xl shadow border">
+                        <h5 class="font-bold text-vetDark mb-4">فئات رسوم الاشتراك الحالية</h5>
+                        <div id="admin-fee-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- Speakers Manager Tab -->
+                <div id="tab-speakers-manager" class="space-y-6 hidden max-w-3xl">
+                    <h4 class="text-xl font-bold text-vetDark">إدارة المحاضرون (إضافة، تعديل، حذف)</h4>
+                    <form onsubmit="handleSaveSpeaker(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <input type="hidden" id="edit-speaker-id" value="">
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-1">اسم المحاضر *</label>
+                                <input type="text" id="speaker-name" required class="w-full px-4 py-2 border rounded-lg" placeholder="أ.د. نخبة العلماء">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">الجهة / اللقب *</label>
+                                <input type="text" id="speaker-title" required class="w-full px-4 py-2 border rounded-lg" placeholder="جامعات عالمية">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">صورة المحاضر</label>
+                            <input type="file" id="speaker-file" accept="image/*" class="w-full px-4 py-2 border rounded-lg bg-gray-50">
+                            <p class="text-xs text-gray-400 mt-1">اتركه فارغاً لاستخدام الصورة الافتراضية</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="submit" id="speaker-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة محاضر</button>
+                            <button type="button" onclick="resetSpeakerForm()" class="bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-bold hidden" id="speaker-cancel-btn">إلغاء التعديل</button>
+                        </div>
+                    </form>
+                    <div class="bg-white p-6 rounded-xl shadow border">
+                        <h5 class="font-bold text-vetDark mb-4">المحاضرون الحاليون</h5>
+                        <div id="admin-speaker-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- Committees Manager Tab -->
+                <div id="tab-committees-manager" class="space-y-6 hidden max-w-3xl">
+                    <h4 class="text-xl font-bold text-vetDark">إدارة اللجان العلمية (إضافة، تعديل، حذف)</h4>
+                    <form onsubmit="handleSaveCommittee(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <input type="hidden" id="edit-committee-id" value="">
+                        <div class="grid sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-1">أيقونة FontAwesome *</label>
+                                <input type="text" id="committee-icon" required class="w-full px-4 py-2 border rounded-lg" placeholder="fa-award">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">اسم اللجنة *</label>
+                                <input type="text" id="committee-name" required class="w-full px-4 py-2 border rounded-lg" placeholder="اللجنة العلمية الاستشارية">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">وصف اللجنة *</label>
+                                <input type="text" id="committee-desc" required class="w-full px-4 py-2 border rounded-lg" placeholder="كبار أساتذة الطب البيطري">
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="submit" id="committee-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة لجنة</button>
+                            <button type="button" onclick="resetCommitteeForm()" class="bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-bold hidden" id="committee-cancel-btn">إلغاء التعديل</button>
+                        </div>
+                    </form>
+                    <div class="bg-white p-6 rounded-xl shadow border">
+                        <h5 class="font-bold text-vetDark mb-4">اللجان الحالية</h5>
+                        <div id="admin-committee-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- Accepted Papers Manager Tab -->
+                <div id="tab-papers-manager" class="space-y-6 hidden max-w-3xl">
+                    <h4 class="text-xl font-bold text-vetDark">إدارة قسم البحوث المقبولة</h4>
+                    <form onsubmit="handleSavePapers(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-1">عنوان القسم *</label>
+                            <input type="text" id="set-papers-title" required class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">الوصف *</label>
+                            <textarea id="set-papers-desc" rows="3" required class="w-full px-4 py-2 border rounded-lg"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">نص الحالة (يظهر في الشريط الملون) *</label>
+                            <input type="text" id="set-papers-status" required class="w-full px-4 py-2 border rounded-lg" placeholder="جارٍ تحديث القوائم قريباً...">
+                        </div>
+                        <button type="submit" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-save"></i> حفظ وتحديث قسم البحوث المقبولة</button>
+                    </form>
+                </div>
+
+                <!-- Schedule Manager Tab -->
+                <div id="tab-schedule-manager" class="space-y-6 hidden max-w-3xl">
+                    <h4 class="text-xl font-bold text-vetDark">إدارة المواعيد الهامة (إضافة، تعديل، حذف)</h4>
+                    <form onsubmit="handleSaveScheduleItem(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <input type="hidden" id="edit-schedule-id" value="">
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-1">التاريخ *</label>
+                                <input type="text" id="schedule-date" required class="w-full px-4 py-2 border rounded-lg" placeholder="15 أغسطس">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">العنوان / الحدث *</label>
+                                <input type="text" id="schedule-title" required class="w-full px-4 py-2 border rounded-lg" placeholder="آخر موعد لتلقي الملخصات">
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="submit" id="schedule-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة موعد</button>
+                            <button type="button" onclick="resetScheduleForm()" class="bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-bold hidden" id="schedule-cancel-btn">إلغاء التعديل</button>
+                        </div>
+                    </form>
+                    <div class="bg-white p-6 rounded-xl shadow border">
+                        <h5 class="font-bold text-vetDark mb-4">المواعيد الحالية</h5>
+                        <div id="admin-schedule-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
                 <!-- Change Password Tab -->
                 <div id="tab-change-password" class="space-y-6 hidden max-w-md">
                     <h4 class="text-xl font-bold text-vetDark">تغيير كلمة مرور لوحة التحكم</h4>
@@ -759,6 +928,10 @@
                 </div>
             </main>
         </div>
+        <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
+            <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة محلياً في المتصفح</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v2.0</span>
+        </footer>
     </div>
 
     <!-- Script Application Logic -->
@@ -1413,6 +1586,13 @@
             const container = document.getElementById('ticker-content-container');
             const tickers = getTickerItems();
             container.innerHTML = '';
+            if (tickers.length === 0) {
+                const span = document.createElement('span');
+                span.className = "mx-6";
+                span.innerText = "لا توجد أخبار عاجلة حالياً";
+                container.appendChild(span);
+                return;
+            }
             tickers.forEach(t => {
                 const span = document.createElement('span');
                 span.className = "mx-6";
@@ -1425,6 +1605,11 @@
                 span.innerText = t.ar;
                 container.appendChild(span);
             });
+            const tickerMove = container.closest('.ticker-move') || container;
+            tickerMove.style.animation = 'none';
+            void tickerMove.offsetHeight;
+            const duration = Math.max(20, tickers.length * 8);
+            tickerMove.style.animation = `ticker ${duration}s linear infinite`;
         }
 
         // Site Settings Management
@@ -1626,6 +1811,7 @@
                 closeAdminLogin();
                 document.getElementById('admin-pass-input').value = '';
                 document.getElementById('admin-dashboard').classList.remove('hidden');
+                startDashboardClock();
                 loadSiteSettingsForm();
                 loadAdminNavButtons();
                 loadAboutSettingsForm();
@@ -1644,13 +1830,27 @@
             document.getElementById('admin-dashboard').classList.add('hidden');
         }
 
+        function startDashboardClock() {
+            function updateClock() {
+                const now = new Date();
+                const time = now.toLocaleString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+                const el = document.getElementById('dash-clock');
+                if (el) el.innerText = time;
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
         function switchTab(tabId) {
-            ['site-settings', 'nav-manager', 'about-manager', 'venue-manager', 'sponsorship-manager', 'org-manager', 'ticker-manager', 'add-news', 'manage-news', 'change-password', 'registrations'].forEach(t => {
+            const allTabs = ['site-settings', 'nav-manager', 'about-manager', 'venue-manager', 'sponsorship-manager', 'org-manager', 'ticker-manager', 'add-news', 'manage-news', 'vmg-manager', 'axes-manager', 'journal-manager', 'fees-manager', 'speakers-manager', 'committees-manager', 'papers-manager', 'schedule-manager', 'change-password', 'registrations'];
+            allTabs.forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
-                document.getElementById(`tab-btn-${t}`).className = "w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2";
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (btn) btn.className = "admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2";
             });
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            document.getElementById(`tab-btn-${tabId}`).className = "w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm bg-vetBlue text-white flex items-center gap-2";
+            const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+            if (activeBtn) activeBtn.className = "admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm bg-vetBlue text-white flex items-center gap-2";
             
             if (tabId === 'site-settings') loadSiteSettingsForm();
             if (tabId === 'nav-manager') loadAdminNavButtons();
@@ -1660,6 +1860,14 @@
             if (tabId === 'org-manager') loadAdminOrgItems();
             if (tabId === 'ticker-manager') loadAdminTicker();
             if (tabId === 'manage-news') loadAdminNews();
+            if (tabId === 'vmg-manager') loadVmgForm();
+            if (tabId === 'axes-manager') loadAdminAxes();
+            if (tabId === 'journal-manager') loadJournalForm();
+            if (tabId === 'fees-manager') loadAdminFees();
+            if (tabId === 'speakers-manager') loadAdminSpeakers();
+            if (tabId === 'committees-manager') loadAdminCommittees();
+            if (tabId === 'papers-manager') loadPapersForm();
+            if (tabId === 'schedule-manager') loadAdminSchedule();
             if (tabId === 'registrations') loadAdminRegs();
         }
 
@@ -1886,6 +2094,559 @@
             setTimeout(() => { printWindow.print(); }, 500);
         }
 
+        // ========== Vision, Mission, Goals Management ==========
+        function getVmgSettings() {
+            return JSON.parse(localStorage.getItem('vet_conf_vmg')) || {
+                vision: "الريادة الإقليمية والدولية في الابتكار البحثي والتطبيقي لعلوم الطب البيطري.",
+                mission: "توفير بيئة علمية تفاعلية لتبادل الخبرات وتطوير استراتيجيات بحثية وعلاجية حديثة.",
+                goals: "تفعيل دور البحث العلمي في إيجاد حلول عملية للمشكلات البيطرية."
+            };
+        }
+        function applyVmgSettings() {
+            const v = getVmgSettings();
+            document.querySelector('#vision p').innerText = v.vision;
+            document.querySelector('#mission p').innerText = v.mission;
+            document.querySelector('#goals p').innerText = v.goals;
+        }
+        function handleSaveVmg(e) {
+            e.preventDefault();
+            const data = {
+                vision: document.getElementById('set-vision').value,
+                mission: document.getElementById('set-mission').value,
+                goals: document.getElementById('set-goals').value
+            };
+            localStorage.setItem('vet_conf_vmg', JSON.stringify(data));
+            showCustomAlert("تم حفظ الرؤية والرسالة والأهداف بنجاح!");
+            applyVmgSettings();
+        }
+        function loadVmgForm() {
+            const v = getVmgSettings();
+            document.getElementById('set-vision').value = v.vision;
+            document.getElementById('set-mission').value = v.mission;
+            document.getElementById('set-goals').value = v.goals;
+        }
+
+        // ========== Conference Axes Management ==========
+        function getAxes() {
+            return JSON.parse(localStorage.getItem('vet_conf_axes')) || [
+                { id: 1, icon: "fa-notes-medical", title: "أمراض الحيوان والدواجن", desc: "التشخيص الحديث وعلاج الأمراض." },
+                { id: 2, icon: "fa-shield-halved", title: "سلامة الغذاء والصحة العامة", desc: "الرقابة على الأغذية ذات الأصل الحيواني." },
+                { id: 3, icon: "fa-dna", title: "التكنولوجيا الحيوية والجينوم", desc: "تطبيقات الهندسة الوراثية." }
+            ];
+        }
+        function renderAxes() {
+            const container = document.getElementById('axes-container');
+            const axes = getAxes();
+            container.innerHTML = '';
+            axes.forEach(a => {
+                const div = document.createElement('div');
+                div.className = "bg-gray-50 p-6 rounded-2xl border";
+                div.innerHTML = `
+                    <div class="w-10 h-10 bg-blue-100 text-vetBlue rounded-lg flex items-center justify-center text-lg mb-3"><i class="fa-solid ${a.icon}"></i></div>
+                    <h4 class="font-bold text-base mb-1 text-vetDark">${a.title}</h4>
+                    <p class="text-xs text-gray-500">${a.desc}</p>
+                `;
+                container.appendChild(div);
+            });
+        }
+        function handleSaveAxis(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-axis-id').value;
+            const icon = document.getElementById('axis-icon').value;
+            const title = document.getElementById('axis-title').value;
+            const desc = document.getElementById('axis-desc').value;
+            let axes = getAxes();
+            if (editId) {
+                axes = axes.map(a => a.id == editId ? { ...a, icon, title, desc } : a);
+            } else {
+                axes.push({ id: Date.now(), icon, title, desc });
+            }
+            localStorage.setItem('vet_conf_axes', JSON.stringify(axes));
+            showCustomAlert("تم حفظ المحور بنجاح!");
+            resetAxisForm();
+            loadAdminAxes();
+            renderAxes();
+        }
+        function editAxis(id) {
+            const axes = getAxes();
+            const a = axes.find(x => x.id == id);
+            if (a) {
+                document.getElementById('edit-axis-id').value = a.id;
+                document.getElementById('axis-icon').value = a.icon;
+                document.getElementById('axis-title').value = a.title;
+                document.getElementById('axis-desc').value = a.desc;
+                document.getElementById('axis-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
+                document.getElementById('axis-cancel-btn').classList.remove('hidden');
+            }
+        }
+        function resetAxisForm() {
+            document.getElementById('edit-axis-id').value = '';
+            document.getElementById('axis-icon').value = '';
+            document.getElementById('axis-title').value = '';
+            document.getElementById('axis-desc').value = '';
+            document.getElementById('axis-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة محور';
+            document.getElementById('axis-cancel-btn').classList.add('hidden');
+        }
+        function deleteAxis(id) {
+            if (confirm("هل أنت متأكد من حذف هذا المحور؟")) {
+                let axes = getAxes();
+                axes = axes.filter(a => a.id != id);
+                localStorage.setItem('vet_conf_axes', JSON.stringify(axes));
+                loadAdminAxes();
+                renderAxes();
+            }
+        }
+        function loadAdminAxes() {
+            const container = document.getElementById('admin-axis-list');
+            const axes = getAxes();
+            container.innerHTML = '';
+            axes.forEach(a => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
+                div.innerHTML = `
+                    <span class="font-bold text-sm"><i class="fa-solid ${a.icon} ml-2"></i>${a.title}</span>
+                    <div class="flex gap-2 shrink-0">
+                        <button onclick="editAxis(${a.id})" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i> تعديل</button>
+                        <button onclick="deleteAxis(${a.id})" class="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ========== Journal Section Management ==========
+        function getJournalSettings() {
+            return JSON.parse(localStorage.getItem('vet_conf_journal')) || {
+                title: "مجلة نشر الأبحاث",
+                desc: "يتم نشر الأبحاث المقبولة في المؤتمر بالتعاون مع المجلات العلمية المعتمدة لكلية الطب البيطري جامعة كفرالشيخ والمجلات الدولية المصنفة."
+            };
+        }
+        function applyJournalSettings() {
+            const j = getJournalSettings();
+            const section = document.getElementById('journal');
+            section.querySelector('h3').innerText = j.title;
+            section.querySelector('p').innerText = j.desc;
+        }
+        function handleSaveJournal(e) {
+            e.preventDefault();
+            const data = {
+                title: document.getElementById('set-journal-title').value,
+                desc: document.getElementById('set-journal-desc').value
+            };
+            localStorage.setItem('vet_conf_journal', JSON.stringify(data));
+            showCustomAlert("تم حفظ قسم المجلة بنجاح!");
+            applyJournalSettings();
+        }
+        function loadJournalForm() {
+            const j = getJournalSettings();
+            document.getElementById('set-journal-title').value = j.title;
+            document.getElementById('set-journal-desc').value = j.desc;
+        }
+
+        // ========== Fees Management ==========
+        function getFees() {
+            return JSON.parse(localStorage.getItem('vet_conf_fees')) || [
+                { id: 1, name: "المشاركون ببحث", price: "1500 ج.م", desc: "يشمل نشر البحث وحقيبة المؤتمر.", highlight: false },
+                { id: 2, name: "حضور فقط", price: "800 ج.م", desc: "شهادة حضور وجلسات المؤتمر.", highlight: true },
+                { id: 3, name: "المشاركون الدوليون", price: "250 دولار", desc: "من خارج جمهورية مصر العربية.", highlight: false }
+            ];
+        }
+        function renderFees() {
+            const container = document.getElementById('fees-container');
+            const fees = getFees();
+            container.innerHTML = '';
+            fees.forEach(f => {
+                const div = document.createElement('div');
+                const isHighlight = f.highlight;
+                div.className = isHighlight ? "bg-blue-50 p-6 rounded-2xl border border-vetBlue shadow" : "bg-gray-50 p-6 rounded-2xl border";
+                div.innerHTML = `
+                    <h4 class="font-bold text-base mb-2 text-vetDark">${f.name}</h4>
+                    <p class="text-xl font-black text-vetBlue mb-2">${f.price}</p>
+                    <p class="text-xs text-gray-500">${f.desc}</p>
+                `;
+                container.appendChild(div);
+            });
+        }
+        function handleSaveFee(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-fee-id').value;
+            const name = document.getElementById('fee-name').value;
+            const price = document.getElementById('fee-price').value;
+            const desc = document.getElementById('fee-desc').value;
+            const highlight = document.getElementById('fee-highlight').checked;
+            let fees = getFees();
+            if (editId) {
+                fees = fees.map(f => f.id == editId ? { ...f, name, price, desc, highlight } : f);
+            } else {
+                fees.push({ id: Date.now(), name, price, desc, highlight });
+            }
+            localStorage.setItem('vet_conf_fees', JSON.stringify(fees));
+            showCustomAlert("تم حفظ فئة الرسوم بنجاح!");
+            resetFeeForm();
+            loadAdminFees();
+            renderFees();
+        }
+        function editFee(id) {
+            const fees = getFees();
+            const f = fees.find(x => x.id == id);
+            if (f) {
+                document.getElementById('edit-fee-id').value = f.id;
+                document.getElementById('fee-name').value = f.name;
+                document.getElementById('fee-price').value = f.price;
+                document.getElementById('fee-desc').value = f.desc;
+                document.getElementById('fee-highlight').checked = f.highlight;
+                document.getElementById('fee-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
+                document.getElementById('fee-cancel-btn').classList.remove('hidden');
+            }
+        }
+        function resetFeeForm() {
+            document.getElementById('edit-fee-id').value = '';
+            document.getElementById('fee-name').value = '';
+            document.getElementById('fee-price').value = '';
+            document.getElementById('fee-desc').value = '';
+            document.getElementById('fee-highlight').checked = false;
+            document.getElementById('fee-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة فئة';
+            document.getElementById('fee-cancel-btn').classList.add('hidden');
+        }
+        function deleteFee(id) {
+            if (confirm("هل أنت متأكد من حذف هذه الفئة؟")) {
+                let fees = getFees();
+                fees = fees.filter(f => f.id != id);
+                localStorage.setItem('vet_conf_fees', JSON.stringify(fees));
+                loadAdminFees();
+                renderFees();
+            }
+        }
+        function loadAdminFees() {
+            const container = document.getElementById('admin-fee-list');
+            const fees = getFees();
+            container.innerHTML = '';
+            fees.forEach(f => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
+                div.innerHTML = `
+                    <div>
+                        <span class="font-bold text-sm">${f.name}</span> - <span class="text-vetBlue font-bold">${f.price}</span>
+                        <span class="text-xs text-gray-500 mr-2">${f.desc}</span>
+                        ${f.highlight ? '<span class="bg-blue-100 text-vetBlue text-xs px-2 py-0.5 rounded mr-2">مميز</span>' : ''}
+                    </div>
+                    <div class="flex gap-2 shrink-0">
+                        <button onclick="editFee(${f.id})" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i> تعديل</button>
+                        <button onclick="deleteFee(${f.id})" class="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ========== Speakers Management ==========
+        function getSpeakers() {
+            return JSON.parse(localStorage.getItem('vet_conf_speakers')) || [
+                { id: 1, name: "أ.د. نخبة العلماء", title: "جامعات عالمية", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop" },
+                { id: 2, name: "أ.د. خبراء الطب البيطري", title: "جامعة كفرالشيخ", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop" },
+                { id: 3, name: "أ.د. رواد البحوث", title: "مراكز البحث العلمي", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop" }
+            ];
+        }
+        function renderSpeakers() {
+            const container = document.getElementById('speakers-container');
+            const speakers = getSpeakers();
+            container.innerHTML = '';
+            speakers.forEach(s => {
+                const div = document.createElement('div');
+                div.className = "bg-gray-50 p-6 rounded-2xl border text-center";
+                div.innerHTML = `
+                    <div class="w-20 h-20 bg-blue-200 rounded-full mx-auto mb-3 overflow-hidden shadow">
+                        <img src="${s.image}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop'">
+                    </div>
+                    <h4 class="font-bold text-base text-vetDark">${s.name}</h4>
+                    <p class="text-xs text-vetBlue font-semibold mb-1">${s.title}</p>
+                `;
+                container.appendChild(div);
+            });
+        }
+        function handleSaveSpeaker(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-speaker-id').value;
+            const name = document.getElementById('speaker-name').value;
+            const title = document.getElementById('speaker-title').value;
+            const fileInput = document.getElementById('speaker-file');
+            const file = fileInput.files[0];
+            let speakers = getSpeakers();
+            function saveRecord(imageUrl) {
+                if (editId) {
+                    speakers = speakers.map(s => s.id == editId ? { ...s, name, title, image: imageUrl || s.image } : s);
+                } else {
+                    speakers.push({ id: Date.now(), name, title, image: imageUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop" });
+                }
+                localStorage.setItem('vet_conf_speakers', JSON.stringify(speakers));
+                showCustomAlert("تم حفظ المحاضر بنجاح!");
+                resetSpeakerForm();
+                loadAdminSpeakers();
+                renderSpeakers();
+            }
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = ev => saveRecord(ev.target.result);
+                reader.readAsDataURL(file);
+            } else {
+                saveRecord(null);
+            }
+        }
+        function editSpeaker(id) {
+            const speakers = getSpeakers();
+            const s = speakers.find(x => x.id == id);
+            if (s) {
+                document.getElementById('edit-speaker-id').value = s.id;
+                document.getElementById('speaker-name').value = s.name;
+                document.getElementById('speaker-title').value = s.title;
+                document.getElementById('speaker-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
+                document.getElementById('speaker-cancel-btn').classList.remove('hidden');
+            }
+        }
+        function resetSpeakerForm() {
+            document.getElementById('edit-speaker-id').value = '';
+            document.getElementById('speaker-name').value = '';
+            document.getElementById('speaker-title').value = '';
+            document.getElementById('speaker-file').value = '';
+            document.getElementById('speaker-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة محاضر';
+            document.getElementById('speaker-cancel-btn').classList.add('hidden');
+        }
+        function deleteSpeaker(id) {
+            if (confirm("هل أنت متأكد من حذف هذا المحاضر؟")) {
+                let speakers = getSpeakers();
+                speakers = speakers.filter(s => s.id != id);
+                localStorage.setItem('vet_conf_speakers', JSON.stringify(speakers));
+                loadAdminSpeakers();
+                renderSpeakers();
+            }
+        }
+        function loadAdminSpeakers() {
+            const container = document.getElementById('admin-speaker-list');
+            const speakers = getSpeakers();
+            container.innerHTML = '';
+            speakers.forEach(s => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <img src="${s.image}" class="w-10 h-10 rounded-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop'">
+                        <span class="font-bold text-sm">${s.name}</span> <span class="text-xs text-gray-500">${s.title}</span>
+                    </div>
+                    <div class="flex gap-2 shrink-0">
+                        <button onclick="editSpeaker(${s.id})" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i> تعديل</button>
+                        <button onclick="deleteSpeaker(${s.id})" class="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ========== Committees Management ==========
+        function getCommittees() {
+            return JSON.parse(localStorage.getItem('vet_conf_committees')) || [
+                { id: 1, icon: "fa-award", name: "اللجنة العلمية الاستشارية", desc: "كبار أساتذة الطب البيطري لوضع المحاور وتحكيم الأبحاث." },
+                { id: 2, icon: "fa-laptop-file", name: "لجنة التحكيم والنشر", desc: "مراجعة الملخصات والأبحاث الكاملة الواردة للمؤتمر." }
+            ];
+        }
+        function renderCommittees() {
+            const container = document.getElementById('committees-container');
+            const committees = getCommittees();
+            container.innerHTML = '';
+            committees.forEach(c => {
+                const div = document.createElement('div');
+                div.className = "bg-gray-50 p-6 rounded-2xl border";
+                div.innerHTML = `
+                    <h4 class="font-bold text-base text-vetDark mb-2 flex items-center gap-2"><i class="fa-solid ${c.icon} text-vetBlue"></i> ${c.name}</h4>
+                    <p class="text-xs text-gray-600 leading-relaxed">${c.desc}</p>
+                `;
+                container.appendChild(div);
+            });
+        }
+        function handleSaveCommittee(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-committee-id').value;
+            const icon = document.getElementById('committee-icon').value;
+            const name = document.getElementById('committee-name').value;
+            const desc = document.getElementById('committee-desc').value;
+            let committees = getCommittees();
+            if (editId) {
+                committees = committees.map(c => c.id == editId ? { ...c, icon, name, desc } : c);
+            } else {
+                committees.push({ id: Date.now(), icon, name, desc });
+            }
+            localStorage.setItem('vet_conf_committees', JSON.stringify(committees));
+            showCustomAlert("تم حفظ اللجنة بنجاح!");
+            resetCommitteeForm();
+            loadAdminCommittees();
+            renderCommittees();
+        }
+        function editCommittee(id) {
+            const committees = getCommittees();
+            const c = committees.find(x => x.id == id);
+            if (c) {
+                document.getElementById('edit-committee-id').value = c.id;
+                document.getElementById('committee-icon').value = c.icon;
+                document.getElementById('committee-name').value = c.name;
+                document.getElementById('committee-desc').value = c.desc;
+                document.getElementById('committee-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
+                document.getElementById('committee-cancel-btn').classList.remove('hidden');
+            }
+        }
+        function resetCommitteeForm() {
+            document.getElementById('edit-committee-id').value = '';
+            document.getElementById('committee-icon').value = '';
+            document.getElementById('committee-name').value = '';
+            document.getElementById('committee-desc').value = '';
+            document.getElementById('committee-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة لجنة';
+            document.getElementById('committee-cancel-btn').classList.add('hidden');
+        }
+        function deleteCommittee(id) {
+            if (confirm("هل أنت متأكد من حذف هذه اللجنة؟")) {
+                let committees = getCommittees();
+                committees = committees.filter(c => c.id != id);
+                localStorage.setItem('vet_conf_committees', JSON.stringify(committees));
+                loadAdminCommittees();
+                renderCommittees();
+            }
+        }
+        function loadAdminCommittees() {
+            const container = document.getElementById('admin-committee-list');
+            const committees = getCommittees();
+            container.innerHTML = '';
+            committees.forEach(c => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
+                div.innerHTML = `
+                    <span class="font-bold text-sm"><i class="fa-solid ${c.icon} ml-2"></i>${c.name}</span>
+                    <div class="flex gap-2 shrink-0">
+                        <button onclick="editCommittee(${c.id})" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i> تعديل</button>
+                        <button onclick="deleteCommittee(${c.id})" class="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ========== Accepted Papers Management ==========
+        function getPapersSettings() {
+            return JSON.parse(localStorage.getItem('vet_conf_papers')) || {
+                title: "البحوث المقبولة",
+                desc: "سيتم الإعلان تباعاً عن قوائم البحوث العلمية المقبولة بعد اجتياز التحكيم العلمي.",
+                status: "جارٍ تحديث القوائم قريباً..."
+            };
+        }
+        function applyPapersSettings() {
+            const p = getPapersSettings();
+            const section = document.getElementById('accepted-papers');
+            section.querySelector('h3').innerText = p.title;
+            section.querySelector('.max-w-xl').innerText = p.desc;
+            document.getElementById('papers-status-text').innerText = p.status;
+        }
+        function handleSavePapers(e) {
+            e.preventDefault();
+            const data = {
+                title: document.getElementById('set-papers-title').value,
+                desc: document.getElementById('set-papers-desc').value,
+                status: document.getElementById('set-papers-status').value
+            };
+            localStorage.setItem('vet_conf_papers', JSON.stringify(data));
+            showCustomAlert("تم حفظ قسم البحوث المقبولة بنجاح!");
+            applyPapersSettings();
+        }
+        function loadPapersForm() {
+            const p = getPapersSettings();
+            document.getElementById('set-papers-title').value = p.title;
+            document.getElementById('set-papers-desc').value = p.desc;
+            document.getElementById('set-papers-status').value = p.status;
+        }
+
+        // ========== Schedule Management ==========
+        function getScheduleItems() {
+            return JSON.parse(localStorage.getItem('vet_conf_schedule')) || [
+                { id: 1, date: "15 أغسطس", title: "آخر موعد لتلقي الملخصات والأبحاث" },
+                { id: 2, date: "01 سبتمبر", title: "إخطار الباحثين بقبول الأبحاث" },
+                { id: 3, date: "20-22 أكتوبر", title: "انطلاق فعاليات المؤتمر الدولي التاسع" }
+            ];
+        }
+        function renderSchedule() {
+            const container = document.getElementById('schedule-container');
+            const items = getScheduleItems();
+            container.innerHTML = '';
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = "flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border";
+                div.innerHTML = `
+                    <div class="bg-vetBlue text-white font-bold px-3 py-1.5 rounded-xl text-xs text-center shrink-0">${item.date}</div>
+                    <div><h4 class="font-bold text-sm text-vetDark">${item.title}</h4></div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        function handleSaveScheduleItem(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-schedule-id').value;
+            const date = document.getElementById('schedule-date').value;
+            const title = document.getElementById('schedule-title').value;
+            let items = getScheduleItems();
+            if (editId) {
+                items = items.map(i => i.id == editId ? { ...i, date, title } : i);
+            } else {
+                items.push({ id: Date.now(), date, title });
+            }
+            localStorage.setItem('vet_conf_schedule', JSON.stringify(items));
+            showCustomAlert("تم حفظ الموعد بنجاح!");
+            resetScheduleForm();
+            loadAdminSchedule();
+            renderSchedule();
+        }
+        function editScheduleItem(id) {
+            const items = getScheduleItems();
+            const item = items.find(x => x.id == id);
+            if (item) {
+                document.getElementById('edit-schedule-id').value = item.id;
+                document.getElementById('schedule-date').value = item.date;
+                document.getElementById('schedule-title').value = item.title;
+                document.getElementById('schedule-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
+                document.getElementById('schedule-cancel-btn').classList.remove('hidden');
+            }
+        }
+        function resetScheduleForm() {
+            document.getElementById('edit-schedule-id').value = '';
+            document.getElementById('schedule-date').value = '';
+            document.getElementById('schedule-title').value = '';
+            document.getElementById('schedule-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة موعد';
+            document.getElementById('schedule-cancel-btn').classList.add('hidden');
+        }
+        function deleteScheduleItem(id) {
+            if (confirm("هل أنت متأكد من حذف هذا الموعد؟")) {
+                let items = getScheduleItems();
+                items = items.filter(i => i.id != id);
+                localStorage.setItem('vet_conf_schedule', JSON.stringify(items));
+                loadAdminSchedule();
+                renderSchedule();
+            }
+        }
+        function loadAdminSchedule() {
+            const container = document.getElementById('admin-schedule-list');
+            const items = getScheduleItems();
+            container.innerHTML = '';
+            items.forEach(i => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
+                div.innerHTML = `
+                    <div>
+                        <span class="bg-vetBlue text-white px-2 py-0.5 rounded text-xs font-bold ml-2">${i.date}</span>
+                        <span class="font-bold text-sm">${i.title}</span>
+                    </div>
+                    <div class="flex gap-2 shrink-0">
+                        <button onclick="editScheduleItem(${i.id})" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i> تعديل</button>
+                        <button onclick="deleteScheduleItem(${i.id})" class="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
         window.onload = function() {
             applySiteSettings();
             renderNavButtons();
@@ -1896,6 +2657,14 @@
             renderTicker();
             renderNews();
             renderGallery();
+            applyVmgSettings();
+            renderAxes();
+            applyJournalSettings();
+            renderFees();
+            renderSpeakers();
+            renderCommittees();
+            applyPapersSettings();
+            renderSchedule();
         };
     </script>
 </body>
