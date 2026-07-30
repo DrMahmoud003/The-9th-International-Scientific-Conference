@@ -50,7 +50,7 @@
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <!-- Logo & Title on Right Side (لوجو المؤتمر في أقصى اليمين بجوار العنوان) -->
+                <!-- Logo & Title on Right Side -->
                 <div class="flex items-center space-x-3 space-x-reverse">
                     <div class="bg-white p-1 rounded-2xl shadow-md border w-14 h-14 flex items-center justify-center overflow-hidden shrink-0" title="لوجو المؤتمر">
                         <img src="لوجو المؤتمر.png" alt="Conference Logo" class="w-full h-full object-contain" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop'">
@@ -80,7 +80,7 @@
     <!-- Main Layout with Vertical Sections Column on Homepage -->
     <div class="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-4 gap-8">
         
-        <!-- Left/Right Vertical Sections Column (أقسام المؤتمر الجانبية) -->
+        <!-- Left/Right Vertical Sections Column -->
         <aside class="lg:col-span-1 space-y-3">
             <div class="bg-white p-5 rounded-2xl shadow-md border sticky top-24">
                 <h4 class="font-black text-vetDark text-base mb-4 pb-2 border-b flex items-center gap-2">
@@ -140,7 +140,7 @@
                 <div id="org-structure-container" class="grid md:grid-cols-3 gap-6"></div>
             </section>
 
-            <!-- Venue Section (يدعم عرض الصورة المرفوعة من لوحة التحكم بجوار أو أعلى النصوص) -->
+            <!-- Venue Section -->
             <section id="venue" class="bg-white p-8 rounded-3xl shadow-sm border">
                 <div class="grid md:grid-cols-2 gap-8 items-center">
                     <div id="venue-image-wrapper" class="rounded-2xl overflow-hidden shadow-md h-64 border bg-gray-100 flex items-center justify-center">
@@ -591,7 +591,7 @@
                     </form>
                 </div>
 
-                <!-- Venue Manager Tab (إدارة مكان انعقاد المؤتمر مع رفع الصورة) -->
+                <!-- Venue Manager Tab -->
                 <div id="tab-venue-manager" class="space-y-6 hidden max-w-3xl">
                     <h4 class="text-xl font-bold text-vetDark">إدارة مكان انعقاد المؤتمر (مع رفع الصورة)</h4>
                     <form onsubmit="handleSaveVenueSettings(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
@@ -770,6 +770,37 @@
             </main>
         </div>
     </div>
+
+    <!-- Firebase App & Firestore SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+        // بيانات التهيئة الخاصة بمشروعك على Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBHJtKWDDdxaFRkeDrSEP0Ksj-hV57XA",
+            authDomain: "the-9th-international-platform.firebaseapp.com",
+            projectId: "the-9th-international-platform",
+            storageBucket: "the-9th-international-platform.firebasestorage.app",
+            messagingSenderId: "542735552173",
+            appId: "1:542735552173:web:18437d8456542047bf8024"
+        };
+
+        // تهيئة فايربيس
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // ربط الدوال السحابية العالمية للاستخدام في سكربت الصفحة
+        window.db = db;
+        window.collection = collection;
+        window.addDoc = addDoc;
+        window.getDocs = getDocs;
+        window.deleteDoc = deleteDoc;
+        window.doc = doc;
+        window.setDoc = setDoc;
+    </script>
 
     <!-- Script Application Logic -->
     <script>
@@ -965,7 +996,7 @@
             document.getElementById('set-about-features').value = a.features.join('\n');
         }
 
-        // Venue Section Settings Management (تدعم حفظ الصورة المرفوعة واسم المكان والوصف)
+        // Venue Section Settings Management
         function getVenueSettings() {
             return JSON.parse(localStorage.getItem('vet_conf_venue')) || {
                 title: "مكان انعقاد المؤتمر",
@@ -1024,7 +1055,7 @@
             document.getElementById('venue-file').value = '';
         }
 
-        // Navigation Buttons Manager Functions (أقسام المؤتمر الجانبية)
+        // Navigation Buttons Manager Functions
         function getNavButtons() {
             return JSON.parse(localStorage.getItem('vet_conf_nav_buttons')) || [
                 { id: 'home', ar: 'الرئيسية', href: '#home' },
@@ -1603,7 +1634,7 @@
             document.getElementById('media-modal').classList.add('hidden');
         }
 
-        function handleRegistration(e) {
+        async function handleRegistration(e) {
             e.preventDefault();
             const newReg = {
                 id: Date.now(),
@@ -1614,14 +1645,27 @@
                 org: document.getElementById('reg-org').value,
                 category: document.getElementById('reg-category').value,
                 type: document.getElementById('reg-type').value,
-                notes: document.getElementById('reg-notes').value
+                notes: document.getElementById('reg-notes').value,
+                createdAt: new Date().toISOString()
             };
 
-            const regs = getRegistrations();
-            regs.push(newReg);
-            localStorage.setItem('vet_conf_regs', JSON.stringify(regs));
-            showCustomAlert("تم تسجيل الحضور بنجاح!");
-            document.getElementById('registration-form').reset();
+            try {
+                // تخزين محلي لضمان السرعة
+                const regs = getRegistrations();
+                regs.push(newReg);
+                localStorage.setItem('vet_conf_regs', JSON.stringify(regs));
+
+                // مزامنة فورية مع قاعدة البيانات Firestore السحابية
+                if (window.db && window.collection && window.addDoc) {
+                    await window.addDoc(window.collection(window.db, "registrations"), newReg);
+                }
+
+                showCustomAlert("تم تسجيل الحضور ومزامنته سحابياً بنجاح!");
+                document.getElementById('registration-form').reset();
+            } catch (error) {
+                console.error("Firebase Sync Error: ", error);
+                showCustomAlert("تم التسجيل محلياً (حدث خطأ في المزامنة السحابية)");
+            }
         }
 
         function openAdminModal() {
