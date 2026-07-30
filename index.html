@@ -1342,18 +1342,24 @@
                 <!-- Admin Managers Tab -->
                 <div id="tab-admin-managers" class="space-y-6 hidden max-w-2xl">
                     <h4 class="text-xl font-bold text-vetDark">إدارة المساعدين والصلاحيات</h4>
-                    <p class="text-sm text-gray-500">المدير الأساسي فقط يمكنه إدارة المساعدين. كل مساعد له كلمة سر خاصة تحدد صلاحيته.</p>
+                    <p class="text-sm text-gray-500">المدير الأساسي فقط يمكنه إدارة المساعدين.</p>
                     <form onsubmit="handleSaveAdminManager(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
                         <input type="hidden" id="edit-admin-id" value="">
                         <div class="grid sm:grid-cols-3 gap-4">
                             <div>
-                                <label class="block text-sm font-bold mb-1">كلمة المرور *</label>
-                                <input type="text" id="admin-manager-password" class="w-full px-4 py-2 border rounded-lg" placeholder="أدخل كلمة المرور">
+                                <label class="block text-sm font-bold mb-1">البريد الإلكتروني *</label>
+                                <input type="email" id="admin-manager-email" required class="w-full px-4 py-2 border rounded-lg" placeholder="assistant@example.com">
                             </div>
                             <div>
                                 <label class="block text-sm font-bold mb-1">الاسم</label>
                                 <input type="text" id="admin-manager-name" class="w-full px-4 py-2 border rounded-lg" placeholder="اسم المساعد">
                             </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">كلمة المرور</label>
+                                <input type="password" id="admin-manager-password" class="w-full px-4 py-2 border rounded-lg" placeholder="اتركه فارغاً لعدم التغيير">
+                            </div>
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-bold mb-1">الصلاحية *</label>
                                 <select id="admin-manager-role" class="w-full px-4 py-2 border rounded-lg">
@@ -1558,10 +1564,12 @@
                 connectedRef.on('value', snap => {
                     updateSyncStatus(snap.val() ? 'connected' : 'disconnected');
                 });
+                // Setup auth state listener
+                setupAuthPersistence();
                 // Sync all data
                 syncAllData();
-                // Sync accounts to Firebase
-                syncAdminAccounts();
+                // Sync assistant admins to Firebase
+                syncAssistantAdmins();
             } catch (err) {
                 updateSyncStatus('disconnected');
             }
@@ -1585,201 +1593,157 @@
             });
         }
 
-        function syncAdminAccounts() {
+        function syncAssistantAdmins() {
             if (!firebaseDb) return;
             const adminsRef = firebaseDb.ref('admins');
-            // Sync hardcoded accounts
-            Object.entries(ADMIN_ACCOUNTS).forEach(([pw, acct]) => {
-                const key = acct.id;
-                adminsRef.child(key).once('value', snap => {
-                    if (!snap.exists()) {
-                        adminsRef.child(key).set({
-                            password: pw,
-                            name: acct.name,
-                            role: acct.role,
-                            addedBy: 'system',
-                            addedAt: Date.now()
-                        });
-                    }
-                });
-            });
-            // Sync extra accounts from localStorage
-            const extras = getExtraAccounts();
-            Object.entries(extras).forEach(([pw, acct]) => {
-                adminsRef.child(acct.id).once('value', snap => {
-                    if (!snap.exists()) {
-                        adminsRef.child(acct.id).set({
-                            password: pw,
-                            name: acct.name,
-                            role: acct.role,
-                            addedBy: currentAdmin ? currentAdmin.name : 'system',
-                            addedAt: Date.now()
-                        });
-                    }
-                });
+            adminsRef.child(PRIMARY_ADMIN_EMAIL.replace(/\./g, ',')).once('value', snap => {
+                if (!snap.exists()) {
+                    adminsRef.child(PRIMARY_ADMIN_EMAIL.replace(/\./g, ',')).set({
+                        email: PRIMARY_ADMIN_EMAIL,
+                        name: 'المدير الأساسي',
+                        role: 'full',
+                        addedBy: 'system',
+                        addedAt: Date.now()
+                    });
+                }
             });
         }
 
-        // === إدارة الحسابات الإضافية (يضيفها المدير من لوحة التحكم) ===
-        function getExtraAccounts() {
-            try { return JSON.parse(localStorage.getItem('vet_conf_extra_accounts')) || {}; } catch (e) { return {}; }
-        }
-        function saveExtraAccounts(accounts) {
-            localStorage.setItem('vet_conf_extra_accounts', JSON.stringify(accounts));
+        function setupAuthPersistence() {
+            if (typeof firebase === 'undefined' || !firebase.auth) return;
+            firebase.auth().onAuthStateChanged(user => {
+                if (user) {
+                    checkAdminAuthorization(user).then(authorized => {
+                        if (authorized) {
+                            currentAdminEmail = user.email;
+                        } else {
+                            firebase.auth().signOut();
+                            currentAdminEmail = null;
+                            currentAdminRole = null;
+                        }
+                    });
+                } else {
+                    currentAdminEmail = null;
+                    currentAdminRole = null;
+                }
+            });
         }
 
-        // ========== Admin Managers Management (للمدير الأساسي فقط) ==========
+        // ========== Firebase Admin Managers Management ==========
         function loadAdminManagers() {
             renderAdminManagersList();
         }
 
         function checkEditPermission() {
-            if (!currentAdmin || currentAdmin.role === 'limited') {
+            if (!currentAdminRole || currentAdminRole === 'limited') {
                 showCustomAlert('⚠️ صلاحيتك لا تسمح بالتعديل.');
                 return false;
             }
             return true;
         }
 
-        function handleSaveAdminManager(e) {
+        async function handleSaveAdminManager(e) {
             e.preventDefault();
             if (!checkEditPermission()) return;
             const editId = document.getElementById('edit-admin-id').value;
-            const password = document.getElementById('admin-manager-password').value;
+            const email = document.getElementById('admin-manager-email').value;
             const name = document.getElementById('admin-manager-name').value;
             const role = document.getElementById('admin-manager-role').value;
 
-            const extras = getExtraAccounts();
-            if (editId) {
-                // Edit: update existing
-                Object.keys(extras).forEach(pw => {
-                    if (extras[pw].id === editId) {
-                        // Keep same password, update name/role
-                        if (password) {
-                            // Password changed: delete old key, add new
-                            const acct = extras[pw];
-                            delete extras[pw];
-                            extras[password] = { ...acct, name, role };
-                        } else {
-                            extras[pw] = { ...extras[pw], name, role };
-                        }
-                    }
-                });
-                showCustomAlert('تم تحديث بيانات المساعد بنجاح!');
-            } else {
-                if (!password || extras[password]) {
-                    showCustomAlert('❌ كلمة المرور موجودة مسبقاً أو غير صالحة.');
-                    return;
-                }
-                const newId = 'extra_' + Date.now();
-                extras[password] = { id: newId, name, role };
-                showCustomAlert('تم إضافة المساعد بنجاح! كلمة المرور: ' + password);
+            if (!firebaseDb) {
+                showCustomAlert('⚠️ Firebase غير متصل. تأكد من إعدادات Firebase أولاً.');
+                return;
             }
-            saveExtraAccounts(extras);
-            syncAdminAccounts();
-            resetAdminManagerForm();
-            renderAdminManagersList();
+
+            try {
+                const emailKey = email.replace(/\./g, ',');
+                const managerData = { email, name, role, addedBy: currentAdminEmail, addedAt: Date.now() };
+
+                if (editId) {
+                    await firebaseDb.ref('admins/' + editId).update(managerData);
+                    showCustomAlert('تم تحديث بيانات المساعد بنجاح!');
+                } else {
+                    await firebaseDb.ref('admins/' + emailKey).set(managerData);
+                    showCustomAlert('تم إضافة المساعد بنجاح!');
+                }
+                resetAdminManagerForm();
+                renderAdminManagersList();
+            } catch (err) {
+                showCustomAlert('❌ خطأ: ' + err.message);
+            }
         }
 
-        function editAdminManager(id) {
-            const extras = getExtraAccounts();
-            for (const [pw, acct] of Object.entries(extras)) {
-                if (acct.id === id) {
-                    document.getElementById('edit-admin-id').value = id;
-                    document.getElementById('admin-manager-password').value = '';
-                    document.getElementById('admin-manager-password').placeholder = pw + ' (اتركه فارغاً ليبقى كما هو)';
-                    document.getElementById('admin-manager-name').value = acct.name || '';
-                    document.getElementById('admin-manager-role').value = acct.role || 'limited';
-                    document.getElementById('admin-mgr-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
-                    document.getElementById('admin-mgr-cancel-btn').classList.remove('hidden');
-                    return;
-                }
-            }
+        function editAdminManager(emailKey) {
+            if (!firebaseDb) return;
+            firebaseDb.ref('admins/' + emailKey).once('value', snap => {
+                const data = snap.val();
+                if (!data) return;
+                document.getElementById('edit-admin-id').value = emailKey;
+                document.getElementById('admin-manager-email').value = data.email || '';
+                document.getElementById('admin-manager-name').value = data.name || '';
+                document.getElementById('admin-manager-role').value = data.role || 'limited';
+                document.getElementById('admin-mgr-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
+                document.getElementById('admin-mgr-cancel-btn').classList.remove('hidden');
+            });
         }
 
         function resetAdminManagerForm() {
             document.getElementById('edit-admin-id').value = '';
-            document.getElementById('admin-manager-password').value = '';
-            document.getElementById('admin-manager-password').placeholder = 'أدخل كلمة المرور';
+            document.getElementById('admin-manager-email').value = '';
             document.getElementById('admin-manager-name').value = '';
             document.getElementById('admin-manager-role').value = 'limited';
+            document.getElementById('admin-manager-password').value = '';
+            document.getElementById('admin-manager-password').placeholder = 'أدخل كلمة المرور';
             document.getElementById('admin-mgr-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة مساعد';
             document.getElementById('admin-mgr-cancel-btn').classList.add('hidden');
         }
 
-        function deleteAdminManager(id) {
+        async function deleteAdminManager(emailKey) {
             if (!confirm('هل أنت متأكد من حذف هذا المساعد؟')) return;
-            const extras = getExtraAccounts();
-            for (const pw of Object.keys(extras)) {
-                if (extras[pw].id === id) {
-                    delete extras[pw];
-                    break;
-                }
+            if (!firebaseDb) return;
+            try {
+                await firebaseDb.ref('admins/' + emailKey).remove();
+                showCustomAlert('تم حذف المساعد بنجاح!');
+                renderAdminManagersList();
+            } catch (err) {
+                showCustomAlert('❌ خطأ: ' + err.message);
             }
-            saveExtraAccounts(extras);
-            showCustomAlert('تم حذف المساعد بنجاح!');
-            syncAdminAccounts();
-            renderAdminManagersList();
         }
 
         function renderAdminManagersList() {
+            if (!firebaseDb) return;
             const container = document.getElementById('admin-managers-list');
-            const roleLabels = { full: 'كاملة', editor: 'تعديل محتوى', limited: 'عرض فقط' };
-            const roleColors = { full: 'bg-green-100 text-green-700', editor: 'bg-blue-100 text-blue-700', limited: 'bg-amber-100 text-amber-700' };
-            container.innerHTML = '';
-
-            // Show hardcoded primary admin
-            const primaryEl = document.createElement('div');
-            primaryEl.className = "flex items-center justify-between bg-green-50 p-3 rounded-lg border border-green-200";
-            primaryEl.innerHTML = `
-                <div>
-                    <span class="font-bold text-sm">المدير الأساسي</span>
-                    <span class="text-xs px-2 py-0.5 rounded font-bold bg-green-100 text-green-700 mr-2">كاملة</span>
-                    <span class="text-xs bg-vetBlue text-white px-2 py-0.5 rounded mr-1">المالك</span>
-                </div>
-                <div class="text-xs text-gray-400">صلاحية مطلقة - لا يمكن تعديله أو حذفه</div>
-            `;
-            container.appendChild(primaryEl);
-
-            // Show hardcoded assistants from ADMIN_ACCOUNTS (excluding admin)
-            Object.entries(ADMIN_ACCOUNTS).forEach(([pw, acct]) => {
-                if (acct.id === 'admin') return;
-                const div = document.createElement('div');
-                div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
-                div.innerHTML = `
-                    <div>
-                        <span class="font-bold text-sm">${acct.name}</span>
-                        <span class="text-xs text-gray-400 mr-2">(كلمة سر: ${pw})</span>
-                        <span class="text-xs px-2 py-0.5 rounded font-bold ${roleColors[acct.role] || 'bg-gray-100'}">${roleLabels[acct.role] || acct.role}</span>
-                        <span class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded mr-1">مضمن</span>
-                    </div>
-                    <div class="text-xs text-gray-400">مضمن في الكود - لا يمكن تعديله من هنا</div>
-                `;
-                container.appendChild(div);
+            container.innerHTML = '<div class="text-center text-gray-400 text-sm py-4"><i class="fa-solid fa-spinner fa-spin"></i> جاري التحميل...</div>';
+            firebaseDb.ref('admins').once('value', snap => {
+                container.innerHTML = '';
+                if (!snap.exists()) {
+                    container.innerHTML = '<div class="text-center text-gray-400 text-sm py-4">لا يوجد مساعدون بعد. أضف أول مساعد من الأعلى.</div>';
+                    return;
+                }
+                snap.forEach(child => {
+                    const data = child.val();
+                    const emailKey = child.key;
+                    const isPrimary = data.email === PRIMARY_ADMIN_EMAIL;
+                    const roleLabels = { full: 'كاملة', editor: 'تعديل محتوى', limited: 'عرض فقط' };
+                    const roleColors = { full: 'bg-green-100 text-green-700', editor: 'bg-blue-100 text-blue-700', limited: 'bg-amber-100 text-amber-700' };
+                    const div = document.createElement('div');
+                    div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
+                    div.innerHTML = `
+                        <div>
+                            <span class="font-bold text-sm">${data.name || data.email}</span>
+                            <span class="text-xs text-gray-400 mr-2">${data.email}</span>
+                            <span class="text-xs px-2 py-0.5 rounded font-bold ${roleColors[data.role] || 'bg-gray-100'}">${roleLabels[data.role] || data.role}</span>
+                            ${isPrimary ? '<span class="text-xs bg-vetBlue text-white px-2 py-0.5 rounded mr-1">المالك</span>' : ''}
+                        </div>
+                        ${isPrimary ? '' : `
+                        <div class="flex gap-2">
+                            <button onclick="editAdminManager('${emailKey}')" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteAdminManager('${emailKey}')" class="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-trash"></i></button>
+                        </div>`}
+                    `;
+                    container.appendChild(div);
+                });
             });
-
-            // Show extra accounts from localStorage
-            const extras = getExtraAccounts();
-            Object.entries(extras).forEach(([pw, acct]) => {
-                const div = document.createElement('div');
-                div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
-                div.innerHTML = `
-                    <div>
-                        <span class="font-bold text-sm">${acct.name || pw}</span>
-                        <span class="text-xs text-gray-400 mr-2">(${pw})</span>
-                        <span class="text-xs px-2 py-0.5 rounded font-bold ${roleColors[acct.role] || 'bg-gray-100'}">${roleLabels[acct.role] || acct.role}</span>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="editAdminManager('${acct.id}')" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteAdminManager('${acct.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-
-            if (!Object.keys(extras).length && container.children.length <= 2) {
-                container.innerHTML += '<div class="text-center text-gray-400 text-sm py-4">لا يوجد مساعدون إضافيون. أضف أول مساعد من الأعلى.</div>';
-            }
         }
 
         // ========== Firebase Config Management (Admin) ==========
@@ -1867,17 +1831,20 @@
             }
         }
 
-        // === نظام الدخول بكلمة سر فقط (بدون إيميل) ===
-        // كل باسورد يحدد هوية الشخص وصلاحياته
+        // === خريطة كلمات السر → إيميل + دور ===
+        // كل باسوار يوجه على الإيميل الصح - كلمات البس بتبقى على Firebase (مشفّزة)
         const ADMIN_ACCOUNTS = {
-            "admin@2026": { id: "admin", name: "المدير الأساسي", role: "full" },
-            "editor1@2026": { id: "asst1", name: "مساعد 1", role: "editor" },
-            "editor2@2026": { id: "asst2", name: "مساعد 2", role: "editor" },
-            "view1@2026": { id: "asst3", name: "مساعد 3", role: "limited" },
-            "view2@2026": { id: "asst4", name: "مساعد 4", role: "limited" }
+            "admin":       { email: "admin@example.com",    name: "المدير الأساسي",   role: "full" },
+            "editor1":     { email: "asistant1@example.com", name: "مساعد 1",         role: "editor" },
+            "editor2":     { email: "asistant2@example.com", name: "مساعد 2",         role: "editor" },
+            "view1":       { email: "asistant3@example.com", name: "مساعد 3",         role: "limited" },
+            "view2":       { email: "asistant4@example.com", name: "مساعد 4",         role: "limited" }
         };
 
-        let currentAdmin = null; // { id, name, role }
+        const PRIMARY_ADMIN_EMAIL = "admin@example.com";
+
+        let currentAdminEmail = null;
+        let currentAdminRole = null;
         let currentLang = 'ar';
 
         const translations = {
@@ -3196,39 +3163,88 @@
             document.getElementById('admin-pass-input').value = '';
         }
 
-        // ===== Password-Only Admin Login =====
-        function handleAdminLogin(e) {
+        // ===== Password-Only Login → Firebase Auth =====
+        // المستخدم يدخل كلمة السر بس، النظام بيلاقك الإيميل الصح ويستخدم Firebase Auth
+        async function handleAdminLogin(e) {
             e.preventDefault();
             const pass = document.getElementById('admin-pass-input').value;
             const errorDiv = document.getElementById('login-error');
+            const loadingDiv = document.getElementById('login-loading');
+            const submitBtn = document.getElementById('login-submit-btn');
 
             errorDiv.classList.add('hidden');
+            loadingDiv.classList.remove('hidden');
+            submitBtn.disabled = true;
 
-            // 1. Check hardcoded accounts
-            if (ADMIN_ACCOUNTS[pass]) {
-                currentAdmin = ADMIN_ACCOUNTS[pass];
+            try {
+                if (typeof firebase === 'undefined' || !firebase.app()) {
+                    showCustomAlert('⚠️ Firebase غير متصل. تحقق من اتصال الإنترنت.');
+                    return;
+                }
+
+                // 1. Find email from password
+                const account = ADMIN_ACCOUNTS[pass];
+                if (!account) {
+                    loadingDiv.classList.add('hidden');
+                    submitBtn.disabled = false;
+                    errorDiv.innerText = '❌ كلمة المرور غير صحيحة.';
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+
+                // 2. Sign in with Firebase Auth using the mapped email
+                const result = await firebase.auth().signInWithEmailAndPassword(account.email, pass);
+                const user = result.user;
+
+                // 3. Check authorization
+                const authorized = await checkAdminAuthorization(user);
+                if (!authorized) {
+                    await firebase.auth().signOut();
+                    loadingDiv.classList.add('hidden');
+                    submitBtn.disabled = false;
+                    errorDiv.innerText = '⚠️ هذا الحساب غير مصرح له بالدخول إلى لوحة التحكم.';
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+
+                currentAdminEmail = user.email;
                 closeAdminLogin();
                 document.getElementById('admin-pass-input').value = '';
                 document.getElementById('admin-dashboard').classList.remove('hidden');
                 startDashboardClock();
                 loadAllAdminTabs();
-                return;
+            } catch (err) {
+                const errorMap = {
+                    'auth/user-not-found': '❌ لا يوجد حساب بهذا البريد.',
+                    'auth/wrong-password': '❌ كلمة المرور غير صحيحة.',
+                    'auth/invalid-email': '❌ البريد الإلكتروني غير صالح.',
+                    'auth/user-disabled': '❌ تم تعطيل هذا الحساب.',
+                    'auth/too-many-requests': '❌ تم حظر الدخول مؤقتاً. حاول لاحقاً.'
+                };
+                errorDiv.innerText = errorMap[err.code] || '❌ خطأ في تسجيل الدخول: ' + err.message;
+                errorDiv.classList.remove('hidden');
+            } finally {
+                loadingDiv.classList.add('hidden');
+                submitBtn.disabled = false;
             }
+        }
 
-            // 2. Check extra accounts from localStorage
-            const extras = getExtraAccounts();
-            if (extras[pass]) {
-                currentAdmin = extras[pass];
-                closeAdminLogin();
-                document.getElementById('admin-pass-input').value = '';
-                document.getElementById('admin-dashboard').classList.remove('hidden');
-                startDashboardClock();
-                loadAllAdminTabs();
-                return;
+        async function checkAdminAuthorization(user) {
+            // 1. Check primary admin
+            if (user.email === PRIMARY_ADMIN_EMAIL) {
+                currentAdminRole = 'full';
+                return true;
             }
-
-            errorDiv.innerText = '❌ كلمة المرور غير صحيحة.';
-            errorDiv.classList.remove('hidden');
+            // 2. Check Firebase admins node
+            try {
+                const emailKey = user.email.replace(/\./g, ',');
+                const snapshot = await firebase.database().ref('admins/' + emailKey).once('value');
+                if (snapshot.exists()) {
+                    currentAdminRole = snapshot.val().role || 'limited';
+                    return true;
+                }
+            } catch (e) { /* ignore */ }
+            return false;
         }
 
         function loadAllAdminTabs() {
@@ -3245,17 +3261,15 @@
         }
 
         function applyRoleVisibility() {
-            if (!currentAdmin) return;
-            const isFull = currentAdmin.role === 'full';
-            const isEditor = currentAdmin.role === 'editor';
+            if (!currentAdminEmail) return;
+            const isFull = currentAdminRole === 'full';
+            const isEditor = currentAdminRole === 'editor';
 
-            // Admin-managers tab: only full admin
             const mgrBtn = document.getElementById('tab-btn-admin-managers');
             const mgrTab = document.getElementById('tab-admin-managers');
             if (mgrBtn) mgrBtn.style.display = isFull ? 'flex' : 'none';
             if (mgrTab) mgrTab.style.display = isFull ? '' : 'none';
 
-            // Registrations tab: only full + editor
             const regBtn = document.getElementById('tab-btn-registrations');
             const regTab = document.getElementById('tab-registrations');
             if (regBtn) regBtn.style.display = (isFull || isEditor) ? 'flex' : 'none';
@@ -3264,7 +3278,8 @@
 
         function closeDashboard() {
             document.getElementById('admin-dashboard').classList.add('hidden');
-            currentAdmin = null;
+            currentAdminEmail = null;
+            currentAdminRole = null;
         }
 
         function startDashboardClock() {
@@ -3305,10 +3320,11 @@
             if (tabId === 'speakers-manager') loadAdminSpeakers();
             if (tabId === 'committees-manager') loadAdminCommittees();
             if (tabId === 'papers-manager') loadPapersForm();
-             if (tabId === 'schedule-manager') loadAdminSchedule();
-             if (tabId === 'contact-manager') loadAdminContact();
-             if (tabId === 'firebase-settings') loadFirebaseConfigForm();
-             if (tabId === 'admin-managers' && currentAdmin && currentAdmin.role === 'full') loadAdminManagers();
+              if (tabId === 'schedule-manager') loadAdminSchedule();
+              if ((tabId === 'registrations') && currentAdminRole && (currentAdminRole === 'full' || currentAdminRole === 'editor')) loadAdminRegs();
+              if (tabId === 'contact-manager') loadAdminContact();
+              if (tabId === 'firebase-settings') loadFirebaseConfigForm();
+              if (tabId === 'admin-managers' && currentAdminRole === 'full') loadAdminManagers();
         }
 
         function handleSaveNews(e) {
