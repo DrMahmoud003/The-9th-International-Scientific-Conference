@@ -125,9 +125,6 @@
                         <button onclick="changeLang('en')" id="btn-en" class="px-2.5 py-1 text-xs font-bold rounded text-gray-600 hover:text-vetBlue flex items-center gap-1"><img src="https://flagcdn.com/24x18/gb.png" alt="EN" class="inline-block w-4 h-3 rounded-sm"> EN</button>
 
                     </div>
-                    <button onclick="openAdminModal()" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg text-xs font-bold shadow transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-lock"></i> <span>دكتور محمود اللواتي</span>
-                    </button>
                 </div>
             </div>
         </div>
@@ -1369,8 +1366,7 @@
                 </div>
             </main>
         </div>
-        <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
-            <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة محلياً في المتصفح</span>
+        <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-end text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v2.0</span>
         </footer>
     </div>
@@ -1387,6 +1383,57 @@
 
         function getAdminPassword() {
             return localStorage.getItem('vet_conf_admin_pass') || "admin123";
+        }
+
+        // تنظيف تلقائي (مرة واحدة) لأي صور/فيديوهات base64 قديمة كانت مخزنة محليًا
+        // قبل التحويل لـ Cloudinary، عشان نتخلص من سبب بطء تحميل الصفحة
+        function cleanupOldBase64Media() {
+            if (localStorage.getItem('vet_conf_base64_cleanup_done')) return;
+
+            function stripArray(key, fields) {
+                try {
+                    const raw = localStorage.getItem(key);
+                    if (!raw) return;
+                    const items = JSON.parse(raw);
+                    if (!Array.isArray(items)) return;
+                    let changed = false;
+                    items.forEach(item => {
+                        fields.forEach(f => {
+                            if (item[f] && typeof item[f] === 'string' && item[f].startsWith('data:')) {
+                                item[f] = '';
+                                changed = true;
+                            }
+                        });
+                    });
+                    if (changed) localStorage.setItem(key, JSON.stringify(items));
+                } catch (e) { /* تجاهل أي خطأ في بيانات قديمة تالفة */ }
+            }
+
+            function stripObject(key, fields) {
+                try {
+                    const raw = localStorage.getItem(key);
+                    if (!raw) return;
+                    const obj = JSON.parse(raw);
+                    if (!obj || typeof obj !== 'object') return;
+                    let changed = false;
+                    fields.forEach(f => {
+                        if (obj[f] && typeof obj[f] === 'string' && obj[f].startsWith('data:')) {
+                            obj[f] = '';
+                            changed = true;
+                        }
+                    });
+                    if (changed) localStorage.setItem(key, JSON.stringify(obj));
+                } catch (e) { /* تجاهل أي خطأ في بيانات قديمة تالفة */ }
+            }
+
+            stripArray('vet_conf_sponsors', ['image']);
+            stripArray('vet_conf_org', ['image']);
+            stripArray('vet_conf_news', ['media']);
+            stripArray('vet_conf_jitems', ['icon']);
+            stripArray('vet_conf_speakers', ['image']);
+            stripObject('vet_conf_jmanager', ['image']);
+
+            localStorage.setItem('vet_conf_base64_cleanup_done', '1');
         }
 
         let currentLang = 'ar';
@@ -2076,11 +2123,11 @@
             }
 
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    saveRecord(event.target.result);
-                };
-                reader.readAsDataURL(file);
+                uploadFileToStorage(file, 'sponsors').then(url => {
+                    saveRecord(url);
+                }).catch(err => {
+                    showCustomAlert("حدث خطأ أثناء رفع الصورة: " + err.message);
+                });
             } else {
                 saveRecord(null);
             }
@@ -2201,9 +2248,11 @@
             }
 
             if (file) {
-                const reader = new FileReader();
-                reader.onload = ev => saveRecord(ev.target.result);
-                reader.readAsDataURL(file);
+                uploadFileToStorage(file, 'org').then(url => {
+                    saveRecord(url);
+                }).catch(err => {
+                    showCustomAlert("حدث خطأ أثناء رفع الصورة: " + err.message);
+                });
             } else {
                 saveRecord(null);
             }
@@ -2759,6 +2808,14 @@
             openAdminModal();
         }
 
+        // 3) اختصار لوحة مفاتيح: Ctrl+Alt+1
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.altKey && e.key === '1') {
+                e.preventDefault();
+                openAdminModal();
+            }
+        });
+
         function closeAdminLogin() {
             document.getElementById('admin-login-modal').classList.add('hidden');
         }
@@ -2911,9 +2968,11 @@
             }
 
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) { saveRecord(event.target.result); };
-                reader.readAsDataURL(file);
+                uploadFileToStorage(file, 'news').then(url => {
+                    saveRecord(url);
+                }).catch(err => {
+                    showCustomAlert("حدث خطأ أثناء رفع الملف: " + err.message);
+                });
             } else {
                 saveRecord(null);
             }
@@ -3355,12 +3414,12 @@
                 data.image = existing.image;
             }
             if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(ev) {
-                    data.image = ev.target.result;
+                uploadFileToStorage(fileInput.files[0], 'journal').then(url => {
+                    data.image = url;
                     saveAndFinish();
-                };
-                reader.readAsDataURL(fileInput.files[0]);
+                }).catch(err => {
+                    showCustomAlert("حدث خطأ أثناء رفع الصورة: " + err.message);
+                });
             } else {
                 saveAndFinish();
             }
@@ -3437,11 +3496,11 @@
             const fileInput = document.getElementById('jitem-file');
             let items = getJournalItems();
             if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(ev) {
-                    processSave(ev.target.result);
-                };
-                reader.readAsDataURL(fileInput.files[0]);
+                uploadFileToStorage(fileInput.files[0], 'journal-items').then(url => {
+                    processSave(url);
+                }).catch(err => {
+                    showCustomAlert("حدث خطأ أثناء رفع الصورة: " + err.message);
+                });
             } else {
                 processSave(null);
             }
@@ -3672,9 +3731,11 @@
                 renderSpeakers();
             }
             if (file) {
-                const reader = new FileReader();
-                reader.onload = ev => saveRecord(ev.target.result);
-                reader.readAsDataURL(file);
+                uploadFileToStorage(file, 'speakers').then(url => {
+                    saveRecord(url);
+                }).catch(err => {
+                    showCustomAlert("حدث خطأ أثناء رفع الصورة: " + err.message);
+                });
             } else {
                 saveRecord(null);
             }
@@ -4051,6 +4112,7 @@
         });
 
         window.onload = function() {
+            cleanupOldBase64Media();
             applySiteSettings();
             renderNavButtons();
             applyAboutSettings();
@@ -4099,7 +4161,29 @@
         // تعريف متغيرات قاعدة البيانات والمصادقة للاستخدام في كافة الدوال
         const db = firebase.firestore();
         const auth = firebase.auth();
-        console.log("Firebase initialized successfully - تم تهيئة Firebase بنجاح");
+
+        // إعدادات Cloudinary لرفع الصور والفيديوهات (رفع مباشر من المتصفح - مجاني)
+        const CLOUDINARY_CLOUD_NAME = "hqhsb2wz";
+        const CLOUDINARY_UPLOAD_PRESET = "ml_default";
+
+        // رفع ملف (صورة/فيديو) إلى Cloudinary وإرجاع رابط الملف بعد الرفع
+        function uploadFileToStorage(file, folder) {
+            const isVideo = file.type.startsWith('video');
+            const resourceType = isVideo ? 'video' : 'image';
+            const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`;
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+            formData.append('folder', 'vet_conference/' + folder);
+
+            return fetch(url, { method: 'POST', body: formData })
+                .then(res => {
+                    if (!res.ok) throw new Error('فشل الرفع (' + res.status + ')');
+                    return res.json();
+                })
+                .then(data => data.secure_url);
+        }
 
         // ===== مراقبة حالة الاتصال والمزامنة مع Firestore =====
         function updateSyncBadge(state) {
