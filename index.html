@@ -131,7 +131,7 @@
                 </div>
             </section>
 
-            <!-- Org Structure Section (تدعم الصورة والاسم بدلاً من الأيقونة فقط) -->
+            <!-- Org Structure Section -->
             <section id="org-structure" class="bg-white p-8 rounded-3xl shadow-sm border">
                 <div class="text-center mb-8">
                     <h3 class="text-2xl font-black text-vetDark mb-3">الهيكل التنظيمي للمؤتمر</h3>
@@ -140,13 +140,20 @@
                 <div id="org-structure-container" class="grid md:grid-cols-3 gap-6"></div>
             </section>
 
-            <!-- Venue Section -->
-            <section id="venue" class="bg-white p-8 rounded-3xl shadow-sm border text-center">
-                <h3 class="text-2xl font-black text-vetDark mb-3" id="venue-title-text">مكان انعقاد المؤتمر</h3>
-                <div class="w-16 h-1 bg-vetGold mx-auto rounded-full mb-6"></div>
-                <p class="text-gray-600 max-w-2xl mx-auto leading-relaxed mb-4" id="venue-desc-text">تُعقد جلسات وفعاليات المؤتمر في رحاب حرم جامعة كفرالشيخ - قاعة المؤتمرات الكبرى بكلية الطب البيطري.</p>
-                <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl inline-block text-vetDark font-bold text-sm">
-                    <i class="fa-solid fa-location-dot text-vetBlue ml-2"></i> <span id="venue-location-text">جامعة كفرالشيخ، مدينة كفرالشيخ، مصر.</span>
+            <!-- Venue Section (يدعم عرض الصورة المرفوعة من لوحة التحكم بجوار أو أعلى النصوص) -->
+            <section id="venue" class="bg-white p-8 rounded-3xl shadow-sm border">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div id="venue-image-wrapper" class="rounded-2xl overflow-hidden shadow-md h-64 border bg-gray-100 flex items-center justify-center">
+                        <img id="venue-display-img" src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&auto=format&fit=crop" alt="Venue" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-center md:text-right space-y-4">
+                        <h3 class="text-2xl font-black text-vetDark mb-3" id="venue-title-text">مكان انعقاد المؤتمر</h3>
+                        <div class="w-16 h-1 bg-vetGold mx-auto md:mr-0 rounded-full mb-4"></div>
+                        <p class="text-gray-600 leading-relaxed text-sm md:text-base" id="venue-desc-text">تُعقد جلسات وفعاليات المؤتمر في رحاب حرم جامعة كفرالشيخ - قاعة المؤتمرات الكبرى بكلية الطب البيطري.</p>
+                        <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl inline-block text-vetDark font-bold text-sm">
+                            <i class="fa-solid fa-location-dot text-vetBlue ml-2"></i> <span id="venue-location-text">جامعة كفرالشيخ، مدينة كفرالشيخ، مصر.</span>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -495,9 +502,9 @@
                 <button onclick="switchTab('site-settings')" id="tab-btn-site-settings" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm bg-vetBlue text-white flex items-center gap-2"><i class="fa-solid fa-gear"></i> <span data-i18n="tab_site_settings">إعدادات ونصوص الصفحة</span></button>
                 <button onclick="switchTab('nav-manager')" id="tab-btn-nav-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-bars"></i> <span>إدارة أقسام المؤتمر الجانبية</span></button>
                 <button onclick="switchTab('about-manager')" id="tab-btn-about-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-circle-info"></i> <span>إدارة قسم عن المؤتمر</span></button>
-                <button onclick="switchTab('venue-manager')" id="tab-btn-venue-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-location-dot"></i> <span>إدارة مكان الانعقاد</span></button>
+                <button onclick="switchTab('venue-manager')" id="tab-btn-venue-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-location-dot"></i> <span>إدارة مكان الانعقاد (مع رفع الصورة)</span></button>
                 <button onclick="switchTab('sponsorship-manager')" id="tab-btn-sponsorship-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-handshake"></i> <span>إدارة رعاية المؤتمر والشعارات</span></button>
-                <button onclick="switchTab('org-manager')" id="tab-btn-org-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-sitemap"></i> <span>إدارة الهيكل التنظيمي (صورة واسم)</span></button>
+                <button onclick="switchTab('org-manager')" id="tab-btn-org-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-sitemap"></i> <span>إدارة الهيكل التنظيمي</span></button>
                 <button onclick="switchTab('ticker-manager')" id="tab-btn-ticker-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-bullhorn"></i> <span data-i18n="tab_ticker_manager">إدارة الشريط العاجل</span></button>
                 <button onclick="switchTab('add-news')" id="tab-btn-add-news" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-plus-circle"></i> <span data-i18n="tab_add_news">إضافة خبر</span></button>
                 <button onclick="switchTab('manage-news')" id="tab-btn-manage-news" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-newspaper"></i> <span data-i18n="tab_manage_news">إدارة الأخبار</span></button>
@@ -584,9 +591,9 @@
                     </form>
                 </div>
 
-                <!-- Venue Manager Tab -->
+                <!-- Venue Manager Tab (إدارة مكان انعقاد المؤتمر مع رفع الصورة) -->
                 <div id="tab-venue-manager" class="space-y-6 hidden max-w-3xl">
-                    <h4 class="text-xl font-bold text-vetDark">إدارة مكان انعقاد المؤتمر</h4>
+                    <h4 class="text-xl font-bold text-vetDark">إدارة مكان انعقاد المؤتمر (مع رفع الصورة)</h4>
                     <form onsubmit="handleSaveVenueSettings(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
                         <div>
                             <label class="block text-sm font-bold mb-1">عنوان القسم الرئيسي *</label>
@@ -600,7 +607,12 @@
                             <label class="block text-sm font-bold mb-1">نص الموقع الجغرافي البارز *</label>
                             <input type="text" id="set-venue-location" required class="w-full px-4 py-2 border rounded-lg">
                         </div>
-                        <button type="submit" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-save"></i> حفظ وتحديث مكان الانعقاد</button>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">صورة مكان الانعقاد (رفع صورة جديدة) *</label>
+                            <input type="file" id="venue-file" accept="image/*" class="w-full px-4 py-2 border rounded-lg bg-gray-50">
+                            <p class="text-xs text-gray-500 mt-1">ترك الحقل فارغاً يبقي الصورة الحالية دون تغيير.</p>
+                        </div>
+                        <button type="submit" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-save"></i> حفظ وتحديث مكان الانعقاد والصورة</button>
                     </form>
                 </div>
 
@@ -628,7 +640,7 @@
                     </div>
                 </div>
 
-                <!-- Org Structure Manager Tab (إدارة الهيكل التنظيمي: صورة واسم ووصف) -->
+                <!-- Org Structure Manager Tab -->
                 <div id="tab-org-manager" class="space-y-6 max-w-3xl hidden">
                     <h4 class="text-xl font-bold text-vetDark">إدارة الهيكل التنظيمي للمؤتمر (صورة واسم)</h4>
                     <form onsubmit="handleSaveOrgItem(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
@@ -644,7 +656,6 @@
                         <div>
                             <label class="block text-sm font-bold mb-1">صورة شخصية أو لوجو (صورة) *</label>
                             <input type="file" id="org-file" accept="image/*" class="w-full px-4 py-2 border rounded-lg bg-gray-50">
-                            <p class="text-xs text-gray-500 mt-1">عند التعديل، ترك الحقل فارغاً يبقي الصورة الحالية.</p>
                         </div>
                         <div class="flex gap-2">
                             <button type="submit" id="org-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة عنصر للهيكل</button>
@@ -954,12 +965,13 @@
             document.getElementById('set-about-features').value = a.features.join('\n');
         }
 
-        // Venue Section Settings Management
+        // Venue Section Settings Management (تدعم حفظ الصورة المرفوعة واسم المكان والوصف)
         function getVenueSettings() {
             return JSON.parse(localStorage.getItem('vet_conf_venue')) || {
                 title: "مكان انعقاد المؤتمر",
                 desc: "تُعقد جلسات وفعاليات المؤتمر في رحاب حرم جامعة كفرالشيخ - قاعة المؤتمرات الكبرى بكلية الطب البيطري.",
-                location: "جامعة كفرالشيخ، مدينة كفرالشيخ، مصر."
+                location: "جامعة كفرالشيخ، مدينة كفرالشيخ، مصر.",
+                image: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&auto=format&fit=crop"
             };
         }
 
@@ -968,6 +980,7 @@
             document.getElementById('venue-title-text').innerText = v.title;
             document.getElementById('venue-desc-text').innerText = v.desc;
             document.getElementById('venue-location-text').innerText = v.location;
+            document.getElementById('venue-display-img').src = v.image;
         }
 
         function handleSaveVenueSettings(e) {
@@ -975,10 +988,32 @@
             const title = document.getElementById('set-venue-title').value;
             const desc = document.getElementById('set-venue-desc').value;
             const location = document.getElementById('set-venue-location').value;
+            const fileInput = document.getElementById('venue-file');
+            const file = fileInput.files[0];
 
-            localStorage.setItem('vet_conf_venue', JSON.stringify({ title, desc, location }));
-            showCustomAlert("تم حفظ وتحديث مكان انعقاد المؤتمر بنجاح!");
-            applyVenueSettings();
+            const currentVenue = getVenueSettings();
+
+            function saveVenue(imageUrl) {
+                const venueData = {
+                    title,
+                    desc,
+                    location,
+                    image: imageUrl || currentVenue.image
+                };
+                localStorage.setItem('vet_conf_venue', JSON.stringify(venueData));
+                showCustomAlert("تم حفظ وتحديث مكان انعقاد المؤتمر والصورة بنجاح!");
+                applyVenueSettings();
+            }
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    saveVenue(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                saveVenue(null);
+            }
         }
 
         function loadVenueSettingsForm() {
@@ -986,6 +1021,7 @@
             document.getElementById('set-venue-title').value = v.title;
             document.getElementById('set-venue-desc').value = v.desc;
             document.getElementById('set-venue-location').value = v.location;
+            document.getElementById('venue-file').value = '';
         }
 
         // Navigation Buttons Manager Functions (أقسام المؤتمر الجانبية)
@@ -1201,7 +1237,7 @@
             });
         }
 
-        // Org Structure Management Functions (تدعم رفع الصورة الشخصية والاسم والوصف)
+        // Org Structure Management Functions
         function getOrgItems() {
             return JSON.parse(localStorage.getItem('vet_conf_org')) || [
                 { id: 1, title: "رئيس المؤتمر", desc: "عميد كلية الطب البيطري - جامعة كفرالشيخ", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop" },
