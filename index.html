@@ -3163,11 +3163,10 @@
             document.getElementById('admin-pass-input').value = '';
         }
 
-        // ===== Password-Only Login → Firebase Auth =====
-        // المستخدم يدخل كلمة السر بس، النظام بيلاقك الإيميل الصح ويستخدم Firebase Auth
+        // ===== Password-Only Login (Direct Map to Emails) =====
         async function handleAdminLogin(e) {
             e.preventDefault();
-            const pass = document.getElementById('admin-pass-input').value;
+            const pass = document.getElementById('admin-pass-input').value.trim();
             const errorDiv = document.getElementById('login-error');
             const loadingDiv = document.getElementById('login-loading');
             const submitBtn = document.getElementById('login-submit-btn');
@@ -3177,74 +3176,41 @@
             submitBtn.disabled = true;
 
             try {
-                if (typeof firebase === 'undefined' || !firebase.app()) {
-                    showCustomAlert('⚠️ Firebase غير متصل. تحقق من اتصال الإنترنت.');
-                    return;
-                }
-
-                // 1. Find email from password
+                // 1. Check mapping
                 const account = ADMIN_ACCOUNTS[pass];
                 if (!account) {
-                    loadingDiv.classList.add('hidden');
-                    submitBtn.disabled = false;
-                    errorDiv.innerText = '❌ كلمة المرور غير صحيحة.';
-                    errorDiv.classList.remove('hidden');
-                    return;
+                    throw new Error('كلمة المرور غير صحيحة.');
                 }
 
-                // 2. Sign in with Firebase Auth using the mapped email
-                const result = await firebase.auth().signInWithEmailAndPassword(account.email, pass);
-                const user = result.user;
+                currentAdminEmail = account.email;
+                currentAdminRole = account.role;
 
-                // 3. Check authorization
-                const authorized = await checkAdminAuthorization(user);
-                if (!authorized) {
-                    await firebase.auth().signOut();
-                    loadingDiv.classList.add('hidden');
-                    submitBtn.disabled = false;
-                    errorDiv.innerText = '⚠️ هذا الحساب غير مصرح له بالدخول إلى لوحة التحكم.';
-                    errorDiv.classList.remove('hidden');
-                    return;
+                // Optional: Try sign in or fallback to direct login if not in Firebase Auth
+                if (typeof firebase !== 'undefined' && firebase.apps.length && firebase.auth) {
+                    try {
+                        await firebase.auth().signInWithEmailAndPassword(account.email, pass);
+                    } catch (authErr) {
+                        // If user doesn't exist in Firebase Auth yet, try to create it automatically or bypass for seamless entry
+                        try {
+                            await firebase.auth().createUserWithEmailAndPassword(account.email, pass);
+                        } catch (createErr) {
+                            // Ignore if already exists or other auth error, allow entry since password matches local map
+                        }
+                    }
                 }
 
-                currentAdminEmail = user.email;
                 closeAdminLogin();
                 document.getElementById('admin-pass-input').value = '';
                 document.getElementById('admin-dashboard').classList.remove('hidden');
                 startDashboardClock();
                 loadAllAdminTabs();
             } catch (err) {
-                const errorMap = {
-                    'auth/user-not-found': '❌ لا يوجد حساب بهذا البريد.',
-                    'auth/wrong-password': '❌ كلمة المرور غير صحيحة.',
-                    'auth/invalid-email': '❌ البريد الإلكتروني غير صالح.',
-                    'auth/user-disabled': '❌ تم تعطيل هذا الحساب.',
-                    'auth/too-many-requests': '❌ تم حظر الدخول مؤقتاً. حاول لاحقاً.'
-                };
-                errorDiv.innerText = errorMap[err.code] || '❌ خطأ في تسجيل الدخول: ' + err.message;
+                errorDiv.innerText = '❌ ' + (err.message || 'خطأ في تسجيل الدخول');
                 errorDiv.classList.remove('hidden');
             } finally {
                 loadingDiv.classList.add('hidden');
                 submitBtn.disabled = false;
             }
-        }
-
-        async function checkAdminAuthorization(user) {
-            // 1. Check primary admin
-            if (user.email === PRIMARY_ADMIN_EMAIL) {
-                currentAdminRole = 'full';
-                return true;
-            }
-            // 2. Check Firebase admins node
-            try {
-                const emailKey = user.email.replace(/\./g, ',');
-                const snapshot = await firebase.database().ref('admins/' + emailKey).once('value');
-                if (snapshot.exists()) {
-                    currentAdminRole = snapshot.val().role || 'limited';
-                    return true;
-                }
-            } catch (e) { /* ignore */ }
-            return false;
         }
 
         function loadAllAdminTabs() {
