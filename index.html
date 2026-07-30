@@ -80,7 +80,7 @@
     <!-- Main Layout with Vertical Sections Column on Homepage -->
     <div class="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-4 gap-8">
         
-        <!-- Left/Right Vertical Sections Column (أقسام المؤتمر عمودياً) -->
+        <!-- Left/Right Vertical Sections Column (أقسام المؤتمر الجانبية - قابلة للتحكم بالكامل) -->
         <aside class="lg:col-span-1 space-y-3">
             <div class="bg-white p-5 rounded-2xl shadow-md border sticky top-24">
                 <h4 class="font-black text-vetDark text-base mb-4 pb-2 border-b flex items-center gap-2">
@@ -121,38 +121,32 @@
                 </div>
             </div>
 
-            <!-- Sponsorship Section (يتم تعبئتها ديناميكياً لتتيح التحكم الكامل في اللوجوهات والأسماء) -->
+            <!-- Sponsorship Section -->
             <section id="sponsorship" class="bg-white p-8 rounded-3xl shadow-sm border">
                 <div class="text-center">
                     <h3 class="text-2xl font-black text-vetDark mb-3">رعاية ومؤسسات المؤتمر</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full mb-6"></div>
                     <p class="text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">يُقام المؤتمر تحت رعاية ومصادقة كبرى المؤسسات الأكاديمية والبحثية والجهات الداعمة للقطاع البيطري.</p>
-                    
-                    <!-- عرض شعارات الرعاية والجهات ديناميكياً من لوحة التحكم -->
-                    <div id="sponsorship-logos-container" class="grid grid-cols-2 sm:grid-cols-4 gap-6 items-center justify-center max-w-4xl mx-auto">
-                        <!-- Populated dynamically -->
-                    </div>
+                    <div id="sponsorship-logos-container" class="grid grid-cols-2 sm:grid-cols-4 gap-6 items-center justify-center max-w-4xl mx-auto"></div>
                 </div>
             </section>
 
-            <!-- Org Structure Section (يتم تعبئتها ديناميكياً لتتيح التحكم في المسميات والوصف بالكامل) -->
+            <!-- Org Structure Section -->
             <section id="org-structure" class="bg-white p-8 rounded-3xl shadow-sm border">
                 <div class="text-center mb-8">
                     <h3 class="text-2xl font-black text-vetDark mb-3">الهيكل التنظيمي للمؤتمر</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
                 </div>
-                <div id="org-structure-container" class="grid md:grid-cols-3 gap-6">
-                    <!-- Populated dynamically -->
-                </div>
+                <div id="org-structure-container" class="grid md:grid-cols-3 gap-6"></div>
             </section>
 
-            <!-- Venue Section -->
+            <!-- Venue Section (قابل للتحكم الكامل من لوحة التحكم) -->
             <section id="venue" class="bg-white p-8 rounded-3xl shadow-sm border text-center">
-                <h3 class="text-2xl font-black text-vetDark mb-3">مكان انعقاد المؤتمر</h3>
+                <h3 class="text-2xl font-black text-vetDark mb-3" id="venue-title-text">مكان انعقاد المؤتمر</h3>
                 <div class="w-16 h-1 bg-vetGold mx-auto rounded-full mb-6"></div>
-                <p class="text-gray-600 max-w-2xl mx-auto leading-relaxed mb-4">تُعقد جلسات وفعاليات المؤتمر في رحاب حرم جامعة كفرالشيخ - قاعة المؤتمرات الكبرى بكلية الطب البيطري.</p>
+                <p class="text-gray-600 max-w-2xl mx-auto leading-relaxed mb-4" id="venue-desc-text">تُعقد جلسات وفعاليات المؤتمر في رحاب حرم جامعة كفرالشيخ - قاعة المؤتمرات الكبرى بكلية الطب البيطري.</p>
                 <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl inline-block text-vetDark font-bold text-sm">
-                    <i class="fa-solid fa-location-dot text-vetBlue ml-2"></i> جامعة كفرالشيخ، مدينة كفرالشيخ، مصر.
+                    <i class="fa-solid fa-location-dot text-vetBlue ml-2"></i> <span id="venue-location-text">جامعة كفرالشيخ، مدينة كفرالشيخ، مصر.</span>
                 </div>
             </section>
 
@@ -175,10 +169,10 @@
                 </section>
             </div>
 
-            <!-- About Section -->
+            <!-- About Section (قابل للتحكم الكامل من لوحة التحكم) -->
             <section id="about" class="bg-white p-8 rounded-3xl shadow-sm border">
                 <div class="text-center mb-8">
-                    <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="about_heading">عن المؤتمر</h3>
+                    <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="about_heading" id="about-heading-text">عن المؤتمر</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
                 </div>
                 <div class="grid md:grid-cols-2 gap-8 items-center">
@@ -187,10 +181,8 @@
                         <p data-i18n="about_p2" id="about-p2-text">يهدف المؤتمر إلى تسليط الضوء على الابتكارات الحديثة في تشخيص وعلاج الأمراض الحيوانية وسلامة الغذاء.</p>
                     </div>
                     <div class="bg-blue-50/50 p-6 rounded-2xl border border-blue-100">
-                        <ul class="space-y-3 font-semibold text-vetDark text-sm">
-                            <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-vetBlue"></i> <span data-i18n="about_li1">جلسات بحثية معتمدة دولياً</span></li>
-                            <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-vetBlue"></i> <span data-i18n="about_li2">ورش عمل تطبيقية متقدمة</span></li>
-                            <li class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-vetBlue"></i> <span data-i18n="about_li3">فرصة فريدة للتواصل الأكاديمي والمهني</span></li>
+                        <ul id="about-features-list" class="space-y-3 font-semibold text-vetDark text-sm">
+                            <!-- Populated dynamically -->
                         </ul>
                     </div>
                 </div>
@@ -344,9 +336,7 @@
                     <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="news_heading">أخبار المؤتمر</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
                 </div>
-                <div id="news-container" class="grid sm:grid-cols-2 gap-6">
-                    <!-- Dynamically injected news -->
-                </div>
+                <div id="news-container" class="grid sm:grid-cols-2 gap-6"></div>
             </section>
 
             <!-- Gallery Section -->
@@ -355,9 +345,7 @@
                     <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="gallery_heading">معرض الصور والفيديوهات</h3>
                     <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
                 </div>
-                <div id="gallery-container" class="grid sm:grid-cols-2 gap-6">
-                    <!-- Dynamically injected media -->
-                </div>
+                <div id="gallery-container" class="grid sm:grid-cols-2 gap-6"></div>
             </section>
 
             <!-- Registration Section -->
@@ -505,12 +493,14 @@
             <!-- Sidebar Tabs -->
             <aside class="w-64 bg-white border-r border-gray-200 p-4 space-y-2 overflow-y-auto">
                 <button onclick="switchTab('site-settings')" id="tab-btn-site-settings" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm bg-vetBlue text-white flex items-center gap-2"><i class="fa-solid fa-gear"></i> <span data-i18n="tab_site_settings">إعدادات ونصوص الصفحة</span></button>
+                <button onclick="switchTab('nav-manager')" id="tab-btn-nav-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-bars"></i> <span>إدارة أقسام المؤتمر الجانبية</span></button>
+                <button onclick="switchTab('about-manager')" id="tab-btn-about-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-circle-info"></i> <span>إدارة قسم عن المؤتمر</span></button>
+                <button onclick="switchTab('venue-manager')" id="tab-btn-venue-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-location-dot"></i> <span>إدارة مكان الانعقاد</span></button>
                 <button onclick="switchTab('sponsorship-manager')" id="tab-btn-sponsorship-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-handshake"></i> <span>إدارة رعاية المؤتمر والشعارات</span></button>
                 <button onclick="switchTab('org-manager')" id="tab-btn-org-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-sitemap"></i> <span>إدارة الهيكل التنظيمي</span></button>
                 <button onclick="switchTab('ticker-manager')" id="tab-btn-ticker-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-bullhorn"></i> <span data-i18n="tab_ticker_manager">إدارة الشريط العاجل</span></button>
                 <button onclick="switchTab('add-news')" id="tab-btn-add-news" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-plus-circle"></i> <span data-i18n="tab_add_news">إضافة خبر</span></button>
                 <button onclick="switchTab('manage-news')" id="tab-btn-manage-news" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-newspaper"></i> <span data-i18n="tab_manage_news">إدارة الأخبار</span></button>
-                <button onclick="switchTab('nav-manager')" id="tab-btn-nav-manager" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-bars"></i> <span data-i18n="tab_nav_manager">إدارة الأزرار</span></button>
                 <button onclick="switchTab('change-password')" id="tab-btn-change-password" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-key"></i> <span data-i18n="tab_change_pass">تغيير كلمة المرور</span></button>
                 <button onclick="switchTab('registrations')" id="tab-btn-registrations" class="w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-users"></i> <span data-i18n="tab_regs">قائمة المسجّلين</span></button>
             </aside>
@@ -540,21 +530,81 @@
                             <label class="block text-sm font-bold mb-1">وصف قسم Hero *</label>
                             <textarea id="set-hero-desc" rows="2" required class="w-full px-4 py-2 border rounded-lg"></textarea>
                         </div>
-                        <div class="grid sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-bold mb-1">عن المؤتمر (الفقرة الأولى) *</label>
-                                <textarea id="set-about-p1" rows="3" required class="w-full px-4 py-2 border rounded-lg"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold mb-1">عن المؤتمر (الفقرة الثانية) *</label>
-                                <textarea id="set-about-p2" rows="3" required class="w-full px-4 py-2 border rounded-lg"></textarea>
-                            </div>
-                        </div>
                         <button type="submit" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-save"></i> حفظ وتحديث نصوص الصفحة</button>
                     </form>
                 </div>
 
-                <!-- Sponsorship Manager Tab (التحكم الكامل في رعاية ومؤسسات المؤتمر - إضافة، تعديل، حذف، تغيير الصور) -->
+                <!-- Navigation Buttons Manager Tab (إدارة أقسام المؤتمر الجانبية) -->
+                <div id="tab-nav-manager" class="space-y-6 hidden max-w-3xl">
+                    <h4 class="text-xl font-bold text-vetDark">إدارة أقسام المؤتمر الجانبية (إضافة، تعديل، حذف)</h4>
+                    <form onsubmit="handleSaveNavButton(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <input type="hidden" id="edit-nav-id" value="">
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-1">اسم القسم (عربي) *</label>
+                                <input type="text" id="nav-name-ar" required class="w-full px-4 py-2 border rounded-lg" placeholder="مثال: ورش العمل">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">رابط أو معرف القسم (مثال: #workshop) *</label>
+                                <input type="text" id="nav-link-href" required class="w-full px-4 py-2 border rounded-lg" placeholder="#section-id">
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="submit" id="nav-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة القسم للقائمة</button>
+                            <button type="button" id="nav-cancel-btn" onclick="resetNavForm()" class="bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-bold hidden">إلغاء التعديل</button>
+                        </div>
+                    </form>
+                    <div class="bg-white p-6 rounded-xl shadow border">
+                        <h5 class="font-bold text-vetDark mb-4">الأقسام الحالية</h5>
+                        <div id="admin-nav-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- About Section Manager Tab (إدارة قسم عن المؤتمر) -->
+                <div id="tab-about-manager" class="space-y-6 hidden max-w-3xl">
+                    <h4 class="text-xl font-bold text-vetDark">إدارة قسم عن المؤتمر</h4>
+                    <form onsubmit="handleSaveAboutSettings(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-1">عنوان القسم *</label>
+                            <input type="text" id="set-about-heading" required class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">الفقرة الأولى *</label>
+                            <textarea id="set-about-p1" rows="3" required class="w-full px-4 py-2 border rounded-lg"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">الفقرة الثانية *</label>
+                            <textarea id="set-about-p2" rows="3" required class="w-full px-4 py-2 border rounded-lg"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">النقاط المميزة (كل نقطة في سطر مستقل)</label>
+                            <textarea id="set-about-features" rows="3" required class="w-full px-4 py-2 border rounded-lg" placeholder="جلسات بحثية معتمدة دولياً&#10;ورش عمل تطبيقية متقدمة&#10;فرصة فريدة للتواصل الأكاديمي والمهني"></textarea>
+                        </div>
+                        <button type="submit" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-save"></i> حفظ وتحديث قسم عن المؤتمر</button>
+                    </form>
+                </div>
+
+                <!-- Venue Manager Tab (إدارة مكان انعقاد المؤتمر) -->
+                <div id="tab-venue-manager" class="space-y-6 hidden max-w-3xl">
+                    <h4 class="text-xl font-bold text-vetDark">إدارة مكان انعقاد المؤتمر</h4>
+                    <form onsubmit="handleSaveVenueSettings(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-1">عنوان القسم الرئيسي *</label>
+                            <input type="text" id="set-venue-title" required class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">وصف مكان الانعقاد *</label>
+                            <textarea id="set-venue-desc" rows="3" required class="w-full px-4 py-2 border rounded-lg"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">نص الموقع الجغرافي البارز *</label>
+                            <input type="text" id="set-venue-location" required class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+                        <button type="submit" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-save"></i> حفظ وتحديث مكان الانعقاد</button>
+                    </form>
+                </div>
+
+                <!-- Sponsorship Manager Tab -->
                 <div id="tab-sponsorship-manager" class="space-y-6 max-w-3xl hidden">
                     <h4 class="text-xl font-bold text-vetDark">إدارة رعاية ومؤسسات المؤتمر والشعارات</h4>
                     <form onsubmit="handleSaveSponsor(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
@@ -566,7 +616,6 @@
                         <div>
                             <label class="block text-sm font-bold mb-1">رفع شعار الجهة (صورة) *</label>
                             <input type="file" id="sponsor-file" accept="image/*" class="w-full px-4 py-2 border rounded-lg bg-gray-50">
-                            <p class="text-xs text-gray-500 mt-1">عند التعديل، ترك الحقل فارغاً يبقي الصورة الحالية.</p>
                         </div>
                         <div class="flex gap-2">
                             <button type="submit" id="sponsor-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة جهة راعية</button>
@@ -579,7 +628,7 @@
                     </div>
                 </div>
 
-                <!-- Org Structure Manager Tab (التحكم الكامل في الهيكل التنظيمي للمؤتمر - المسميات والوصف) -->
+                <!-- Org Structure Manager Tab -->
                 <div id="tab-org-manager" class="space-y-6 max-w-3xl hidden">
                     <h4 class="text-xl font-bold text-vetDark">إدارة الهيكل التنظيمي للمؤتمر</h4>
                     <form onsubmit="handleSaveOrgItem(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
@@ -590,13 +639,13 @@
                                 <input type="text" id="org-title" required class="w-full px-4 py-2 border rounded-lg" placeholder="مثال: رئيس المؤتمر">
                             </div>
                             <div>
-                                <label class="block text-sm font-bold mb-1">أيقونة FontAwesome (مثال: fa-user-tie) *</label>
+                                <label class="block text-sm font-bold mb-1">أيقونة FontAwesome *</label>
                                 <input type="text" id="org-icon" required class="w-full px-4 py-2 border rounded-lg" placeholder="fa-user-tie">
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-bold mb-1">وصف المنصب / الجهة التابعة *</label>
-                            <input type="text" id="org-desc" required class="w-full px-4 py-2 border rounded-lg" placeholder="مثال: عميد كلية الطب البيطري - جامعة كفرالشيخ">
+                            <input type="text" id="org-desc" required class="w-full px-4 py-2 border rounded-lg" placeholder="مثال: عميد كلية الطب البيطري">
                         </div>
                         <div class="flex gap-2">
                             <button type="submit" id="org-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة عنصر للهيكل</button>
@@ -645,7 +694,6 @@
                         <div>
                             <label class="block text-sm font-bold mb-1" data-i18n="news_media_file">رفع صورة أو فيديو *</label>
                             <input type="file" id="news-file" accept="image/*,video/*" class="w-full px-4 py-2 border rounded-lg bg-gray-50">
-                            <p class="text-xs text-gray-500 mt-1">إذا كنت تقوم بتعديل خبر ولا تريد تغيير الصورة، يمكنك ترك هذا الحقل فارغاً.</p>
                         </div>
                         <div class="flex gap-2">
                             <button type="submit" id="news-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow flex items-center justify-center gap-2">
@@ -660,32 +708,6 @@
                 <div id="tab-manage-news" class="space-y-6 hidden">
                     <h4 class="text-xl font-bold text-vetDark" data-i18n="manage_news_heading">الأخبار المنشورة</h4>
                     <div id="admin-news-list" class="space-y-4"></div>
-                </div>
-
-                <!-- Navigation Buttons Manager Tab -->
-                <div id="tab-nav-manager" class="space-y-6 hidden max-w-3xl">
-                    <h4 class="text-xl font-bold text-vetDark" data-i18n="nav_manager_heading">إضافة وتعديل أزرار الأقسام</h4>
-                    <form onsubmit="handleSaveNavButton(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
-                        <input type="hidden" id="edit-nav-id" value="">
-                        <div class="grid sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-bold mb-1">اسم القسم (عربي) *</label>
-                                <input type="text" id="nav-name-ar" required class="w-full px-4 py-2 border rounded-lg" placeholder="مثال: ورش العمل">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold mb-1">رابط القسم (مثال: #workshop) *</label>
-                                <input type="text" id="nav-link-href" required class="w-full px-4 py-2 border rounded-lg" placeholder="#section-id">
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button type="submit" id="nav-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة القسم</button>
-                            <button type="button" id="nav-cancel-btn" onclick="resetNavForm()" class="bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-bold hidden">إلغاء التعديل</button>
-                        </div>
-                    </form>
-                    <div class="bg-white p-6 rounded-xl shadow border">
-                        <h5 class="font-bold text-vetDark mb-4">الأقسام الحالية</h5>
-                        <div id="admin-nav-list" class="space-y-3"></div>
-                    </div>
                 </div>
 
                 <!-- Change Password Tab -->
@@ -767,8 +789,6 @@
                 hero_btn_more: "اعرف المزيد",
                 ticker_label: "شريط عاجل",
                 about_heading: "عن المؤتمر",
-                about_p1: "يُعد المؤتمر العلمي الدولي التاسع لكلية الطب البيطري بجامعة كفر الشيخ منصة عالمية تجمع نخبة من العلماء، الباحثين، والأطباء البيطريين لتبادل الخبرات والرؤى حول أحدث التقنيات الطبية والبحثية.",
-                about_p2: "يهدف المؤتمر إلى تسليط الضوء على الابتكارات الحديثة في تشخيص وعلاج الأمراض الحيوانية، سلامة الغذاء، والبحث العلمي التطبيقي الذي يخدم التنمية المستدامة.",
                 about_li1: "جلسات بحثية وعلمية معتمدة دولياً",
                 about_li2: "ورش عمل تطبيقية متقدمة",
                 about_li3: "فرصة فريدة للتواصل الأكاديمي والمهني",
@@ -816,15 +836,8 @@
                 tab_ticker_manager: "إدارة الشريط العاجل",
                 tab_add_news: "إضافة خبر",
                 tab_manage_news: "إدارة الأخبار",
-                tab_nav_manager: "دارة الأزرار",
                 tab_change_pass: "تغيير كلمة المرور",
                 tab_regs: "قائمة المسجّلين",
-                nav_manager_heading: "إدارة أزرار شريط التنقل العلوي",
-                add_news_heading: "إضافة خبر جديد (باللغة العربية وسيتم ترجمته تلقائياً)",
-                news_ar_title: "عنوان الخبر (عربي) *",
-                news_ar_desc: "نص الخبر (عربي) *",
-                news_media_file: "رفع صورة أو فيديو *",
-                btn_publish: "نشر فوري وسريع",
                 manage_news_heading: "الأخبار المنشورة",
                 regs_heading: "قائمة الحضور المسجّلين",
                 th_name: "الاسم",
@@ -847,25 +860,8 @@
                 hero_btn_more: "Learn More",
                 ticker_label: "Breaking",
                 about_heading: "About the Conference",
-                about_p1: "The 9th International Scientific Conference of the Faculty of Veterinary Medicine, Kafrelsheikh University is a global platform gathering elite scientists, researchers, and veterinarians.",
-                about_p2: "The conference highlights modern innovations in animal disease diagnosis, food safety, and applied scientific research serving sustainable development.",
-                about_li1: "Internationally accredited scientific sessions",
-                about_li2: "Advanced practical workshops",
-                about_li3: "Unique academic and professional networking",
                 axes_heading: "Conference Axes",
-                axis_1_title: "Animal & Poultry Diseases",
-                axis_1_desc: "Modern diagnosis, advanced treatment methods, and effective vaccination programs.",
-                axis_2_title: "Food Safety & Public Health",
-                axis_2_desc: "Control of animal-origin foods and zoonotic diseases.",
-                axis_3_title: "Biotechnology & Genomics",
-                axis_3_desc: "Applications of genetic engineering in veterinary medicine.",
                 schedule_heading: "Important Dates",
-                date_1: "August 15",
-                date_2: "September 01",
-                date_3: "October 20-22",
-                sched_1_title: "Deadline for Abstract Submission",
-                sched_2_title: "Notification of Acceptance",
-                sched_3_title: "Conference Kickoff",
                 news_heading: "Conference News",
                 gallery_heading: "Photo & Video Gallery",
                 reg_heading: "Attendance & Participation",
@@ -896,15 +892,8 @@
                 tab_ticker_manager: "Ticker Manager",
                 tab_add_news: "Add News",
                 tab_manage_news: "Manage News",
-                tab_nav_manager: "Buttons Manager",
                 tab_change_pass: "Change Password",
                 tab_regs: "Registrations",
-                nav_manager_heading: "Manage Top Navbar Buttons",
-                add_news_heading: "Add News (Arabic input is auto-translated)",
-                news_ar_title: "News Title (Arabic) *",
-                news_ar_desc: "News Content (Arabic) *",
-                news_media_file: "Upload Image or Video *",
-                btn_publish: "Publish & Fast",
                 manage_news_heading: "Published News",
                 regs_heading: "Registered Attendees",
                 th_name: "Name",
@@ -918,163 +907,216 @@
             },
             fr: {
                 nav_title: "9e Conférence Internationale Vétérinaire",
-                nav_subtitle: "Université de Kafrelsheikh - Égypte",
-                menu_admin: "Admin",
                 hero_badge: "Événement Scientifique Majeur",
-                hero_title: "La 9e Conférence Scientifique Internationale de Médecine Vétérinaire",
-                hero_desc: "Vers de nouveaux horizons dans la recherche scientifique vétérinaire et la sécurité alimentaire.",
-                hero_btn_reg: "S'inscrire",
-                hero_btn_more: "En savoir plus",
-                ticker_label: "Flash",
-                about_heading: "À propos de la Conférence",
-                about_p1: "La 9e Conférence Internationale de la Faculté de Médecine Vétérinaire de l'Université de Kafrelsheikh rassemble des scientifiques et chercheurs d'élite.",
-                about_p2: "Elle met en lumière les innovations modernes en matière de diagnostic des maladies animales et de sécurité alimentaire.",
-                about_li1: "Sessions scientifiques accréditées",
-                about_li2: "Ateliers pratiques avancés",
-                about_li3: "Networking académique et professionnel",
-                axes_heading: "Axes de la Conférence",
-                axis_1_title: "Maladies des Animaux et Volailles",
-                axis_1_desc: "Diagnostic moderne et programmes de vaccination efficaces.",
-                axis_2_title: "Sécurité Alimentaire et Santé Publique",
-                axis_2_desc: "Contrôle des aliments d'origine animale et zoonoses.",
-                axis_3_title: "Biotechnologie et Génomique",
-                axis_3_desc: "Applications du génie génétique en médecine vétérinaire.",
-                schedule_heading: "Dates Importantes",
-                date_1: "15 août",
-                date_2: "01 septembre",
-                date_3: "20-22 octobre",
-                sched_1_title: "Date limite de soumission des résumés",
-                sched_2_title: "Notification d'acceptation",
-                sched_3_title: "Ouverture de la Conférence",
-                news_heading: "Actualités",
-                gallery_heading: "Galerie Photos & Vidéos",
-                reg_heading: "Inscription & Participation",
-                reg_sub: "Veuillez remplir vos coordonnées pour vous inscrire",
-                form_name: "Nom complet *",
-                form_email: "E-mail *",
-                form_phone: "Téléphone *",
-                form_country: "Pays *",
-                form_org: "Institution *",
-                form_category: "Catégorie *",
-                cat_researcher: "Chercheur / Académique",
-                cat_vet: "Vétérinaire",
-                cat_student: "Étudiant",
-                form_type: "Type de présence *",
-                type_attend: "Présence seule",
-                type_paper: "Présentation de papier",
-                form_notes: "Remarques ou titre",
-                form_submit: "Soumettre",
-                credits_text: "Programmé et conçu par Dr Mahmoud Ellawatiy © 2026",
-                footer_copy: "© 2026 Faculté de Médecine Vétérinaire - Université de Kafrelsheikh. Tous droits réservés.",
-                admin_login_title: "Connexion Admin",
-                admin_pass_label: "Mot de passe",
-                btn_cancel: "Annuler",
-                btn_login: "Connexion",
                 dash_title: "Tableau de Bord",
-                dash_logout: "Déconnexion",
-                tab_site_settings: "Paramètres du site",
-                tab_ticker_manager: "Gestion du Ticker",
-                tab_add_news: "Ajouter actualité",
-                tab_manage_news: "Gérer actualités",
-                tab_nav_manager: "Gestion des boutons",
-                tab_change_pass: "Changer le mot de passe",
-                tab_regs: "Inscriptions",
-                nav_manager_heading: "Gérer les boutons du menu",
-                add_news_heading: "Ajouter une actualité",
-                news_ar_title: "Titre (Arabe) *",
-                news_ar_desc: "Contenu (Arabe) *",
-                news_media_file: "Fichier média *",
-                btn_publish: "Publier",
-                manage_news_heading: "Actualités publiées",
-                regs_heading: "Participants inscrits",
-                th_name: "Nom",
-                th_email: "E-mail",
-                th_phone: "Téléphone",
-                th_country: "Pays",
-                th_org: "Institution",
-                th_category: "Catégorie",
-                th_type: "Type",
-                th_action: "Action"
+                dash_logout: "Déconnexion"
             },
             de: {
                 nav_title: "9. Internationale Veterinärmedizinische Konferenz",
-                nav_subtitle: "Universität Kafrelsheikh - Ägypten",
-                menu_admin: "Admin",
                 hero_badge: "Wichtigstes Wissenschaftliches Ereignis",
-                hero_title: "Die 9. Internationale Wissenschaftliche Konferenz für Veterinärmedizin",
-                hero_desc: "Hin zu neuen Horizonten in der veterinärmedizinischen Forschung und nachhaltigen Ernährungssicherheit.",
-                hero_btn_reg: "Jetzt registrieren",
-                hero_btn_more: "Mehr erfahren",
-                ticker_label: "Eilmeldung",
-                about_heading: "Über die Konferenz",
-                about_p1: "Die 9. Internationale Wissenschaftliche Konferenz der Fakultät für Veterinärmedizin an der Universität Kafrelsheikh ist eine globale Plattform.",
-                about_p2: "Sie beleuchtet moderne Innovationen in der Tierkrankheitsdiagnose, Lebensmittelsicherheit und angewandten Forschung.",
-                about_li1: "International akkreditierte wissenschaftliche Sitzungen",
-                about_li2: "Fortgeschrittene praktische Workshops",
-                about_li3: "Einzigartiges akademisches und berufliches Networking",
-                axes_heading: "Konferenzschwerpunkte",
-                axis_1_title: "Tier- und Geflügelkrankheiten",
-                axis_1_desc: "Moderne Diagnose, fortschrittliche Behandlungsmethoden und Impfprogramme.",
-                axis_2_title: "Lebensmittelsicherheit & Öffentliche Gesundheit",
-                axis_2_desc: "Kontrolle tierischer Lebensmittel und Zoonosen.",
-                axis_3_title: "Biotechnologie und Genomik",
-                axis_3_desc: "Anwendungen der Gentechnik in der Veterinärmedizin.",
-                schedule_heading: "Wichtige Termine",
-                date_1: "15. August",
-                date_2: "01. September",
-                date_3: "20.-22. Oktober",
-                sched_1_title: "Frist für die Einreichung von Abstracts",
-                sched_2_title: "Benachrichtigung über die Annahme",
-                sched_3_title: "Beginn der Konferenz",
-                news_heading: "Konferenznachrichten",
-                gallery_heading: "Foto- und Videogalerie",
-                reg_heading: "Teilnahme und Registrierung",
-                reg_sub: "Bitte füllen Sie Ihre Daten sorgfältig aus",
-                form_name: "Vollständiger Name *",
-                form_email: "E-Mail-Adresse *",
-                form_phone: "Telefonnummer *",
-                form_country: "Land *",
-                form_org: "Organisation *",
-                form_category: "Kategorie *",
-                cat_researcher: "Forscher / Akademiker",
-                cat_vet: "Tierarzt",
-                cat_student: "Student",
-                form_type: "Teilnahmeart *",
-                type_attend: "Nur Teilnahme",
-                type_paper: "Beitrag präsentieren",
-                form_notes: "Bemerkungen oder Titel",
-                form_submit: "Registrierung absenden",
-                credits_text: "Programmiert und entworfen von Dr. Mahmoud Ellawatiy © 2026",
-                footer_copy: "© 2026 Fakultät für Veterinärmedizin - Universität Kafrelsheikh. Alle Rechte vorbehalten.",
-                admin_login_title: "Admin-Login",
-                admin_pass_label: "Passwort",
-                btn_cancel: "Abbrechen",
-                btn_login: "Anmelden",
                 dash_title: "Konferenz-Bedienfeld",
-                dash_logout: "Abmelden",
-                tab_add_news: "Nachricht hinzufügen",
-                tab_manage_news: "Nachrichten verwalten",
-                tab_nav_manager: "Button-Manager",
-                tab_change_pass: "Passwort ändern",
-                tab_regs: "Registrierungen",
-                nav_manager_heading: "Menübuttons verwalten",
-                add_news_heading: "Nachricht hinzufügen",
-                news_ar_title: "Titel (Arabisch) *",
-                news_ar_desc: "Inhalt (Arabisch) *",
-                news_media_file: "Mediendatei hochladen *",
-                btn_publish: "Veröffentlichen",
-                manage_news_heading: "Veröffentlichte Nachrichten",
-                regs_heading: "Registrierte Teilnehmer",
-                th_name: "Name",
-                th_email: "E-Mail",
-                th_phone: "Telefon",
-                th_country: "Land",
-                th_org: "Organisation",
-                th_category: "Kategorie",
-                th_type: "Typ",
-                th_action: "Aktion"
+                dash_logout: "Abmelden"
             }
         };
+
+        // About Section Settings Management
+        function getAboutSettings() {
+            return JSON.parse(localStorage.getItem('vet_conf_about')) || {
+                heading: "عن المؤتمر",
+                p1: "يُعد المؤتمر العلمي الدولي التاسع لكلية الطب البيطري بجامعة كفر الشيخ منصة عالمية تجمع نخبة من العلماء، الباحثين، والأطباء البيطريين لتبادل الخبرات والرؤى حول أحدث التقنيات الطبية والبحثية.",
+                p2: "يهدف المؤتمر إلى تسليط الضوء على الابتكارات الحديثة في تشخيص وعلاج الأمراض الحيوانية، سلامة الغذاء، والبحث العلمي التطبيقي الذي يخدم التنمية المستدامة.",
+                features: [
+                    "جلسات بحثية وعلمية معتمدة دولياً",
+                    "ورش عمل تطبيقية متقدمة",
+                    "فرصة فريدة للتواصل الأكاديمي والمهني"
+                ]
+            };
+        }
+
+        function applyAboutSettings() {
+            const a = getAboutSettings();
+            document.getElementById('about-heading-text').innerText = a.heading;
+            document.getElementById('about-p1-text').innerText = a.p1;
+            document.getElementById('about-p2-text').innerText = a.p2;
+            
+            const listContainer = document.getElementById('about-features-list');
+            listContainer.innerHTML = '';
+            a.features.forEach(f => {
+                const li = document.createElement('li');
+                li.className = "flex items-center gap-3";
+                li.innerHTML = `<i class="fa-solid fa-check-circle text-vetBlue"></i> <span>${f}</span>`;
+                listContainer.appendChild(li);
+            });
+        }
+
+        function handleSaveAboutSettings(e) {
+            e.preventDefault();
+            const heading = document.getElementById('set-about-heading').value;
+            const p1 = document.getElementById('set-about-p1').value;
+            const p2 = document.getElementById('set-about-p2').value;
+            const featuresRaw = document.getElementById('set-about-features').value;
+            const features = featuresRaw.split('\n').filter(item => item.trim() !== '');
+
+            const aboutData = { heading, p1, p2, features };
+            localStorage.setItem('vet_conf_about', JSON.stringify(aboutData));
+            showCustomAlert("تم حفظ وتحديث قسم عن المؤتمر بنجاح!");
+            applyAboutSettings();
+        }
+
+        function loadAboutSettingsForm() {
+            const a = getAboutSettings();
+            document.getElementById('set-about-heading').value = a.heading;
+            document.getElementById('set-about-p1').value = a.p1;
+            document.getElementById('set-about-p2').value = a.p2;
+            document.getElementById('set-about-features').value = a.features.join('\n');
+        }
+
+        // Venue Section Settings Management
+        function getVenueSettings() {
+            return JSON.parse(localStorage.getItem('vet_conf_venue')) || {
+                title: "مكان انعقاد المؤتمر",
+                desc: "تُعقد جلسات وفعاليات المؤتمر في رحاب حرم جامعة كفرالشيخ - قاعة المؤتمرات الكبرى بكلية الطب البيطري.",
+                location: "جامعة كفرالشيخ، مدينة كفرالشيخ، مصر."
+            };
+        }
+
+        function applyVenueSettings() {
+            const v = getVenueSettings();
+            document.getElementById('venue-title-text').innerText = v.title;
+            document.getElementById('venue-desc-text').innerText = v.desc;
+            document.getElementById('venue-location-text').innerText = v.location;
+        }
+
+        function handleSaveVenueSettings(e) {
+            e.preventDefault();
+            const title = document.getElementById('set-venue-title').value;
+            const desc = document.getElementById('set-venue-desc').value;
+            const location = document.getElementById('set-venue-location').value;
+
+            const venueData = { title, desc, location };
+            localStorage.setItem('vet_conf_venue', JSON.stringify(venueData));
+            showCustomAlert("تم حفظ وتحديث مكان انعقاد المؤتمر بنجاح!");
+            applyVenueSettings();
+        }
+
+        function loadVenueSettingsForm() {
+            const v = getVenueSettings();
+            document.getElementById('set-venue-title').value = v.title;
+            document.getElementById('set-venue-desc').value = v.desc;
+            document.getElementById('set-venue-location').value = v.location;
+        }
+
+        // Navigation Buttons Manager Functions (أقسام المؤتمر الجانبية)
+        function getNavButtons() {
+            return JSON.parse(localStorage.getItem('vet_conf_nav_buttons')) || [
+                { id: 'home', ar: 'الرئيسية', href: '#home' },
+                { id: 'sponsorship', ar: 'رعاية المؤتمر والمؤسسات', href: '#sponsorship' },
+                { id: 'org-structure', ar: 'الهيكل التنظيمي للمؤتمر', href: '#org-structure' },
+                { id: 'venue', ar: 'مكان انعقاد المؤتمر', href: '#venue' },
+                { id: 'vision', ar: 'رؤية المؤتمر', href: '#vision' },
+                { id: 'mission', ar: 'رسالة المؤتمر', href: '#mission' },
+                { id: 'goals', ar: 'اهداف المؤتمر', href: '#goals' },
+                { id: 'axes', ar: 'محاور المؤتمر', href: '#axes' },
+                { id: 'journal', ar: 'مجلة نشر الأبحاث', href: '#journal' },
+                { id: 'fees', ar: 'رسوم الاشتراك', href: '#fees' },
+                { id: 'speakers', ar: 'المحاضرون', href: '#speakers' },
+                { id: 'committees', ar: 'اللجان العلمية', href: '#committees' },
+                { id: 'accepted-papers', ar: 'البحوث المقبولة', href: '#accepted-papers' }
+            ];
+        }
+
+        function renderNavButtons() {
+            const container = document.getElementById('vertical-sections-column');
+            const buttons = getNavButtons();
+            container.innerHTML = '';
+            buttons.forEach(btn => {
+                const a = document.createElement('a');
+                a.href = btn.href;
+                a.className = "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-vetBlue transition border border-gray-100 shadow-sm bg-gray-50/50";
+                a.innerHTML = `<i class="fa-solid fa-chevron-left text-xs text-vetBlue"></i> <span>${btn.ar}</span>`;
+                container.appendChild(a);
+            });
+        }
+
+        function handleSaveNavButton(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-nav-id').value;
+            const nameAr = document.getElementById('nav-name-ar').value;
+            const href = document.getElementById('nav-link-href').value;
+
+            let buttons = getNavButtons();
+
+            if (editId) {
+                buttons = buttons.map(b => {
+                    if (b.id === editId) {
+                        return { ...b, ar: nameAr, href: href };
+                    }
+                    return b;
+                });
+            } else {
+                buttons.push({
+                    id: 'btn_' + Date.now(),
+                    ar: nameAr,
+                    href: href
+                });
+            }
+
+            localStorage.setItem('vet_conf_nav_buttons', JSON.stringify(buttons));
+            showCustomAlert("تم حفظ القسم بنجاح!");
+            resetNavForm();
+            loadAdminNavButtons();
+            renderNavButtons();
+        }
+
+        function editNavButton(id) {
+            const buttons = getNavButtons();
+            const btn = buttons.find(b => b.id === id);
+            if (btn) {
+                document.getElementById('edit-nav-id').value = btn.id;
+                document.getElementById('nav-name-ar').value = btn.ar;
+                document.getElementById('nav-link-href').value = btn.href;
+                document.getElementById('nav-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
+                document.getElementById('nav-cancel-btn').classList.remove('hidden');
+            }
+        }
+
+        function resetNavForm() {
+            document.getElementById('edit-nav-id').value = '';
+            document.getElementById('nav-name-ar').value = '';
+            document.getElementById('nav-link-href').value = '';
+            document.getElementById('nav-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة القسم للقائمة';
+            document.getElementById('nav-cancel-btn').classList.add('hidden');
+        }
+
+        function loadAdminNavButtons() {
+            const container = document.getElementById('admin-nav-list');
+            const buttons = getNavButtons();
+            container.innerHTML = '';
+            buttons.forEach(btn => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
+                div.innerHTML = `
+                    <div>
+                        <span class="font-bold">${btn.ar}</span> <span class="text-xs text-gray-500">(${btn.href})</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editNavButton('${btn.id}')" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i> تعديل</button>
+                        <button onclick="deleteNavButton('${btn.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function deleteNavButton(id) {
+            if (confirm("هل أنت متأكد من حذف هذا القسم من القائمة؟")) {
+                let buttons = getNavButtons();
+                buttons = buttons.filter(b => b.id !== id);
+                localStorage.setItem('vet_conf_nav_buttons', JSON.stringify(buttons));
+                loadAdminNavButtons();
+                renderNavButtons();
+            }
+        }
 
         // Sponsorship / Logos Management Functions
         function getSponsors() {
@@ -1296,9 +1338,9 @@
         // Ticker Management Functions
         function getTickerItems() {
             return JSON.parse(localStorage.getItem('vet_conf_ticker')) || [
-                { id: 1, ar: "✨ تم فتح باب تسجيل الأبحاث العلمية للمؤتمر الدولي التاسع.", en: "✨ Registration for scientific papers at the 9th International Conference is now open.", fr: "✨ L'inscription pour les articles scientifiques est ouverte.", de: "✨ Die Anmeldung für wissenschaftliche Arbeiten ist geöffnet." },
-                { id: 2, ar: "🚀 انطلاق فعاليات المؤتمر برعاية معالي رئيس جامعة كفر الشيخ.", en: "🚀 Launch of conference activities under the patronage of the President of Kafrelsheikh University.", fr: "🚀 Lancement des activités de la conférence.", de: "🚀 Start der Konferenzaktivitäten unter der Schirmherrschaft." },
-                { id: 3, ar: "📅 آخر موعد لتلقي الملخصات هو منتصف الشهر القادم.", en: "📅 The deadline for receiving abstracts is the middle of next month.", fr: "📅 La date limite de réception des résumés est le mois prochain.", de: "📅 Einsendeschluss für Abstracts ist Mitte nächsten Monats." }
+                { id: 1, ar: "✨ تم فتح باب تسجيل الأبحاث العلمية للمؤتمر الدولي التاسع." },
+                { id: 2, ar: "🚀 انطلاق فعاليات المؤتمر برعاية معالي رئيس جامعة كفر الشيخ." },
+                { id: 3, ar: "📅 آخر موعد لتلقي الملخصات هو منتصف الشهر القادم." }
             ];
         }
 
@@ -1307,16 +1349,11 @@
             const editId = document.getElementById('edit-ticker-id').value;
             const textAr = document.getElementById('ticker-text-ar').value;
 
-            const submitBtn = document.getElementById('ticker-submit-btn');
-            const orig = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
-            submitBtn.disabled = true;
-
             let tickers = getTickerItems();
             if (editId) {
-                tickers = tickers.map(t => t.id == editId ? { ...t, ar: textAr, en: textAr, fr: textAr, de: textAr } : t);
+                tickers = tickers.map(t => t.id == editId ? { ...t, ar: textAr } : t);
             } else {
-                tickers.push({ id: Date.now(), ar: textAr, en: textAr, fr: textAr, de: textAr });
+                tickers.push({ id: Date.now(), ar: textAr });
             }
 
             localStorage.setItem('vet_conf_ticker', JSON.stringify(tickers));
@@ -1324,8 +1361,6 @@
             resetTickerForm();
             loadAdminTicker();
             renderTicker();
-            submitBtn.innerHTML = orig;
-            submitBtn.disabled = false;
         }
 
         function editTicker(id) {
@@ -1347,7 +1382,7 @@
         }
 
         function deleteTicker(id) {
-            if (confirm("هل أنت متأكد من حذف هذا الخبر من الشريط العاجل؟")) {
+            if (confirm("هل أنت متأكد من حذف هذا الخبر؟")) {
                 let tickers = getTickerItems();
                 tickers = tickers.filter(t => t.id != id);
                 localStorage.setItem('vet_conf_ticker', JSON.stringify(tickers));
@@ -1366,8 +1401,8 @@
                 div.innerHTML = `
                     <span class="font-semibold text-sm truncate max-w-md">${t.ar}</span>
                     <div class="flex gap-2 shrink-0">
-                        <button onclick="editTicker(${t.id})" class="bg-vetBlue hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1"><i class="fa-solid fa-pen"></i> تعديل</button>
-                        <button onclick="deleteTicker(${t.id})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1"><i class="fa-solid fa-trash"></i> حذف</button>
+                        <button onclick="editTicker(${t.id})" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i> تعديل</button>
+                        <button onclick="deleteTicker(${t.id})" class="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-trash"></i> حذف</button>
                     </div>
                 `;
                 container.appendChild(div);
@@ -1379,17 +1414,15 @@
             const tickers = getTickerItems();
             container.innerHTML = '';
             tickers.forEach(t => {
-                const text = t[currentLang] || t.ar;
                 const span = document.createElement('span');
                 span.className = "mx-6";
-                span.innerText = text;
+                span.innerText = t.ar;
                 container.appendChild(span);
             });
             tickers.forEach(t => {
-                const text = t[currentLang] || t.ar;
                 const span = document.createElement('span');
                 span.className = "mx-6";
-                span.innerText = text;
+                span.innerText = t.ar;
                 container.appendChild(span);
             });
         }
@@ -1397,100 +1430,45 @@
         // Site Settings Management
         function getSiteSettings() {
             return JSON.parse(localStorage.getItem('vet_conf_settings')) || {
-                title: { ar: "المؤتمر الدولي التاسع للطب البيطري", en: "9th International Veterinary Conference", fr: "9e Conférence Internationale Vétérinaire", de: "9. Internationale Veterinärmedizinische Konferenz" },
-                subtitle: { ar: "جامعة كفر الشيخ - مصر", en: "Kafrelsheikh University - Egypt", fr: "Université de Kafrelsheikh - Égypte", de: "Universität Kafrelsheikh - Ägypten" },
-                heroBadge: { ar: "الحدث العلمي الأبرز", en: "Premier Scientific Event", fr: "Événement Scientifique Majeur", de: "Wichtigstes Wissenschaftliches Ereignis" },
-                heroTitle: { ar: "المؤتمر العلمي الدولي التاسع لكلية الطب البيطري", en: "The 9th International Scientific Conference of Veterinary Medicine", fr: "La 9e Conférence Scientifique Internationale de Médecine Vétérinaire", de: "Die 9. Internationale Wissenschaftliche Konferenz für Veterinärmedizin" },
-                heroDesc: { ar: "نحو آفاق جديدة في البحث العلمي البيطري وتنمية الثروة الحيوانية وتحقيق الأمن الغذائي المستدام.", en: "Towards new horizons in veterinary scientific research, livestock development, and sustainable food security.", fr: "Vers de nouveaux horizons dans la recherche scientifique vétérinaire et la sécurité alimentaire.", de: "Hin zu neuen Horizonten in der veterinärmedizinischen Forschung und nachhaltigen Ernährungssicherheit." },
-                aboutP1: { ar: "يُعد المؤتمر العلمي الدولي التاسع لكلية الطب البيطري بجامعة كفر الشيخ منصة عالمية تجمع نخبة من العلماء، الباحثين، والأطباء البيطريين لتبادل الخبرات والرؤى حول أحدث التقنيات الطبية والبحثية.", en: "The 9th International Scientific Conference of the Faculty of Veterinary Medicine, Kafrelsheikh University is a global platform gathering elite scientists, researchers, and veterinarians.", fr: "La 9e Conférence Internationale de la Faculté de Médecine Vétérinaire de l'Université de Kafrelsheikh rassemble des scientifiques et chercheurs d'élite.", de: "Die 9. Internationale Wissenschaftliche Konferenz der Fakultät für Veterinärmedizin an der Universität Kafrelsheikh ist eine globale Plattform." },
-                aboutP2: { ar: "يهدف المؤتمر إلى تسليط الضوء على الابتكارات الحديثة في تشخيص وعلاج الأمراض الحيوانية، سلامة الغذاء، والبحث العلمي التطبيقي الذي يخدم التنمية المستدامة.", en: "The conference highlights modern innovations in animal disease diagnosis, food safety, and applied scientific research serving sustainable development.", fr: "Elle met en lumière les innovations modernes en matière de diagnostic des maladies animales et de sécurité alimentaire.", de: "Sie beleuchtet moderne Innovationen in der Tierkrankheitsdiagnose, Lebensmittelsicherheit und angewandten Forschung." }
+                title: "المؤتمر الدولي التاسع للطب البيطري",
+                subtitle: "جامعة كفر الشيخ - مصر",
+                heroBadge: "الحدث العلمي الأبرز",
+                heroTitle: "المؤتمر العلمي الدولي التاسع لكلية الطب البيطري",
+                heroDesc: "نحو آفاق جديدة في البحث العلمي البيطري وتنمية الثروة الحيوانية وتحقيق الأمن الغذائي المستدام."
             };
         }
 
         async function handleSaveSiteSettings(e) {
             e.preventDefault();
-            const titleAr = document.getElementById('set-site-title').value;
-            const subtitleAr = document.getElementById('set-site-subtitle').value;
-            const badgeAr = document.getElementById('set-hero-badge').value;
-            const titleHeroAr = document.getElementById('set-hero-title').value;
-            const descHeroAr = document.getElementById('set-hero-desc').value;
-            const p1Ar = document.getElementById('set-about-p1').value;
-            const p2Ar = document.getElementById('set-about-p2').value;
-
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const orig = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ الفوري...';
-            submitBtn.disabled = true;
-
             const settings = {
-                title: { ar: titleAr, en: titleAr, fr: titleAr, de: titleAr },
-                subtitle: { ar: subtitleAr, en: subtitleAr, fr: subtitleAr, de: subtitleAr },
-                heroBadge: { ar: badgeAr, en: badgeAr, fr: badgeAr, de: badgeAr },
-                heroTitle: { ar: titleHeroAr, en: titleHeroAr, fr: titleHeroAr, de: titleHeroAr },
-                heroDesc: { ar: descHeroAr, en: descHeroAr, fr: descHeroAr, de: descHeroAr },
-                aboutP1: { ar: p1Ar, en: p1Ar, fr: p1Ar, de: p1Ar },
-                aboutP2: { ar: p2Ar, en: p2Ar, fr: p2Ar, de: p2Ar }
+                title: document.getElementById('set-site-title').value,
+                subtitle: document.getElementById('set-site-subtitle').value,
+                heroBadge: document.getElementById('set-hero-badge').value,
+                heroTitle: document.getElementById('set-hero-title').value,
+                heroDesc: document.getElementById('set-hero-desc').value
             };
 
             localStorage.setItem('vet_conf_settings', JSON.stringify(settings));
-            showCustomAlert("تم تحديث نصوص الموقع وحفظها بنجاح!");
-            submitBtn.innerHTML = orig;
-            submitBtn.disabled = false;
+            showCustomAlert("تم تحديث نصوص الموقع بنجاح!");
             applySiteSettings();
         }
 
         function applySiteSettings() {
             const s = getSiteSettings();
-            document.getElementById('site-title-text').innerText = s.title[currentLang] || s.title.ar;
-            document.getElementById('site-subtitle-text').innerText = s.subtitle[currentLang] || s.subtitle.ar;
-            document.getElementById('hero-badge-text').innerText = s.heroBadge[currentLang] || s.heroBadge.ar;
-            document.getElementById('hero-title-text').innerText = s.heroTitle[currentLang] || s.heroTitle.ar;
-            document.getElementById('hero-desc-text').innerText = s.heroDesc[currentLang] || s.heroDesc.ar;
-            document.getElementById('about-p1-text').innerText = s.aboutP1[currentLang] || s.aboutP1.ar;
-            document.getElementById('about-p2-text').innerText = s.aboutP2[currentLang] || s.aboutP2.ar;
+            document.getElementById('site-title-text').innerText = s.title;
+            document.getElementById('site-subtitle-text').innerText = s.subtitle;
+            document.getElementById('hero-badge-text').innerText = s.heroBadge;
+            document.getElementById('hero-title-text').innerText = s.heroTitle;
+            document.getElementById('hero-desc-text').innerText = s.heroDesc;
         }
 
         function loadSiteSettingsForm() {
             const s = getSiteSettings();
-            document.getElementById('set-site-title').value = s.title.ar;
-            document.getElementById('set-site-subtitle').value = s.subtitle.ar;
-            document.getElementById('set-hero-badge').value = s.heroBadge.ar;
-            document.getElementById('set-hero-title').value = s.heroTitle.ar;
-            document.getElementById('set-hero-desc').value = s.heroDesc.ar;
-            document.getElementById('set-about-p1').value = s.aboutP1.ar;
-            document.getElementById('set-about-p2').value = s.aboutP2.ar;
-        }
-
-        function getNavButtons() {
-            return JSON.parse(localStorage.getItem('vet_conf_nav_buttons')) || [
-                { id: 'home', ar: 'الرئيسية', en: 'Home', fr: 'Accueil', de: 'Startseite', href: '#home' },
-                { id: 'sponsorship', ar: 'رعاية المؤتمر والمؤسسات', en: 'Sponsorship', fr: 'Parrainage', de: 'Sponsoring', href: '#sponsorship' },
-                { id: 'org-structure', ar: 'الهيكل التنظيمي للمؤتمر', en: 'Org Structure', fr: 'Structure Org.', de: 'Struktur', href: '#org-structure' },
-                { id: 'venue', ar: 'مكان انعقاد المؤتمر', en: 'Venue', fr: 'Lieu', de: 'Veranstaltungsort', href: '#venue' },
-                { id: 'vision', ar: 'رؤية المؤتمر', en: 'Vision', fr: 'Vision', de: 'Vision', href: '#vision' },
-                { id: 'mission', ar: 'رسالة المؤتمر', en: 'Mission', fr: 'Mission', de: 'Mission', href: '#mission' },
-                { id: 'goals', ar: 'اهداف المؤتمر', en: 'Goals', fr: 'Objectifs', de: 'Ziele', href: '#goals' },
-                { id: 'axes', ar: 'محاور المؤتمر', en: 'Axes', fr: 'Axes', de: 'Sektionen', href: '#axes' },
-                { id: 'journal', ar: 'مجلة نشر الأبحاث', en: 'Journal', fr: 'Revue', de: 'Zeitschrift', href: '#journal' },
-                { id: 'fees', ar: 'رسوم الاشتراك', en: 'Fees', fr: 'Frais', de: 'Gebühren', href: '#fees' },
-                { id: 'speakers', ar: 'المحاضرون', en: 'Speakers', fr: 'Conférenciers', de: 'Sprecher', href: '#speakers' },
-                { id: 'committees', ar: 'اللجان العلمية', en: 'Committees', fr: 'Comités', de: 'Komitees', href: '#committees' },
-                { id: 'accepted-papers', ar: 'البحوث المقبولة', en: 'Accepted Papers', fr: 'Articles Acceptés', de: 'Angenommene Arbeiten', href: '#accepted-papers' }
-            ];
-        }
-
-        function renderNavButtons() {
-            const container = document.getElementById('vertical-sections-column');
-            const buttons = getNavButtons();
-            container.innerHTML = '';
-            buttons.forEach(btn => {
-                const text = btn[currentLang] || btn.ar;
-                const a = document.createElement('a');
-                a.href = btn.href;
-                a.className = "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-vetBlue transition border border-gray-100 shadow-sm bg-gray-50/50";
-                a.innerHTML = `<i class="fa-solid fa-chevron-left text-xs text-vetBlue"></i> <span>${text}</span>`;
-                container.appendChild(a);
-            });
+            document.getElementById('set-site-title').value = s.title;
+            document.getElementById('set-site-subtitle').value = s.subtitle;
+            document.getElementById('set-hero-badge').value = s.heroBadge;
+            document.getElementById('set-hero-title').value = s.heroTitle;
+            document.getElementById('set-hero-desc').value = s.heroDesc;
         }
 
         function changeLang(lang) {
@@ -1498,35 +1476,20 @@
             const html = document.documentElement;
             html.setAttribute('lang', lang);
             html.setAttribute('dir', (lang === 'ar' ? 'rtl' : 'ltr'));
-
             ['ar', 'en', 'fr', 'de'].forEach(l => {
                 const btn = document.getElementById(`btn-${l}`);
-                if (l === lang) {
-                    btn.className = "px-2 py-1 text-xs font-bold rounded bg-vetBlue text-white shadow";
-                } else {
-                    btn.className = "px-2.5 py-1 text-xs font-bold rounded text-gray-600 hover:text-vetBlue";
+                if (btn) {
+                    btn.className = (l === lang) ? "px-2 py-1 text-xs font-bold rounded bg-vetBlue text-white shadow" : "px-2.5 py-1 text-xs font-bold rounded text-gray-600 hover:text-vetBlue";
                 }
             });
-
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang][key]) {
-                    el.innerText = translations[lang][key];
-                }
-            });
-            applySiteSettings();
-            renderNavButtons();
-            renderTicker();
-            renderNews();
-            renderGallery();
         }
 
         function getNews() {
             return JSON.parse(localStorage.getItem('vet_conf_news')) || [
                 {
                     id: 1,
-                    title: { ar: "انطلاق التحضيرات للمؤتمر الدولي التاسع", en: "Preparations start for 9th Int. Conference", fr: "Début des préparatifs de la 9e conférence", de: "Vorbereitungen für die 9. Internationale Konferenz gestartet" },
-                    desc: { ar: "عقدت اللجنة العليا للمؤتمر اجتماعها الأول لمناقشة الترتيبات النهائية.", en: "The high committee held its first meeting to discuss final arrangements.", fr: "Le comité supérieur a tenu sa première réunion pour discuter des arrangements finaux.", de: "Das Hohe Komitee hielt seine erste Sitzung ab, um die finalen Arrangements zu besprechen." },
+                    title: { ar: "انطلاق التحضيرات للمؤتمر الدولي التاسع" },
+                    desc: { ar: "عقدت اللجنة العليا للمؤتمر اجتماعها الأول لمناقشة الترتيبات النهائية." },
                     media: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop",
                     type: "image",
                     date: "2026-07-01"
@@ -1543,8 +1506,8 @@
             const newsList = getNews();
             container.innerHTML = '';
             newsList.forEach(item => {
-                const title = (item.title && item.title[currentLang]) ? item.title[currentLang] : (item.title ? item.title.ar : "");
-                const desc = (item.desc && item.desc[currentLang]) ? item.desc[currentLang] : (item.desc ? item.desc.ar : "");
+                const title = item.title.ar || "";
+                const desc = item.desc.ar || "";
                 const isVideo = item.type === 'video';
 
                 const card = document.createElement('div');
@@ -1591,8 +1554,8 @@
             const item = newsList.find(n => n.id == id);
             if (!item) return;
 
-            const title = (item.title && item.title[currentLang]) ? item.title[currentLang] : (item.title ? item.title.ar : "");
-            const desc = (item.desc && item.desc[currentLang]) ? item.desc[currentLang] : (item.desc ? item.desc.ar : "");
+            const title = item.title.ar || "";
+            const desc = item.desc.ar || "";
             const isVideo = item.type === 'video';
 
             const imgContainer = document.getElementById('news-modal-image-container');
@@ -1605,7 +1568,6 @@
             document.getElementById('news-modal-date').innerText = item.date;
             document.getElementById('news-modal-title').innerText = title;
             document.getElementById('news-modal-desc').innerText = desc;
-
             document.getElementById('news-details-modal').classList.remove('hidden');
         }
 
@@ -1645,7 +1607,7 @@
             const regs = getRegistrations();
             regs.push(newReg);
             localStorage.setItem('vet_conf_regs', JSON.stringify(regs));
-            showCustomAlert(currentLang === 'ar' ? "تم تسجيل الحضور بنجاح!" : "Registration successful!");
+            showCustomAlert("تم تسجيل الحضور بنجاح!");
             document.getElementById('registration-form').reset();
         }
 
@@ -1665,11 +1627,13 @@
                 document.getElementById('admin-pass-input').value = '';
                 document.getElementById('admin-dashboard').classList.remove('hidden');
                 loadSiteSettingsForm();
+                loadAdminNavButtons();
+                loadAboutSettingsForm();
+                loadVenueSettingsForm();
                 loadAdminSponsors();
                 loadAdminOrgItems();
                 loadAdminTicker();
                 loadAdminNews();
-                loadAdminNavButtons();
                 loadAdminRegs();
             } else {
                 showCustomAlert("كلمة المرور غير صحيحة!");
@@ -1681,18 +1645,21 @@
         }
 
         function switchTab(tabId) {
-            ['site-settings', 'sponsorship-manager', 'org-manager', 'ticker-manager', 'add-news', 'manage-news', 'nav-manager', 'change-password', 'registrations'].forEach(t => {
+            ['site-settings', 'nav-manager', 'about-manager', 'venue-manager', 'sponsorship-manager', 'org-manager', 'ticker-manager', 'add-news', 'manage-news', 'change-password', 'registrations'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
                 document.getElementById(`tab-btn-${t}`).className = "w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2";
             });
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
             document.getElementById(`tab-btn-${tabId}`).className = "w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm bg-vetBlue text-white flex items-center gap-2";
+            
             if (tabId === 'site-settings') loadSiteSettingsForm();
+            if (tabId === 'nav-manager') loadAdminNavButtons();
+            if (tabId === 'about-manager') loadAboutSettingsForm();
+            if (tabId === 'venue-manager') loadVenueSettingsForm();
             if (tabId === 'sponsorship-manager') loadAdminSponsors();
             if (tabId === 'org-manager') loadAdminOrgItems();
             if (tabId === 'ticker-manager') loadAdminTicker();
             if (tabId === 'manage-news') loadAdminNews();
-            if (tabId === 'nav-manager') loadAdminNavButtons();
             if (tabId === 'registrations') loadAdminRegs();
         }
 
@@ -1704,52 +1671,37 @@
             const titleAr = document.getElementById('news-title-ar').value;
             const descAr = document.getElementById('news-desc-ar').value;
 
-            const submitBtn = document.getElementById('news-submit-btn');
-            const orig = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
-            submitBtn.disabled = true;
-
             let newsList = getNews();
 
             function saveRecord(mediaUrl) {
                 if (editId) {
                     newsList = newsList.map(item => {
                         if (item.id == editId) {
-                            return {
-                                ...item,
-                                title: { ar: titleAr, en: titleAr, fr: titleAr, de: titleAr },
-                                desc: { ar: descAr, en: descAr, fr: descAr, de: descAr },
-                                media: mediaUrl || item.media
-                            };
+                            return { ...item, title: { ar: titleAr }, desc: { ar: descAr }, media: mediaUrl || item.media };
                         }
                         return item;
                     });
                 } else {
                     newsList.unshift({
                         id: Date.now(),
-                        title: { ar: titleAr, en: titleAr, fr: titleAr, de: titleAr },
-                        desc: { ar: descAr, en: descAr, fr: descAr, de: descAr },
+                        title: { ar: titleAr },
+                        desc: { ar: descAr },
                         media: mediaUrl || "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop",
                         type: file && file.type.startsWith('video') ? 'video' : 'image',
                         date: new Date().toISOString().split('T')[0]
                     });
                 }
-
                 localStorage.setItem('vet_conf_news', JSON.stringify(newsList));
                 showCustomAlert("تم حفظ الخبر بنجاح!");
                 resetNewsForm();
                 loadAdminNews();
                 renderNews();
                 renderGallery();
-                submitBtn.innerHTML = orig;
-                submitBtn.disabled = false;
             }
 
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(event) {
-                    saveRecord(event.target.result);
-                };
+                reader.onload = function(event) { saveRecord(event.target.result); };
                 reader.readAsDataURL(file);
             } else {
                 saveRecord(null);
@@ -1796,8 +1748,8 @@
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="editNews(${item.id})" class="bg-vetBlue hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1"><i class="fa-solid fa-pen"></i> تعديل</button>
-                        <button onclick="deleteNews(${item.id})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1"><i class="fa-solid fa-trash"></i> حذف</button>
+                        <button onclick="editNews(${item.id})" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i> تعديل</button>
+                        <button onclick="deleteNews(${item.id})" class="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-trash"></i> حذف</button>
                     </div>
                 `;
                 container.appendChild(div);
@@ -1837,89 +1789,6 @@
             localStorage.setItem('vet_conf_admin_pass', newPass);
             showCustomAlert("تم تغيير كلمة المرور بنجاح!");
             e.target.reset();
-        }
-
-        function handleSaveNavButton(e) {
-            e.preventDefault();
-            const editId = document.getElementById('edit-nav-id').value;
-            const nameAr = document.getElementById('nav-name-ar').value;
-            const href = document.getElementById('nav-link-href').value;
-
-            let buttons = getNavButtons();
-
-            if (editId) {
-                buttons = buttons.map(b => {
-                    if (b.id === editId) {
-                        return { ...b, ar: nameAr, en: nameAr, fr: nameAr, de: nameAr, href: href };
-                    }
-                    return b;
-                });
-            } else {
-                buttons.push({
-                    id: 'btn_' + Date.now(),
-                    ar: nameAr,
-                    en: nameAr,
-                    fr: nameAr,
-                    de: nameAr,
-                    href: href
-                });
-            }
-
-            localStorage.setItem('vet_conf_nav_buttons', JSON.stringify(buttons));
-            showCustomAlert("تم حفظ القسم بنجاح!");
-            resetNavForm();
-            loadAdminNavButtons();
-            renderNavButtons();
-        }
-
-        function editNavButton(id) {
-            const buttons = getNavButtons();
-            const btn = buttons.find(b => b.id === id);
-            if (btn) {
-                document.getElementById('edit-nav-id').value = btn.id;
-                document.getElementById('nav-name-ar').value = btn.ar;
-                document.getElementById('nav-link-href').value = btn.href;
-                document.getElementById('nav-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
-                document.getElementById('nav-cancel-btn').classList.remove('hidden');
-            }
-        }
-
-        function resetNavForm() {
-            document.getElementById('edit-nav-id').value = '';
-            document.getElementById('nav-name-ar').value = '';
-            document.getElementById('nav-link-href').value = '';
-            document.getElementById('nav-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة القسم';
-            document.getElementById('nav-cancel-btn').classList.add('hidden');
-        }
-
-        function loadAdminNavButtons() {
-            const container = document.getElementById('admin-nav-list');
-            const buttons = getNavButtons();
-            container.innerHTML = '';
-            buttons.forEach(btn => {
-                const div = document.createElement('div');
-                div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
-                div.innerHTML = `
-                    <div>
-                        <span class="font-bold">${btn.ar}</span> <span class="text-xs text-gray-500">(${btn.href})</span>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="editNavButton('${btn.id}')" class="bg-vetBlue hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1"><i class="fa-solid fa-pen"></i> تعديل</button>
-                        <button onclick="deleteNavButton('${btn.id}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1"><i class="fa-solid fa-trash"></i> حذف</button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function deleteNavButton(id) {
-            if (confirm("هل أنت متأكد من حذف هذا القسم؟")) {
-                let buttons = getNavButtons();
-                buttons = buttons.filter(b => b.id !== id);
-                localStorage.setItem('vet_conf_nav_buttons', JSON.stringify(buttons));
-                loadAdminNavButtons();
-                renderNavButtons();
-            }
         }
 
         function loadAdminRegs() {
@@ -2020,6 +1889,8 @@
         window.onload = function() {
             applySiteSettings();
             renderNavButtons();
+            applyAboutSettings();
+            applyVenueSettings();
             renderSponsors();
             renderOrgItems();
             renderTicker();
