@@ -3226,7 +3226,50 @@
             setTimeout(() => { printWindow.print(); }, 800);
         }
 
-        // ========== Vision, Mission, Goals Management ==========
+        // ========== الترجمة التلقائية (عربي -> إنجليزي) لكل حقول لوحة التحكم ==========
+        async function translateArToEn(text) {
+            const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=ar&tl=en&dt=t&q=' + encodeURIComponent(text);
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('translate failed');
+            const data = await res.json();
+            return data[0].map(part => part[0]).join('');
+        }
+        async function translateField(arId, enId, btn) {
+            const arEl = document.getElementById(arId);
+            const enEl = document.getElementById(enId);
+            if (!arEl || !arEl.value.trim()) { showCustomAlert('اكتب النص العربي الأول عشان نترجمه'); return; }
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+            btn.disabled = true;
+            try {
+                const translated = await translateArToEn(arEl.value.trim());
+                enEl.value = translated;
+                enEl.dispatchEvent(new Event('input'));
+            } catch (err) {
+                showCustomAlert('تعذّرت الترجمة التلقائية، تأكد من الاتصال بالإنترنت أو اكتبها يدويًا');
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+        // تبحث في كل حقول لوحة التحكم عن أزواج (id ينتهي بـ -ar / id ينتهي بـ -en) وتضيف زرار "ترجمة تلقائية" بجانب كل حقل إنجليزي
+        function injectAutoTranslateButtons() {
+            document.querySelectorAll('input[id$="-en"], textarea[id$="-en"]').forEach(enEl => {
+                if (enEl.dataset.autoTranslateReady) return; // تجنب التكرار
+                const enId = enEl.id;
+                const arId = enId.slice(0, -3) + '-ar';
+                const arEl = document.getElementById(arId);
+                if (!arEl) return;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.title = 'ترجمة تلقائية من العربي';
+                btn.className = 'mt-1 text-[11px] font-bold text-vetBlue bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg px-2 py-1 flex items-center gap-1 w-fit';
+                btn.innerHTML = '<i class="fa-solid fa-language"></i> ترجمة تلقائية من العربي';
+                btn.onclick = () => translateField(arId, enId, btn);
+                enEl.insertAdjacentElement('afterend', btn);
+                enEl.dataset.autoTranslateReady = '1';
+            });
+        }
         function getVmgSettings() {
             return JSON.parse(localStorage.getItem('vet_conf_vmg')) || {
                 vision: { ar: "الريادة الإقليمية والدولية في الابتكار البحثي والتطبيقي لعلوم الطب البيطري.", en: "Regional and international leadership in research and applied innovation in veterinary sciences." },
@@ -4244,6 +4287,7 @@
             renderCustomSections();
             applySectionVisibility();
             applyTranslations();
+            injectAutoTranslateButtons();
 
             // إعادة رسم احتياطية للقائمة الجانبية لضمان ظهورها من أول تحميل
             setTimeout(function() {
