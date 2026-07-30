@@ -79,9 +79,8 @@
                 <div class="flex items-center space-x-2 space-x-reverse shrink-0">
                     <div class="flex bg-gray-100 p-1 rounded-lg border border-gray-200">
                         <button onclick="changeLang('ar')" id="btn-ar" class="px-2 py-1 text-xs font-bold rounded bg-vetBlue text-white shadow">AR</button>
-                        <button onclick="changeLang('en')" id="btn-en" class="px-2.5 py-1 text-xs font-bold rounded text-gray-600 hover:text-vetBlue">EN</button>
-                        <button onclick="changeLang('fr')" id="btn-fr" class="px-2.5 py-1 text-xs font-bold rounded text-gray-600 hover:text-vetBlue">FR</button>
-                        <button onclick="changeLang('de')" id="btn-de" class="px-2.5 py-1 text-xs font-bold rounded text-gray-600 hover:text-vetBlue">DE</button>
+                        <button onclick="changeLang('en')" id="btn-en" class="px-2.5 py-1 text-xs font-bold rounded text-gray-600 hover:text-vetBlue flex items-center gap-1"><img src="https://flagcdn.com/24x18/gb.png" alt="EN" class="inline-block w-4 h-3 rounded-sm"> EN</button>
+
                     </div>
                     <button onclick="openAdminModal()" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg text-xs font-bold shadow transition flex items-center gap-1.5">
                         <i class="fa-solid fa-lock"></i> <span data-i18n="menu_admin">لوحة التحكم</span>
@@ -363,10 +362,9 @@
             </div>
             <div class="flex flex-col md:flex-row items-center justify-between w-full gap-4 pt-4 border-t border-blue-950/50">
                 <p class="text-sm" data-i18n="footer_copy">© 2026 كلية الطب البيطري - جامعة كفرالشيخ. جميع الحقوق محفوظة.</p>
-                <div class="flex items-center space-x-4 space-x-reverse text-xl">
-                    <a href="#" class="hover:text-white transition"><i class="fa-brands fa-facebook"></i></a>
-                    <a href="#" class="hover:text-white transition"><i class="fa-brands fa-twitter"></i></a>
-                    <a href="#" class="hover:text-white transition"><i class="fa-solid fa-globe"></i></a>
+                <div class="flex items-center gap-3">
+                    <a id="fb-link-footer" href="https://facebook.com" target="_blank" class="hover:text-white transition text-xl"><i class="fa-brands fa-facebook"></i></a>
+                    <span class="text-sm" id="fb-link-text" data-i18n="fb_link_text">الصفحة الرسمية للمؤتمر على الفيسبوك</span>
                 </div>
             </div>
         </div>
@@ -507,6 +505,10 @@
                         <div>
                             <label class="block text-sm font-bold mb-1">وصف قسم Hero *</label>
                             <textarea id="set-hero-desc" rows="2" required class="w-full px-4 py-2 border rounded-lg"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">رابط صفحة الفيسبوك الرسمية</label>
+                            <input type="url" id="set-fb-link" class="w-full px-4 py-2 border rounded-lg" placeholder="https://facebook.com/...">
                         </div>
                         <button type="submit" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-save"></i> حفظ وتحديث نصوص الصفحة</button>
                     </form>
@@ -658,10 +660,6 @@
                             <label class="block text-sm font-bold mb-1">Text (English) *</label>
                             <input type="text" id="ticker-text-en" required class="w-full px-4 py-2 border rounded-lg form-input-focus" placeholder="e.g. Registration is now open...">
                         </div>
-                        <div>
-                            <label class="block text-sm font-bold mb-1">Text (Deutsch) *</label>
-                            <input type="text" id="ticker-text-de" required class="w-full px-4 py-2 border rounded-lg form-input-focus" placeholder="z.B. Die Anmeldung ist jetzt geöffnet...">
-                        </div>
                         <div class="flex gap-2">
                             <button type="submit" id="ticker-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة للشريط العاجل</button>
                             <button type="button" id="ticker-cancel-btn" onclick="resetTickerForm()" class="bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-bold hidden">إلغاء التعديل</button>
@@ -701,19 +699,6 @@
                                 <div>
                                     <label class="block text-sm font-bold mb-1">Description (English) *</label>
                                     <textarea id="news-desc-en" rows="2" required class="w-full px-4 py-2 border rounded-lg"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="border-b border-gray-200 pb-4 mb-2">
-                            <h5 class="font-bold text-sm text-amber-700 mb-3"><i class="fa-solid fa-language ml-2"></i>Deutsche Version</h5>
-                            <div class="grid sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-bold mb-1">Titel (Deutsch) *</label>
-                                    <input type="text" id="news-title-de" required class="w-full px-4 py-2 border rounded-lg">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold mb-1">Beschreibung (Deutsch) *</label>
-                                    <textarea id="news-desc-de" rows="2" required class="w-full px-4 py-2 border rounded-lg"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -1203,7 +1188,8 @@
                 org_heading: "الهيكل التنظيمي للمؤتمر",
                 news_read_more: "اقرأ التفاصيل كاملة",
                 conference_theme: "الطب البيطري بين البحث العلمي والابتكار في ضوء فرص وتحديات سوق العمل والصحة المشتركة",
-                contact_heading: "تواصل مع المؤتمر"
+                contact_heading: "تواصل مع المؤتمر",
+                fb_link_text: "الصفحة الرسمية للمؤتمر على الفيسبوك"
             },
             en: {
                 nav_title: "9th International Veterinary Conference",
@@ -1295,160 +1281,8 @@
                 org_heading: "Organizational Structure",
                 news_read_more: "Read Full Details",
                 conference_theme: "Veterinary Medicine Between Scientific Research and Innovation in Light of Opportunities and Challenges of the Labor Market and Shared Health",
-                contact_heading: "Contact the Conference"
-            },
-            fr: {
-                nav_title: "9e Conférence Internationale Vétérinaire",
-                nav_subtitle: "Université de Kafrelsheikh - Égypte",
-                menu_admin: "Panneau d'administration",
-                hero_badge: "Événement Scientifique Majeur",
-                hero_title: "La 9e Conférence Scientifique Internationale de Médecine Vétérinaire",
-                hero_desc: "Vers de nouveaux horizons dans la recherche scientifique vétérinaire, le développement de l'élevage et la sécurité alimentaire durable.",
-                hero_btn_reg: "Inscrivez-vous",
-                hero_btn_more: "En savoir plus",
-                ticker_label: "Urgent",
-                about_heading: "À propos de la Conférence",
-                axes_heading: "Axes de la Conférence",
-                schedule_heading: "Dates Importantes",
-                news_heading: "Actualités",
-                gallery_heading: "Galerie Photo & Vidéo",
-                reg_heading: "Inscription et Participation",
-                reg_sub: "Veuillez remplir vos coordonnées avec précision",
-                form_name: "Nom Complet *",
-                form_email: "Email *",
-                form_phone: "Téléphone *",
-                form_country: "Pays *",
-                form_org: "Organisation *",
-                form_category: "Catégorie *",
-                cat_researcher: "Chercheur / Académique",
-                cat_vet: "Vétérinaire",
-                cat_student: "Étudiant",
-                cat_faculty: "Membre du corps professoral",
-                form_type: "Type de Participation *",
-                type_attend: "Participation uniquement",
-                type_paper: "Présentation d'article",
-                type_opening: "Jour d'ouverture uniquement",
-                type_full: "Abonnement complet / Charm el-Cheikh",
-                form_notes: "Notes ou Titre de l'article",
-                form_submit: "Soumettre",
-                credits_text: "Programmé et conçu par Dr. Mahmoud Ellawatiy © 2026",
-                footer_copy: "© 2026 Faculté de Médecine Vétérinaire - Université de Kafrelsheikh. Tous droits réservés.",
-                admin_login_title: "Connexion au Tableau de Bord",
-                admin_pass_label: "Mot de passe",
-                btn_cancel: "Annuler",
-                btn_login: "Connexion",
-                dash_title: "Tableau de Bord",
-                dash_logout: "Déconnexion",
-                tab_site_settings: "Paramètres du site",
-                tab_ticker_manager: "Gestion du bandeau",
-                tab_add_news: "Ajouter une actualité",
-                tab_manage_news: "Gérer les actualités",
-                tab_change_pass: "Changer le mot de passe",
-                tab_regs: "Inscrits",
-                manage_news_heading: "Actualités publiées",
-                regs_heading: "Participants inscrits",
-                th_name: "Nom",
-                th_email: "Email",
-                th_phone: "Téléphone",
-                th_country: "Pays",
-                th_org: "Organisation",
-                th_category: "Catégorie",
-                th_type: "Type",
-                th_action: "Action",
-                conference_theme: "Médecine vétérinaire entre la recherche scientifique et l'innovation à la lumière des opportunités et des défis du marché du travail et de la santé partagée",
-                contact_heading: "Contacter la Conférence"
-            },
-            de: {
-                nav_title: "9. Internationale Veterinärmedizinische Konferenz",
-                nav_subtitle: "Kafrelsheikh Universität - Ägypten",
-                menu_admin: "Admin-Panel",
-                hero_badge: "Bedeutendstes Wissenschaftliches Ereignis",
-                hero_title: "Die 9. Internationale Wissenschaftliche Konferenz für Veterinärmedizin",
-                hero_desc: "Auf dem Weg zu neuen Horizonten in der veterinärmedizinischen Forschung, Tierentwicklung und nachhaltigen Ernährungssicherheit.",
-                hero_btn_reg: "Jetzt anmelden",
-                hero_btn_more: "Mehr erfahren",
-                ticker_label: "Aktuell",
-                about_heading: "Über die Konferenz",
-                about_p1: "Die 9. Internationale Wissenschaftliche Konferenz der Fakultät für Veterinärmedizin der Universität Kafrelsheikh ist eine globale Plattform, die führende Wissenschaftler, Forscher und Tierärzte zusammenbringt.",
-                about_p2: "Die Konferenz zielt darauf ab, moderne Innovationen in der Diagnose und Behandlung von Tierkrankheiten sowie Lebensmittelsicherheit hervorzuheben.",
-                about_li1: "International anerkannte wissenschaftliche Sitzungen",
-                about_li2: "Fortgeschrittene angewandte Workshops",
-                about_li3: "Einzigartige Gelegenheit für akademische und berufliche Vernetzung",
-                axes_heading: "Konferenzschwerpunkte",
-                axis_1_title: "Tier- und Geflügelkrankheiten",
-                axis_1_desc: "Moderne Diagnose, fortschrittliche Behandlungsmethoden und wirksame Impfprogramme.",
-                axis_2_title: "Lebensmittelsicherheit und öffentliche Gesundheit",
-                axis_2_desc: "Kontrolle von Lebensmitteln tierischen Ursprungs und Zoonosen.",
-                axis_3_title: "Biotechnologie und Genomik",
-                axis_3_desc: "Anwendungen der Gentechnik und Biotechnologie in der Veterinärmedizin.",
-                schedule_heading: "Wichtige Termine",
-                date_1: "15. August",
-                date_2: "01. September",
-                date_3: "20.-22. Oktober",
-                sched_1_title: "Einreichungsfrist für Abstracts und Arbeiten",
-                sched_2_title: "Benachrichtigung über die Annahme von Arbeiten",
-                sched_3_title: "Eröffnung der 9. Internationalen Konferenz",
-                news_heading: "Konferenznachrichten",
-                gallery_heading: "Foto- und Videogalerie",
-                reg_heading: "Teilnahme und Anmeldung",
-                reg_sub: "Bitte füllen Sie Ihre Daten genau aus, um sich für die Konferenz zu registrieren",
-                form_name: "Vollständiger Name *",
-                form_email: "E-Mail *",
-                form_phone: "Telefonnummer *",
-                form_country: "Land *",
-                form_org: "Organisation *",
-                form_category: "Kategorie *",
-                cat_researcher: "Forscher / Akademiker",
-                cat_vet: "Tierarzt",
-                cat_student: "Student",
-                cat_faculty: "Hochschullehrkraft",
-                form_type: "Teilnahmeart *",
-                type_attend: "Nur Teilnahme",
-                type_paper: "Präsentation einer Arbeit",
-                type_opening: "Nur Eröffnungstag",
-                type_full: "Vollmitgliedschaft / Scharm El-Scheich",
-                form_notes: "Notizen oder Titel der Arbeit",
-                form_submit: "Anmeldung absenden",
-                credits_text: "Programmiert und gestaltet von Dr. Mahmoud Ellawatiy © 2026",
-                footer_copy: "© 2026 Fakultät für Veterinärmedizin - Kafrelsheikh Universität. Alle Rechte vorbehalten.",
-                admin_login_title: "Admin-Dashboard-Anmeldung",
-                admin_pass_label: "Passwort",
-                btn_cancel: "Abbrechen",
-                btn_login: "Anmelden",
-                dash_title: "Konferenz-Bedienfeld",
-                dash_logout: "Abmelden",
-                tab_site_settings: "Seiteneinstellungen",
-                tab_ticker_manager: "Ticker-Verwaltung",
-                tab_add_news: "Nachricht hinzufügen",
-                tab_manage_news: "Nachrichten verwalten",
-                tab_change_pass: "Passwort ändern",
-                tab_regs: "Anmeldungen",
-                manage_news_heading: "Veröffentlichte Nachrichten",
-                regs_heading: "Registrierte Teilnehmer",
-                th_name: "Name",
-                th_email: "E-Mail",
-                th_phone: "Telefon",
-                th_country: "Land",
-                th_org: "Organisation",
-                th_category: "Kategorie",
-                th_type: "Typ",
-                th_action: "Aktion",
-                sponsorship_title: "Konferenzsponsoren",
-                sponsorship_desc: "Die Konferenz steht unter der Schirmherrschaft wichtiger akademischer und Forschungseinrichtungen.",
-                vmg_vision: "Konferenzvision",
-                vmg_mission: "Konferenzmission",
-                vmg_goals: "Konferenzziele",
-                journal_title: "Forschungsjournal",
-                papers_title: "Akzeptierte Arbeiten",
-                fees_title: "Teilnahmegebühren",
-                speakers_title: "Referenten",
-                committees_title: "Wissenschaftliche Ausschüsse",
-                schedule_heading_title: "Wichtige Termine",
-                venue_heading: "Konferenzort",
-                org_heading: "Organisationsstruktur",
-                news_read_more: "Vollständige Details lesen",
-                conference_theme: "Veterinärmedizin zwischen wissenschaftlicher Forschung und Innovation im Lichte der Chancen und Herausforderungen des Arbeitsmarktes und der gemeinsamen Gesundheit",
-                contact_heading: "Kontakt zur Konferenz"
+                contact_heading: "Contact the Conference",
+                fb_link_text: "Official Conference Facebook Page"
             }
         };
 
@@ -1903,9 +1737,9 @@
         // Ticker Management Functions
         function getTickerItems() {
             return JSON.parse(localStorage.getItem('vet_conf_ticker')) || [
-                { id: 1, ar: "✨ تم فتح باب تسجيل الأبحاث العلمية للمؤتمر الدولي التاسع.", en: "✨ Registration for scientific papers for the 9th International Conference is now open.", de: "✨ Die Anmeldung für wissenschaftliche Arbeiten zur 9. Internationalen Konferenz ist jetzt geöffnet." },
-                { id: 2, ar: "🚀 انطلاق فعاليات المؤتمر برعاية معالي رئيس جامعة كفر الشيخ.", en: "🚀 Conference activities launched under the patronage of Kafrelsheikh University President.", de: "🚀 Die Konferenzaktivitäten wurden unter der Schirmherrschaft des Präsidenten der Universität Kafrelsheikh eröffnet." },
-                { id: 3, ar: "📅 آخر موعد لتلقي الملخصات هو منتصف الشهر القادم.", en: "📅 The deadline for abstract submission is mid-next month.", de: "📅 Die Einreichungsfrist für Abstracts ist Mitte nächsten Monats." }
+                { id: 1, ar: "✨ تم فتح باب تسجيل الأبحاث العلمية للمؤتمر الدولي التاسع.", en: "✨ Registration for scientific papers for the 9th International Conference is now open." },
+                { id: 2, ar: "🚀 انطلاق فعاليات المؤتمر برعاية معالي رئيس جامعة كفر الشيخ.", en: "🚀 Conference activities launched under the patronage of Kafrelsheikh University President." },
+                { id: 3, ar: "📅 آخر موعد لتلقي الملخصات هو منتصف الشهر القادم.", en: "📅 The deadline for abstract submission is mid-next month." }
             ];
         }
 
@@ -1914,13 +1748,11 @@
             const editId = document.getElementById('edit-ticker-id').value;
             const textAr = document.getElementById('ticker-text-ar').value;
             const textEn = document.getElementById('ticker-text-en').value;
-            const textDe = document.getElementById('ticker-text-de').value;
-
             let tickers = getTickerItems();
             if (editId) {
-                tickers = tickers.map(t => t.id == editId ? { ...t, ar: textAr, en: textEn, de: textDe } : t);
+                tickers = tickers.map(t => t.id == editId ? { ...t, ar: textAr, en: textEn } : t);
             } else {
-                tickers.push({ id: Date.now(), ar: textAr, en: textEn, de: textDe });
+                tickers.push({ id: Date.now(), ar: textAr, en: textEn });
             }
 
             localStorage.setItem('vet_conf_ticker', JSON.stringify(tickers));
@@ -1972,7 +1804,7 @@
                 div.innerHTML = `
                     <div class="flex-1 min-w-0">
                         <div class="font-semibold text-sm truncate">${t.ar}</div>
-                        <div class="text-xs text-gray-400 truncate">EN: ${t.en || ''} | DE: ${t.de || ''}</div>
+                        <div class="text-xs text-gray-400 truncate">EN: ${t.en || ''}</div>
                     </div>
                     <div class="flex gap-2 shrink-0 mr-3">
                         <button onclick="editTicker(${t.id})" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i> تعديل</button>
@@ -1990,7 +1822,7 @@
             if (tickers.length === 0) {
                 const span = document.createElement('span');
                 span.className = "mx-6";
-                span.innerText = currentLang === 'en' ? 'No breaking news' : (currentLang === 'de' ? 'Keine aktuellen Nachrichten' : 'لا توجد أخبار عاجلة حالياً');
+                span.innerText = currentLang === 'en' ? 'No breaking news' : 'لا توجد أخبار عاجلة حالياً';
                 container.appendChild(span);
                 return;
             }
@@ -2020,7 +1852,8 @@
                 subtitle: "جامعة كفر الشيخ - مصر",
                 heroBadge: "الحدث العلمي الأبرز",
                 heroTitle: "المؤتمر العلمي الدولي التاسع لكلية الطب البيطري",
-                heroDesc: "نحو آفاق جديدة في البحث العلمي البيطري وتنمية الثروة الحيوانية وتحقيق الأمن الغذائي المستدام."
+                heroDesc: "نحو آفاق جديدة في البحث العلمي البيطري وتنمية الثروة الحيوانية وتحقيق الأمن الغذائي المستدام.",
+                fbLink: "https://facebook.com"
             };
         }
 
@@ -2031,7 +1864,8 @@
                 subtitle: document.getElementById('set-site-subtitle').value,
                 heroBadge: document.getElementById('set-hero-badge').value,
                 heroTitle: document.getElementById('set-hero-title').value,
-                heroDesc: document.getElementById('set-hero-desc').value
+                heroDesc: document.getElementById('set-hero-desc').value,
+                fbLink: document.getElementById('set-fb-link').value
             };
 
             localStorage.setItem('vet_conf_settings', JSON.stringify(settings));
@@ -2046,6 +1880,8 @@
             document.getElementById('hero-badge-text').innerText = s.heroBadge;
             document.getElementById('hero-title-text').innerText = s.heroTitle;
             document.getElementById('hero-desc-text').innerText = s.heroDesc;
+            const fbLink = document.getElementById('fb-link-footer');
+            if (fbLink) fbLink.href = s.fbLink || '#';
         }
 
         function loadSiteSettingsForm() {
@@ -2055,6 +1891,7 @@
             document.getElementById('set-hero-badge').value = s.heroBadge;
             document.getElementById('set-hero-title').value = s.heroTitle;
             document.getElementById('set-hero-desc').value = s.heroDesc;
+            document.getElementById('set-fb-link').value = s.fbLink || '';
         }
 
         function applyTranslations() {
@@ -2082,7 +1919,7 @@
             const html = document.documentElement;
             html.setAttribute('lang', lang);
             html.setAttribute('dir', (lang === 'ar' ? 'rtl' : 'ltr'));
-            ['ar', 'en', 'fr', 'de'].forEach(l => {
+            ['ar', 'en'].forEach(l => {
                 const btn = document.getElementById(`btn-${l}`);
                 if (btn) {
                     btn.className = (l === lang) ? "px-2 py-1 text-xs font-bold rounded bg-vetBlue text-white shadow" : "px-2.5 py-1 text-xs font-bold rounded text-gray-600 hover:text-vetBlue";
@@ -2105,8 +1942,8 @@
             return JSON.parse(localStorage.getItem('vet_conf_news')) || [
                 {
                     id: 1,
-                    title: { ar: "انطلاق التحضيرات للمؤتمر الدولي التاسع", en: "Launch of Preparations for the 9th International Conference", de: "Vorbereitungen für die 9. Internationale Konferenz" },
-                    desc: { ar: "عقدت اللجنة العليا للمؤتمر اجتماعها الأول لمناقشة الترتيبات النهائية.", en: "The Supreme Committee held its first meeting to discuss final arrangements.", de: "Das Oberkomitee hielt seine erste Sitzung ab, um die endgültigen Vorbereitungen zu besprechen." },
+                    title: { ar: "انطلاق التحضيرات للمؤتمر الدولي التاسع", en: "Launch of Preparations for the 9th International Conference" },
+                    desc: { ar: "عقدت اللجنة العليا للمؤتمر اجتماعها الأول لمناقشة الترتيبات النهائية.", en: "The Supreme Committee held its first meeting to discuss final arrangements." },
                     media: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop",
                     type: "image",
                     date: "2026-07-01"
@@ -2317,24 +2154,21 @@
             const descAr = document.getElementById('news-desc-ar').value;
             const titleEn = document.getElementById('news-title-en').value;
             const descEn = document.getElementById('news-desc-en').value;
-            const titleDe = document.getElementById('news-title-de').value;
-            const descDe = document.getElementById('news-desc-de').value;
-
             let newsList = getNews();
 
             function saveRecord(mediaUrl) {
                 if (editId) {
                     newsList = newsList.map(item => {
                         if (item.id == editId) {
-                            return { ...item, title: { ar: titleAr, en: titleEn, de: titleDe }, desc: { ar: descAr, en: descEn, de: descDe }, media: mediaUrl || item.media };
+                            return { ...item, title: { ar: titleAr, en: titleEn }, desc: { ar: descAr, en: descEn }, media: mediaUrl || item.media };
                         }
                         return item;
                     });
                 } else {
                     newsList.unshift({
                         id: Date.now(),
-                        title: { ar: titleAr, en: titleEn, de: titleDe },
-                        desc: { ar: descAr, en: descEn, de: descDe },
+                        title: { ar: titleAr, en: titleEn },
+                        desc: { ar: descAr, en: descEn },
                         media: mediaUrl || "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop",
                         type: file && file.type.startsWith('video') ? 'video' : 'image',
                         date: new Date().toISOString().split('T')[0]
@@ -2366,8 +2200,6 @@
                 document.getElementById('news-desc-ar').value = item.desc.ar || '';
                 document.getElementById('news-title-en').value = item.title.en || '';
                 document.getElementById('news-desc-en').value = item.desc.en || '';
-                document.getElementById('news-title-de').value = item.title.de || '';
-                document.getElementById('news-desc-de').value = item.desc.de || '';
                 document.getElementById('news-form-heading').innerText = "تعديل الخبر";
                 document.getElementById('news-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
                 document.getElementById('news-cancel-btn').classList.remove('hidden');
@@ -2381,8 +2213,6 @@
             document.getElementById('news-desc-ar').value = '';
             document.getElementById('news-title-en').value = '';
             document.getElementById('news-desc-en').value = '';
-            document.getElementById('news-title-de').value = '';
-            document.getElementById('news-desc-de').value = '';
             document.getElementById('news-file').value = '';
             document.getElementById('news-form-heading').innerText = "إضافة خبر جديد";
             document.getElementById('news-submit-btn').innerHTML = '<i class="fa-solid fa-globe"></i> نشر فوري وسريع';
@@ -2401,7 +2231,7 @@
                         <img src="${item.media}" class="w-16 h-16 object-cover rounded-lg">
                         <div>
                             <h5 class="font-bold text-vetDark">${item.title.ar}</h5>
-                            <div class="text-xs text-gray-400">EN: ${item.title.en || ''} | DE: ${item.title.de || ''}</div>
+                            <div class="text-xs text-gray-400">EN: ${item.title.en || ''}</div>
                             <span class="text-xs text-gray-500">${item.date}</span>
                         </div>
                     </div>
