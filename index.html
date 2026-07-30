@@ -4287,13 +4287,22 @@
             renderCustomSections();
             applySectionVisibility();
             applyTranslations();
-            injectAutoTranslateButtons();
 
             // إعادة رسم احتياطية للقائمة الجانبية لضمان ظهورها من أول تحميل
             setTimeout(function() {
                 renderNavButtons();
             }, 300);
         };
+
+        // زرار الترجمة التلقائية: بيتنفذ بشكل مستقل تمامًا عن باقي دوال window.onload
+        // عشان لو أي دالة تانية فيها خطأ، الزرار لسه هيظهر ومش هيتأثر
+        window.addEventListener('load', function() {
+            try {
+                injectAutoTranslateButtons();
+            } catch (e) {
+                console.error('injectAutoTranslateButtons failed:', e);
+            }
+        });
     </script>
 
     <!-- Firebase App (Compat SDKs for Script Tags) -->
