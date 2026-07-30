@@ -228,17 +228,17 @@
             <!-- Vision & Mission & Goals -->
             <div class="grid md:grid-cols-3 gap-6">
                 <section id="vision" class="standalone-section bg-white p-6 rounded-3xl shadow-sm border">
-                    <h3 class="text-xl font-black text-vetDark mb-2 flex items-center gap-2" data-i18n="vmg_vision"><i class="fa-solid fa-eye text-vetBlue"></i> رؤية المؤتمر</h3>
+                    <h3 class="text-xl font-black text-vetDark mb-2 flex items-center gap-2" data-i18n="vmg_vision"><i id="vision-icon" class="fa-solid fa-eye text-vetBlue"></i> رؤية المؤتمر</h3>
                     <div class="w-10 h-1 bg-vetGold rounded-full mb-3"></div>
                     <p class="text-gray-600 text-sm leading-relaxed">الريادة الإقليمية والدولية في الابتكار البحثي والتطبيقي لعلوم الطب البيطري.</p>
                 </section>
                 <section id="mission" class="standalone-section bg-white p-6 rounded-3xl shadow-sm border">
-                    <h3 class="text-xl font-black text-vetDark mb-2 flex items-center gap-2" data-i18n="vmg_mission"><i class="fa-solid fa-bullseye text-vetBlue"></i> رسالة المؤتمر</h3>
+                    <h3 class="text-xl font-black text-vetDark mb-2 flex items-center gap-2" data-i18n="vmg_mission"><i id="mission-icon" class="fa-solid fa-bullseye text-vetBlue"></i> رسالة المؤتمر</h3>
                     <div class="w-10 h-1 bg-vetGold rounded-full mb-3"></div>
                     <p class="text-gray-600 text-sm leading-relaxed">توفير بيئة علمية تفاعلية لتبادل الخبرات وتطوير استراتيجيات بحثية وعلاجية حديثة.</p>
                 </section>
                 <section id="goals" class="standalone-section bg-white p-6 rounded-3xl shadow-sm border">
-                    <h3 class="text-xl font-black text-vetDark mb-2 flex items-center gap-2" data-i18n="vmg_goals"><i class="fa-solid fa-flag text-vetBlue"></i> أهداف المؤتمر</h3>
+                    <h3 class="text-xl font-black text-vetDark mb-2 flex items-center gap-2" data-i18n="vmg_goals"><i id="goals-icon" class="fa-solid fa-flag text-vetBlue"></i> أهداف المؤتمر</h3>
                     <div class="w-10 h-1 bg-vetGold rounded-full mb-3"></div>
                     <p class="text-gray-600 text-sm leading-relaxed">تفعيل دور البحث العلمي في إيجاد حلول عملية للمشكلات البيطرية.</p>
                 </section>
@@ -932,6 +932,12 @@
                                 <textarea id="set-vision-en" rows="3" required class="w-full px-4 py-2 border rounded-lg"></textarea>
                             </div>
                         </div>
+                        <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border">
+                            <img id="vision-icon-preview" src="" class="w-10 h-10 rounded-lg object-cover border hidden">
+                            <label class="text-sm font-bold flex-1">صورة أيقونة الرؤية (اختياري، بديل عن أيقونة FontAwesome)</label>
+                            <input type="file" accept="image/*" id="vision-icon-file" onchange="handleVmgIconUpload(event,'vision')" class="text-xs">
+                            <button type="button" onclick="clearVmgIcon('vision')" class="text-xs text-red-500 font-bold">حذف الصورة</button>
+                        </div>
                         <div class="grid sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-bold mb-1">الرسالة (عربي) *</label>
@@ -941,6 +947,12 @@
                                 <label class="block text-sm font-bold mb-1">Mission (English) *</label>
                                 <textarea id="set-mission-en" rows="3" required class="w-full px-4 py-2 border rounded-lg"></textarea>
                             </div>
+                        </div>
+                        <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border">
+                            <img id="mission-icon-preview" src="" class="w-10 h-10 rounded-lg object-cover border hidden">
+                            <label class="text-sm font-bold flex-1">صورة أيقونة الرسالة (اختياري)</label>
+                            <input type="file" accept="image/*" id="mission-icon-file" onchange="handleVmgIconUpload(event,'mission')" class="text-xs">
+                            <button type="button" onclick="clearVmgIcon('mission')" class="text-xs text-red-500 font-bold">حذف الصورة</button>
                         </div>
                         <div class="grid sm:grid-cols-2 gap-4">
                             <div>
@@ -952,6 +964,12 @@
                                 <textarea id="set-goals-en" rows="3" required class="w-full px-4 py-2 border rounded-lg"></textarea>
                             </div>
                         </div>
+                        <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border">
+                            <img id="goals-icon-preview" src="" class="w-10 h-10 rounded-lg object-cover border hidden">
+                            <label class="text-sm font-bold flex-1">صورة أيقونة الأهداف (اختياري)</label>
+                            <input type="file" accept="image/*" id="goals-icon-file" onchange="handleVmgIconUpload(event,'goals')" class="text-xs">
+                            <button type="button" onclick="clearVmgIcon('goals')" class="text-xs text-red-500 font-bold">حذف الصورة</button>
+                        </div>
                         <button type="submit" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-save"></i> حفظ وتحديث الرؤية والرسالة والأهداف</button>
                     </form>
                 </div>
@@ -961,10 +979,17 @@
                     <h4 class="text-xl font-bold text-vetDark">إدارة محاور المؤتمر (إضافة، تعديل، حذف)</h4>
                     <form onsubmit="handleSaveAxis(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
                         <input type="hidden" id="edit-axis-id" value="">
+                        <input type="hidden" id="axis-image" value="">
                         <div class="grid sm:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-sm font-bold mb-1">أيقونة FontAwesome *</label>
                                 <input type="text" id="axis-icon" required class="w-full px-4 py-2 border rounded-lg" placeholder="fa-notes-medical">
+                                <div class="flex items-center gap-2 mt-2">
+                                    <img id="axis-icon-preview" src="" class="w-8 h-8 rounded-lg object-cover border hidden">
+                                    <input type="file" accept="image/*" id="axis-icon-file" onchange="handleAxisIconUpload(event)" class="text-xs">
+                                    <button type="button" onclick="clearAxisIcon()" class="text-xs text-red-500 font-bold">حذف الصورة</button>
+                                </div>
+                                <p class="text-[11px] text-gray-400 mt-1">لو رفعت صورة، هتظهر بدل أيقونة FontAwesome</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold mb-1">عنوان المحور (عربي) *</label>
@@ -3214,16 +3239,57 @@
             document.querySelector('#vision p').innerText = v.vision[currentLang] || v.vision.ar;
             document.querySelector('#mission p').innerText = v.mission[currentLang] || v.mission.ar;
             document.querySelector('#goals p').innerText = v.goals[currentLang] || v.goals.ar;
+            applyVmgIcon('vision', v.vision.image);
+            applyVmgIcon('mission', v.mission.image);
+            applyVmgIcon('goals', v.goals.image);
+        }
+        // يستبدل أيقونة FontAwesome بصورة مرفوعة (لو موجودة)
+        function applyVmgIcon(key, imageUrl) {
+            const el = document.getElementById(key + '-icon');
+            if (!el) return;
+            if (imageUrl) {
+                const img = document.createElement('img');
+                img.id = key + '-icon';
+                img.src = imageUrl;
+                img.className = 'w-6 h-6 rounded object-cover inline-block';
+                el.replaceWith(img);
+            } else if (el.tagName === 'IMG') {
+                // رجع لو كانت اتبدلت قبل كده بصورة، مفيش أيقونة افتراضية محفوظة فهنسيبها كصورة فاضية بسيطة
+            }
+        }
+        // متغير مؤقت لحفظ روابط الصور المرفوعة قبل الحفظ النهائي
+        let vmgIconTemp = { vision: '', mission: '', goals: '' };
+        function handleVmgIconUpload(event, key) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const preview = document.getElementById(key + '-icon-preview');
+            preview.src = URL.createObjectURL(file);
+            preview.classList.remove('hidden');
+            uploadFileToStorage(file, 'vmg_icons').then(url => {
+                vmgIconTemp[key] = url;
+                showCustomAlert('تم رفع الصورة، اضغط حفظ لتثبيتها');
+            }).catch(() => {
+                showCustomAlert('فشل رفع الصورة، حاول مرة أخرى');
+            });
+        }
+        function clearVmgIcon(key) {
+            vmgIconTemp[key] = null;
+            const preview = document.getElementById(key + '-icon-preview');
+            preview.src = '';
+            preview.classList.add('hidden');
+            document.getElementById(key + '-icon-file').value = '';
         }
         function handleSaveVmg(e) {
             e.preventDefault();
+            const prev = getVmgSettings();
             const data = {
-                vision: { ar: document.getElementById('set-vision-ar').value, en: document.getElementById('set-vision-en').value },
-                mission: { ar: document.getElementById('set-mission-ar').value, en: document.getElementById('set-mission-en').value },
-                goals: { ar: document.getElementById('set-goals-ar').value, en: document.getElementById('set-goals-en').value }
+                vision: { ar: document.getElementById('set-vision-ar').value, en: document.getElementById('set-vision-en').value, image: vmgIconTemp.vision !== '' ? vmgIconTemp.vision : (prev.vision.image || null) },
+                mission: { ar: document.getElementById('set-mission-ar').value, en: document.getElementById('set-mission-en').value, image: vmgIconTemp.mission !== '' ? vmgIconTemp.mission : (prev.mission.image || null) },
+                goals: { ar: document.getElementById('set-goals-ar').value, en: document.getElementById('set-goals-en').value, image: vmgIconTemp.goals !== '' ? vmgIconTemp.goals : (prev.goals.image || null) }
             };
             localStorage.setItem('vet_conf_vmg', JSON.stringify(data));
             showCustomAlert("تم حفظ الرؤية والرسالة والأهداف بنجاح!");
+            vmgIconTemp = { vision: '', mission: '', goals: '' };
             applyVmgSettings();
         }
         function loadVmgForm() {
@@ -3234,6 +3300,17 @@
             document.getElementById('set-mission-en').value = v.mission.en || '';
             document.getElementById('set-goals-ar').value = v.goals.ar || '';
             document.getElementById('set-goals-en').value = v.goals.en || '';
+            vmgIconTemp = { vision: '', mission: '', goals: '' };
+            ['vision', 'mission', 'goals'].forEach(key => {
+                const preview = document.getElementById(key + '-icon-preview');
+                if (v[key].image) {
+                    preview.src = v[key].image;
+                    preview.classList.remove('hidden');
+                } else {
+                    preview.src = '';
+                    preview.classList.add('hidden');
+                }
+            });
         }
 
         // ========== Conference Axes Management ==========
@@ -3253,24 +3330,48 @@
                 div.className = "bg-gray-50 p-6 rounded-2xl border";
                 const title = a.title[currentLang] || a.title.ar;
                 const desc = a.desc[currentLang] || a.desc.ar;
+                const iconHtml = a.image
+                    ? `<img src="${a.image}" class="w-full h-full object-cover rounded-lg">`
+                    : `<i class="fa-solid ${a.icon}"></i>`;
                 div.innerHTML = `
-                    <div class="w-10 h-10 bg-blue-100 text-vetBlue rounded-lg flex items-center justify-center text-lg mb-3"><i class="fa-solid ${a.icon}"></i></div>
+                    <div class="w-10 h-10 bg-blue-100 text-vetBlue rounded-lg flex items-center justify-center text-lg mb-3 overflow-hidden">${iconHtml}</div>
                     <h4 class="font-bold text-base mb-1 text-vetDark">${title}</h4>
                     <p class="text-xs text-gray-500">${desc}</p>
                 `;
                 container.appendChild(div);
             });
         }
+        function handleAxisIconUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const preview = document.getElementById('axis-icon-preview');
+            preview.src = URL.createObjectURL(file);
+            preview.classList.remove('hidden');
+            uploadFileToStorage(file, 'axes_icons').then(url => {
+                document.getElementById('axis-image').value = url;
+                showCustomAlert('تم رفع الصورة، اضغط حفظ لتثبيتها');
+            }).catch(() => {
+                showCustomAlert('فشل رفع الصورة، حاول مرة أخرى');
+            });
+        }
+        function clearAxisIcon() {
+            document.getElementById('axis-image').value = '';
+            document.getElementById('axis-icon-file').value = '';
+            const preview = document.getElementById('axis-icon-preview');
+            preview.src = '';
+            preview.classList.add('hidden');
+        }
         function handleSaveAxis(e) {
             e.preventDefault();
             const editId = document.getElementById('edit-axis-id').value;
             const icon = document.getElementById('axis-icon').value;
+            const image = document.getElementById('axis-image').value || null;
             const titleAr = document.getElementById('axis-title-ar').value;
             const titleEn = document.getElementById('axis-title-en').value;
             const descAr = document.getElementById('axis-desc-ar').value;
             const descEn = document.getElementById('axis-desc-en').value;
             let axes = getAxes();
-            const newData = { icon, title: { ar: titleAr, en: titleEn }, desc: { ar: descAr, en: descEn } };
+            const newData = { icon, image, title: { ar: titleAr, en: titleEn }, desc: { ar: descAr, en: descEn } };
             if (editId) {
                 axes = axes.map(a => a.id == editId ? { ...a, ...newData } : a);
             } else {
@@ -3288,10 +3389,14 @@
             if (a) {
                 document.getElementById('edit-axis-id').value = a.id;
                 document.getElementById('axis-icon').value = a.icon;
+                document.getElementById('axis-image').value = a.image || '';
                 document.getElementById('axis-title-ar').value = a.title.ar || '';
                 document.getElementById('axis-title-en').value = a.title.en || '';
                 document.getElementById('axis-desc-ar').value = a.desc.ar || '';
                 document.getElementById('axis-desc-en').value = a.desc.en || '';
+                const preview = document.getElementById('axis-icon-preview');
+                if (a.image) { preview.src = a.image; preview.classList.remove('hidden'); }
+                else { preview.src = ''; preview.classList.add('hidden'); }
                 document.getElementById('axis-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
                 document.getElementById('axis-cancel-btn').classList.remove('hidden');
             }
@@ -3299,10 +3404,14 @@
         function resetAxisForm() {
             document.getElementById('edit-axis-id').value = '';
             document.getElementById('axis-icon').value = '';
+            document.getElementById('axis-image').value = '';
             document.getElementById('axis-title-ar').value = '';
             document.getElementById('axis-title-en').value = '';
             document.getElementById('axis-desc-ar').value = '';
             document.getElementById('axis-desc-en').value = '';
+            document.getElementById('axis-icon-preview').src = '';
+            document.getElementById('axis-icon-preview').classList.add('hidden');
+            document.getElementById('axis-icon-file').value = '';
             document.getElementById('axis-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة محور';
             document.getElementById('axis-cancel-btn').classList.add('hidden');
         }
@@ -3323,8 +3432,9 @@
                 const div = document.createElement('div');
                 div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
                 const titleLabel = a.title.ar || '';
+                const iconLabel = a.image ? `<img src="${a.image}" class="inline-block w-5 h-5 rounded object-cover ml-2 align-middle">` : `<i class="fa-solid ${a.icon} ml-2"></i>`;
                 div.innerHTML = `
-                    <span class="font-bold text-sm"><i class="fa-solid ${a.icon} ml-2"></i>${titleLabel}</span>
+                    <span class="font-bold text-sm">${iconLabel}${titleLabel}</span>
                     <div class="flex gap-2 shrink-0">
                         <button onclick="editAxis(${a.id})" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i> تعديل</button>
                         <button onclick="deleteAxis(${a.id})" class="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-trash"></i> حذف</button>
