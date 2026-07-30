@@ -12,6 +12,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <!-- SheetJS for Excel Export -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -106,34 +110,53 @@
         .sync-indicator.syncing { background: #fef9c3; color: #854d0e; }
         .sync-indicator.syncing .sync-dot { background: #eab308; animation: pulse 1s ease-in-out infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* Admin Dashboard Mobile */
+        @media (max-width: 768px) {
+            .admin-sidebar { width: 200px !important; font-size: 12px; }
+            .admin-sidebar .admin-tab-btn { font-size: 11px !important; padding: 8px 10px !important; }
+            .admin-main-content { padding: 1rem !important; }
+            .admin-header { padding: 8px 12px !important; }
+            .admin-header h3 { font-size: 13px !important; }
+            .admin-header p { display: none; }
+        }
+        @media (max-width: 480px) {
+            .admin-sidebar { width: 160px !important; }
+            .admin-sidebar .admin-tab-btn { font-size: 10px !important; padding: 6px 8px !important; }
+            .admin-main-content { padding: 0.75rem !important; }
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 antialiased">
+<body class="bg-gray-50 text-gray-800 antialiased" oncontextmenu="return false" onkeydown="return disableKeys(event)">
 
     <!-- Top Bar & Navigation -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur shadow-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <!-- Logo & Title on Right Side (لوجو المؤتمر في أقصى اليمين بجوار العنوان) -->
-                <div class="flex items-center space-x-3 space-x-reverse">
-                    <div class="bg-white p-1 rounded-2xl shadow-md border w-14 h-14 flex items-center justify-center overflow-hidden shrink-0" title="لوجو المؤتمر">
+        <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20 gap-1 sm:gap-3">
+                <!-- Logo & Title on Right Side -->
+                <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                    <div class="bg-white p-1 rounded-2xl shadow-md border w-10 h-10 sm:w-14 sm:h-14 flex items-center justify-center overflow-hidden shrink-0 header-logo" title="لوجو المؤتمر">
                         <img src="لوجو المؤتمر.png" alt="Conference Logo" class="w-full h-full object-contain" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop'">
                     </div>
-                    <div>
-                        <h1 class="font-bold text-base md:text-lg text-vetDark" id="site-title-text" data-i18n="nav_title">المؤتمر الدولي التاسع للطب البيطري</h1>
-                        <p class="text-xs text-gray-500" id="site-subtitle-text" data-i18n="nav_subtitle">جامعة كفر الشيخ - مصر</p>
+                    <div class="min-w-0">
+                        <h1 class="font-bold text-sm sm:text-base md:text-lg text-vetDark truncate header-title-text" id="site-title-text" data-i18n="nav_title">المؤتمر الدولي التاسع للطب البيطري</h1>
+                        <p class="text-[10px] sm:text-xs text-gray-500 truncate" id="site-subtitle-text" data-i18n="nav_subtitle">جامعة كفر الشيخ - مصر</p>
                     </div>
                 </div>
 
-                <!-- Actions: Language Switcher & Admin -->
-                <div class="flex items-center space-x-2 space-x-reverse shrink-0">
-                    <div class="flex bg-gray-100 p-1 rounded-lg border border-gray-200">
-                        <button onclick="changeLang('ar')" id="btn-ar" class="px-2 py-1 text-xs font-bold rounded bg-vetBlue text-white shadow">AR</button>
-                        <button onclick="changeLang('en')" id="btn-en" class="px-2.5 py-1 text-xs font-bold rounded text-gray-600 hover:text-vetBlue flex items-center gap-1"><img src="https://flagcdn.com/24x18/gb.png" alt="EN" class="inline-block w-4 h-3 rounded-sm"> EN</button>
-
+                <!-- Actions: Sync + Language + Admin -->
+                <div class="flex items-center gap-1 sm:gap-2 shrink-0 header-actions">
+                    <!-- Firebase Sync Indicator -->
+                    <div id="sync-indicator" class="sync-indicator disconnected" onclick="toggleSyncInfo()" title="حالة المزامنة">
+                        <span class="sync-dot"></span>
+                        <span class="hidden sm:inline sync-label"><span data-i18n="sync_offline">غير متصل</span></span>
                     </div>
-                    <button onclick="openAdminModal()" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg text-xs font-bold shadow transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-lock"></i> <span data-i18n="menu_admin">لوحة التحكم</span>
+                    <div class="flex bg-gray-100 p-0.5 sm:p-1 rounded-lg border border-gray-200">
+                        <button onclick="changeLang('ar')" id="btn-ar" class="px-1.5 sm:px-2 py-1 text-[10px] sm:text-xs font-bold rounded bg-vetBlue text-white shadow">AR</button>
+                        <button onclick="changeLang('en')" id="btn-en" class="px-2 sm:px-2.5 py-1 text-[10px] sm:text-xs font-bold rounded text-gray-600 hover:text-vetBlue flex items-center gap-1"><img src="https://flagcdn.com/24x18/gb.png" alt="EN" class="inline-block w-3 h-2 sm:w-4 sm:h-3 rounded-sm"> EN</button>
+                    </div>
+                    <button onclick="openAdminModal()" class="bg-amber-500 hover:bg-amber-600 text-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs font-bold shadow transition flex items-center gap-1">
+                        <i class="fa-solid fa-lock text-[10px] sm:text-xs"></i> <span class="admin-btn-text" data-i18n="menu_admin">لوحة التحكم</span>
                     </button>
                 </div>
             </div>
@@ -474,16 +497,20 @@
         </div>
     </div>
 
-    <!-- Admin Password Modal -->
+    <!-- Admin Login Modal (Firebase Auth) -->
     <div id="admin-login-modal" class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center hidden p-4">
         <div class="bg-white max-w-md w-full p-6 rounded-2xl shadow-xl">
             <h3 class="text-xl font-bold mb-4 text-vetDark" data-i18n="admin_login_title">تسجيل دخول لوحة التحكم</h3>
+            <div id="login-error" class="bg-red-50 text-red-700 text-sm p-3 rounded-lg mb-4 hidden"></div>
             <form onsubmit="handleAdminLogin(event)">
+                <label class="block text-sm font-semibold mb-2">البريد الإلكتروني</label>
+                <input type="email" id="admin-email-input" required class="w-full px-4 py-2 border rounded-lg mb-3 focus:ring-2 focus:ring-vetBlue" placeholder="admin@example.com">
                 <label class="block text-sm font-semibold mb-2" data-i18n="admin_pass_label">كلمة المرور</label>
                 <input type="password" id="admin-pass-input" required class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring-2 focus:ring-vetBlue">
+                <div id="login-loading" class="hidden text-center text-sm text-vetBlue mb-3"><i class="fa-solid fa-spinner fa-spin"></i> جاري تسجيل الدخول...</div>
                 <div class="flex justify-end gap-2">
                     <button type="button" onclick="closeAdminLogin()" class="px-4 py-2 bg-gray-200 rounded-lg text-sm font-bold" data-i18n="btn_cancel">إلغاء</button>
-                    <button type="submit" class="px-4 py-2 bg-vetBlue text-white rounded-lg text-sm font-bold" data-i18n="btn_login">دخول</button>
+                    <button type="submit" id="login-submit-btn" class="px-4 py-2 bg-vetBlue text-white rounded-lg text-sm font-bold" data-i18n="btn_login">دخول</button>
                 </div>
             </form>
         </div>
@@ -491,7 +518,7 @@
 
     <!-- Admin Dashboard Panel (Full Modal) -->
     <div id="admin-dashboard" class="fixed inset-0 z-50 bg-gray-100 hidden flex flex-col">
-        <header class="bg-gradient-to-l from-vetDark to-vetBlue text-white px-6 py-3 flex items-center justify-between shadow-lg shrink-0">
+        <header class="bg-gradient-to-l from-vetDark to-vetBlue text-white px-6 py-3 flex items-center justify-between shadow-lg shrink-0 admin-header">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
@@ -538,11 +565,13 @@
                     <button onclick="switchTab('schedule-manager')" id="tab-btn-schedule-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-calendar-days w-4 text-center"></i> <span>المواعيد الهامة</span></button>
                     <button onclick="switchTab('registrations')" id="tab-btn-registrations" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-users w-4 text-center"></i> <span data-i18n="tab_regs">قائمة المسجّلين</span></button>
                     <button onclick="switchTab('contact-manager')" id="tab-btn-contact-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-headset w-4 text-center"></i> <span>بيانات التواصل</span></button>
+                    <button onclick="switchTab('firebase-settings')" id="tab-btn-firebase-settings" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-database w-4 text-center"></i> <span>إعدادات Firebase</span></button>
+                    <button onclick="switchTab('admin-managers')" id="tab-btn-admin-managers" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-user-gear w-4 text-center"></i> <span>إدارة المساعدين</span></button>
                     <button onclick="switchTab('change-password')" id="tab-btn-change-password" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-key w-4 text-center"></i> <span data-i18n="tab_change_pass">تغيير كلمة المرور</span></button>
                 </div>
             </aside>
             <!-- Main Content Area -->
-            <main class="flex-1 p-8 overflow-y-auto">
+            <main class="flex-1 p-8 overflow-y-auto admin-main-content">
                 <!-- Site Settings & Texts Tab -->
                 <div id="tab-site-settings" class="space-y-6 max-w-4xl">
                     <h4 class="text-xl font-bold text-vetDark">التحكم في نصوص الصفحة الرئيسية</h4>
@@ -1312,6 +1341,90 @@
                     </div>
                 </div>
 
+                <!-- Admin Managers Tab -->
+                <div id="tab-admin-managers" class="space-y-6 hidden max-w-2xl">
+                    <h4 class="text-xl font-bold text-vetDark">إدارة المساعدين والصلاحيات</h4>
+                    <p class="text-sm text-gray-500">المدير الأساسي: <strong id="primary-admin-display" class="text-vetBlue"></strong></p>
+                    <form onsubmit="handleSaveAdminManager(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <input type="hidden" id="edit-admin-id" value="">
+                        <div class="grid sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-1">البريد الإلكتروني *</label>
+                                <input type="email" id="admin-manager-email" required class="w-full px-4 py-2 border rounded-lg" placeholder="assistant@example.com">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">الاسم</label>
+                                <input type="text" id="admin-manager-name" class="w-full px-4 py-2 border rounded-lg" placeholder="اسم المساعد">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">الصلاحية *</label>
+                                <select id="admin-manager-role" class="w-full px-4 py-2 border rounded-lg">
+                                    <option value="limited">محدودة (عرض فقط)</option>
+                                    <option value="editor">تعديل المحتوى</option>
+                                    <option value="full">كاملة (كل شيء)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="submit" id="admin-mgr-submit-btn" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-plus"></i> إضافة مساعد</button>
+                            <button type="button" onclick="resetAdminManagerForm()" class="bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-bold hidden" id="admin-mgr-cancel-btn">إلغاء التعديل</button>
+                        </div>
+                    </form>
+                    <div class="bg-white p-6 rounded-xl shadow border">
+                        <h5 class="font-bold text-vetDark mb-4">المساعدون الحاليون</h5>
+                        <div id="admin-managers-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- Firebase Settings Tab -->
+                <div id="tab-firebase-settings" class="space-y-6 hidden max-w-2xl">
+                    <h4 class="text-xl font-bold text-vetDark">إعدادات الاتصال بـ Firebase</h4>
+                    <p class="text-sm text-gray-500">أدخل بيانات مشروع Firebase الخاص بك لتفعيل المزامنة التلقائية للبيانات.</p>
+                    <form onsubmit="handleSaveFirebaseConfig(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-1">apiKey *</label>
+                                <input type="text" id="fb-apiKey" required class="w-full px-4 py-2 border rounded-lg font-mono text-xs" placeholder="AIzaSy...">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">authDomain *</label>
+                                <input type="text" id="fb-authDomain" required class="w-full px-4 py-2 border rounded-lg font-mono text-xs" placeholder="project.firebaseapp.com">
+                            </div>
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-1">databaseURL *</label>
+                                <input type="text" id="fb-databaseURL" required class="w-full px-4 py-2 border rounded-lg font-mono text-xs" placeholder="https://project.firebaseio.com">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">projectId *</label>
+                                <input type="text" id="fb-projectId" required class="w-full px-4 py-2 border rounded-lg font-mono text-xs" placeholder="my-project-id">
+                            </div>
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-1">storageBucket</label>
+                                <input type="text" id="fb-storageBucket" class="w-full px-4 py-2 border rounded-lg font-mono text-xs" placeholder="project.appspot.com">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-1">messagingSenderId</label>
+                                <input type="text" id="fb-messagingSenderId" class="w-full px-4 py-2 border rounded-lg font-mono text-xs" placeholder="123456789">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">appId</label>
+                            <input type="text" id="fb-appId" class="w-full px-4 py-2 border rounded-lg font-mono text-xs" placeholder="1:123:web:abc">
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button type="submit" class="bg-emerald-600 text-white px-6 py-2.5 rounded-lg font-bold shadow flex items-center gap-2"><i class="fa-solid fa-plug"></i> حفظ واختبار الاتصال</button>
+                            <button type="button" onclick="testFirebaseConnection()" class="bg-gray-200 text-gray-700 px-4 py-2.5 rounded-lg font-bold"><i class="fa-solid fa-circle-check"></i> اختبار الاتصال فقط</button>
+                        </div>
+                    </form>
+                    <div id="fb-connection-status" class="bg-white p-4 rounded-xl shadow border hidden">
+                        <p class="text-sm font-bold"><span id="fb-status-icon"></span> <span id="fb-status-text"></span></p>
+                    </div>
+                </div>
+
                 <!-- Change Password Tab -->
                 <div id="tab-change-password" class="space-y-6 hidden max-w-md">
                     <h4 class="text-xl font-bold text-vetDark">تغيير كلمة مرور لوحة التحكم</h4>
@@ -1377,10 +1490,360 @@
             document.getElementById('custom-alert-modal').classList.add('hidden');
         }
 
-        function getAdminPassword() {
-            return localStorage.getItem('vet_conf_admin_pass') || "admin123";
+        // ========== File Protection: Disable F12, Right-Click, DevTools ==========
+        function disableKeys(e) {
+            // F12 / Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+U
+            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {
+                showCustomAlert('تم تعطيل هذه الخاصية لحماية المحتوى.');
+                return false;
+            }
+            return true;
         }
 
+        // ========== Firebase Sync Manager ==========
+        let firebaseConfig = {
+            apiKey: "AIzaSyBHJtKWDDdxsaFRkeDrSEP0kSjT-hV57XA",
+            authDomain: "the-9th-international-platform.firebaseapp.com",
+            databaseURL: "https://the-9th-international-platform-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "the-9th-international-platform",
+            storageBucket: "the-9th-international-platform.firebasestorage.app",
+            messagingSenderId: "542735552173",
+            appId: "1:542735552173:web:18437d8456542047bf8024"
+        };
+        let firebaseApp = null;
+        let firebaseDb = null;
+        let syncConnected = false;
+
+        // Load saved config
+        (function() {
+            const saved = getFirebaseConfig();
+            if (saved) Object.assign(firebaseConfig, saved);
+        })();
+
+        function updateSyncStatus(status) {
+            const indicator = document.getElementById('sync-indicator');
+            const label = indicator?.querySelector('.sync-label');
+            if (!indicator) return;
+            indicator.className = 'sync-indicator ' + status;
+            const keyMap = { connected: 'sync_online', syncing: 'sync_syncing', disconnected: 'sync_offline' };
+            const key = keyMap[status] || 'sync_offline';
+            const text = translations[currentLang]?.[key] || (status === 'connected' ? 'Online' : status === 'syncing' ? 'Syncing' : 'Offline');
+            if (label) label.innerHTML = '<span data-i18n="' + key + '">' + text + '</span>';
+            syncConnected = status === 'connected';
+        }
+
+        function toggleSyncInfo() {
+            if (syncConnected) {
+                showCustomAlert('✓ المزامنة مع Firebase نشطة وجاهزة');
+            } else if (firebaseApp) {
+                showCustomAlert('جاري محاولة الاتصال بـ Firebase...');
+                initFirebase();
+            } else {
+                showCustomAlert('⚠️ لم يتم تكوين Firebase بعد. أضف بيانات الاعتماد في الإعدادات.');
+            }
+        }
+
+        function initFirebase() {
+            if (typeof firebase === 'undefined') {
+                updateSyncStatus('disconnected');
+                return;
+            }
+            updateSyncStatus('syncing');
+            try {
+                if (!firebase.apps.length) {
+                    firebaseApp = firebase.initializeApp(firebaseConfig);
+                } else {
+                    firebaseApp = firebase.app();
+                }
+                firebaseDb = firebaseApp.database();
+                const connectedRef = firebaseDb.ref('.info/connected');
+                connectedRef.on('value', snap => {
+                    updateSyncStatus(snap.val() ? 'connected' : 'disconnected');
+                });
+                // Setup auth state listener
+                setupAuthPersistence();
+                // Sync all data
+                syncAllData();
+                // Sync assistant admins to Firebase
+                syncAssistantAdmins();
+            } catch (err) {
+                updateSyncStatus('disconnected');
+            }
+        }
+
+        function syncAllData() {
+            if (!firebaseDb) return;
+            const keys = [
+                'vet_conf_settings', 'vet_conf_about', 'vet_conf_venue', 'vet_conf_vmg',
+                'vet_conf_nav_buttons', 'vet_conf_sponsors', 'vet_conf_org', 'vet_conf_ticker',
+                'vet_conf_news', 'vet_conf_axes', 'vet_conf_journal', 'vet_conf_jmanager',
+                'vet_conf_jitems', 'vet_conf_fees', 'vet_conf_speakers', 'vet_conf_committees',
+                'vet_conf_papers', 'vet_conf_schedule', 'vet_conf_contact', 'vet_conf_regs',
+                'vet_conf_custom_sections'
+            ];
+            keys.forEach(key => {
+                const data = localStorage.getItem(key);
+                if (data) {
+                    firebaseDb.ref('conference/' + key).set(JSON.parse(data));
+                }
+            });
+        }
+
+        function syncAssistantAdmins() {
+            if (!firebaseDb) return;
+            const adminsRef = firebaseDb.ref('admins');
+            ASSISTANT_ADMINS.forEach(a => {
+                const emailKey = a.email.replace(/\./g, ',');
+                adminsRef.child(emailKey).once('value', snap => {
+                    if (!snap.exists()) {
+                        adminsRef.child(emailKey).set({
+                            email: a.email,
+                            name: a.name,
+                            role: a.role,
+                            addedBy: 'system',
+                            addedAt: Date.now()
+                        });
+                    }
+                });
+            });
+            // Also add primary admin
+            const primaryKey = PRIMARY_ADMIN_EMAIL.replace(/\./g, ',');
+            adminsRef.child(primaryKey).once('value', snap => {
+                if (!snap.exists()) {
+                    adminsRef.child(primaryKey).set({
+                        email: PRIMARY_ADMIN_EMAIL,
+                        name: 'المدير الأساسي',
+                        role: 'full',
+                        addedBy: 'system',
+                        addedAt: Date.now()
+                    });
+                }
+            });
+        }
+
+        // ========== Admin Managers Management ==========
+        function loadAdminManagers() {
+            const primaryEl = document.getElementById('primary-admin-display');
+            if (primaryEl) primaryEl.innerText = PRIMARY_ADMIN_EMAIL;
+            renderAdminManagersList();
+        }
+
+        async function handleSaveAdminManager(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-admin-id').value;
+            const email = document.getElementById('admin-manager-email').value;
+            const name = document.getElementById('admin-manager-name').value;
+            const role = document.getElementById('admin-manager-role').value;
+
+            if (!firebaseDb) {
+                showCustomAlert('⚠️ Firebase غير متصل. تأكد من إعدادات Firebase أولاً.');
+                return;
+            }
+
+            try {
+                // Store by email (encode for Firebase key)
+                const emailKey = email.replace(/\./g, ',');
+                const managerData = { email, name, role, addedBy: currentAdminEmail, addedAt: Date.now() };
+
+                if (editId) {
+                    await firebaseDb.ref('admins/' + editId).update(managerData);
+                    showCustomAlert('تم تحديث بيانات المساعد بنجاح!');
+                } else {
+                    await firebaseDb.ref('admins/' + emailKey).set(managerData);
+                    showCustomAlert('تم إضافة المساعد بنجاح! يجب عليه تسجيل الدخول أولاً في Firebase Auth.');
+                }
+                resetAdminManagerForm();
+                renderAdminManagersList();
+            } catch (err) {
+                showCustomAlert('❌ خطأ: ' + err.message);
+            }
+        }
+
+        function editAdminManager(emailKey) {
+            firebaseDb.ref('admins/' + emailKey).once('value', snap => {
+                const data = snap.val();
+                if (!data) return;
+                document.getElementById('edit-admin-id').value = emailKey;
+                document.getElementById('admin-manager-email').value = data.email || '';
+                document.getElementById('admin-manager-name').value = data.name || '';
+                document.getElementById('admin-manager-role').value = data.role || 'limited';
+                document.getElementById('admin-mgr-submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> حفظ التعديل';
+                document.getElementById('admin-mgr-cancel-btn').classList.remove('hidden');
+            });
+        }
+
+        function resetAdminManagerForm() {
+            document.getElementById('edit-admin-id').value = '';
+            document.getElementById('admin-manager-email').value = '';
+            document.getElementById('admin-manager-name').value = '';
+            document.getElementById('admin-manager-role').value = 'limited';
+            document.getElementById('admin-mgr-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة مساعد';
+            document.getElementById('admin-mgr-cancel-btn').classList.add('hidden');
+        }
+
+        async function deleteAdminManager(emailKey) {
+            if (!confirm('هل أنت متأكد من حذف هذا المساعد؟')) return;
+            try {
+                await firebaseDb.ref('admins/' + emailKey).remove();
+                showCustomAlert('تم حذف المساعد بنجاح!');
+                renderAdminManagersList();
+            } catch (err) {
+                showCustomAlert('❌ خطأ: ' + err.message);
+            }
+        }
+
+        function renderAdminManagersList() {
+            const container = document.getElementById('admin-managers-list');
+            container.innerHTML = '<div class="text-center text-gray-400 text-sm py-4"><i class="fa-solid fa-spinner fa-spin"></i> جاري التحميل...</div>';
+            firebaseDb.ref('admins').once('value', snap => {
+                container.innerHTML = '';
+                if (!snap.exists()) {
+                    container.innerHTML = '<div class="text-center text-gray-400 text-sm py-4">لا يوجد مساعدون بعد. أضف أول مساعد من الأعلى.</div>';
+                    return;
+                }
+                snap.forEach(child => {
+                    const data = child.val();
+                    const emailKey = child.key;
+                    const isPrimary = data.email === PRIMARY_ADMIN_EMAIL;
+                    const roleLabels = { full: 'كاملة', editor: 'تعديل محتوى', limited: 'عرض فقط' };
+                    const roleColors = { full: 'bg-green-100 text-green-700', editor: 'bg-blue-100 text-blue-700', limited: 'bg-amber-100 text-amber-700' };
+                    const div = document.createElement('div');
+                    div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
+                    div.innerHTML = `
+                        <div>
+                            <span class="font-bold text-sm">${data.name || data.email}</span>
+                            <span class="text-xs text-gray-400 mr-2">${data.email}</span>
+                            <span class="text-xs px-2 py-0.5 rounded font-bold ${roleColors[data.role] || 'bg-gray-100'}">${roleLabels[data.role] || data.role}</span>
+                            ${isPrimary ? '<span class="text-xs bg-vetBlue text-white px-2 py-0.5 rounded mr-1">المالك</span>' : ''}
+                        </div>
+                        ${isPrimary ? '' : `
+                        <div class="flex gap-2">
+                            <button onclick="editAdminManager('${emailKey}')" class="bg-vetBlue text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteAdminManager('${emailKey}')" class="bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold"><i class="fa-solid fa-trash"></i></button>
+                        </div>`}
+                    `;
+                    container.appendChild(div);
+                });
+            });
+        }
+
+        // ========== Firebase Auth Persistence ==========
+        function setupAuthPersistence() {
+            if (typeof firebase === 'undefined' || !firebase.auth) return;
+            firebase.auth().onAuthStateChanged(async user => {
+                if (user) {
+                    const authorized = await checkAdminAuthorization(user);
+                    if (authorized) {
+                        currentAdminEmail = user.email;
+                    } else {
+                        await firebase.auth().signOut();
+                        currentAdminEmail = null;
+                    }
+                } else {
+                    currentAdminEmail = null;
+                    currentAdminRole = null;
+                }
+            });
+        }
+
+        // ========== Firebase Config Management (Admin) ==========
+        function getFirebaseConfig() {
+            return JSON.parse(localStorage.getItem('vet_conf_firebase_config')) || null;
+        }
+
+        function saveFirebaseConfigToLocal(config) {
+            localStorage.setItem('vet_conf_firebase_config', JSON.stringify(config));
+            // Also update the global config
+            Object.assign(firebaseConfig, config);
+        }
+
+        function loadFirebaseConfigForm() {
+            const config = getFirebaseConfig();
+            if (!config) return;
+            document.getElementById('fb-apiKey').value = config.apiKey || '';
+            document.getElementById('fb-authDomain').value = config.authDomain || '';
+            document.getElementById('fb-databaseURL').value = config.databaseURL || '';
+            document.getElementById('fb-projectId').value = config.projectId || '';
+            document.getElementById('fb-storageBucket').value = config.storageBucket || '';
+            document.getElementById('fb-messagingSenderId').value = config.messagingSenderId || '';
+            document.getElementById('fb-appId').value = config.appId || '';
+        }
+
+        function handleSaveFirebaseConfig(e) {
+            e.preventDefault();
+            const config = {
+                apiKey: document.getElementById('fb-apiKey').value,
+                authDomain: document.getElementById('fb-authDomain').value,
+                databaseURL: document.getElementById('fb-databaseURL').value,
+                projectId: document.getElementById('fb-projectId').value,
+                storageBucket: document.getElementById('fb-storageBucket').value,
+                messagingSenderId: document.getElementById('fb-messagingSenderId').value,
+                appId: document.getElementById('fb-appId').value
+            };
+            saveFirebaseConfigToLocal(config);
+            showCustomAlert('تم حفظ إعدادات Firebase. جاري محاولة الاتصال...');
+            initFirebase();
+        }
+
+        function testFirebaseConnection() {
+            const statusDiv = document.getElementById('fb-connection-status');
+            const icon = document.getElementById('fb-status-icon');
+            const text = document.getElementById('fb-status-text');
+            statusDiv.classList.remove('hidden');
+            icon.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-amber-500"></i>';
+            text.innerText = 'جاري اختبار الاتصال...';
+
+            if (typeof firebase === 'undefined') {
+                icon.innerHTML = '<i class="fa-solid fa-circle-xmark text-red-500"></i>';
+                text.innerText = 'Firebase SDK غير محمّل. تحقق من اتصال الإنترنت.';
+                return;
+            }
+
+            try {
+                const config = {
+                    apiKey: document.getElementById('fb-apiKey').value,
+                    authDomain: document.getElementById('fb-authDomain').value,
+                    databaseURL: document.getElementById('fb-databaseURL').value,
+                    projectId: document.getElementById('fb-projectId').value,
+                    storageBucket: document.getElementById('fb-storageBucket').value,
+                    messagingSenderId: document.getElementById('fb-messagingSenderId').value,
+                    appId: document.getElementById('fb-appId').value
+                };
+                const testApp = firebase.initializeApp(config, 'testApp');
+                const testDb = testApp.database();
+                const connectedRef = testDb.ref('.info/connected');
+                connectedRef.once('value').then(snap => {
+                    if (snap.val()) {
+                        icon.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+                        text.innerText = '✓ الاتصال ناجح! Firebase يعمل بشكل صحيح.';
+                        testApp.delete();
+                    } else {
+                        icon.innerHTML = '<i class="fa-solid fa-circle-xmark text-red-500"></i>';
+                        text.innerText = 'غير قادر على الاتصال بقاعدة البيانات.';
+                    }
+                }).catch(err => {
+                    icon.innerHTML = '<i class="fa-solid fa-circle-xmark text-red-500"></i>';
+                    text.innerText = 'خطأ: ' + err.message;
+                });
+            } catch (err) {
+                icon.innerHTML = '<i class="fa-solid fa-circle-xmark text-red-500"></i>';
+                text.innerText = 'خطأ: ' + err.message;
+            }
+        }
+
+        // Primary admin email (hardcoded - the main owner)
+        const PRIMARY_ADMIN_EMAIL = "admin@example.com";
+
+        // Assistant admins (تضاف تلقائياً لـ Firebase عند أول اتصال)
+        const ASSISTANT_ADMINS = [
+            { email: "asistant1@example.com", name: "مساعد 1", role: "editor" },
+            { email: "asistant2@example.com", name: "مساعد 2", role: "editor" },
+            { email: "asistant3@example.com", name: "مساعد 3", role: "limited" },
+            { email: "asistant4@example.com", name: "مساعد 4", role: "limited" }
+        ];
+
+        let currentAdminEmail = null;
+        let currentAdminRole = null;
         let currentLang = 'ar';
 
         const translations = {
@@ -1475,7 +1938,10 @@
                 news_read_more: "اقرأ التفاصيل كاملة",
                 conference_theme: "الطب البيطري بين البحث العلمي والابتكار في ضوء فرص وتحديات سوق العمل والصحة المشتركة",
                 contact_heading: "تواصل مع المؤتمر",
-                fb_link_text: "الصفحة الرسمية للمؤتمر على الفيسبوك"
+                fb_link_text: "الصفحة الرسمية للمؤتمر على الفيسبوك",
+                sync_online: "متصل",
+                sync_offline: "غير متصل",
+                sync_syncing: "جارٍ المزامنة"
             },
             en: {
                 nav_title: "9th International Veterinary Conference",
@@ -1568,7 +2034,10 @@
                 news_read_more: "Read Full Details",
                 conference_theme: "Veterinary Medicine Between Scientific Research and Innovation in Light of Opportunities and Challenges of the Labor Market and Shared Health",
                 contact_heading: "Contact the Conference",
-                fb_link_text: "Official Conference Facebook Page"
+                fb_link_text: "Official Conference Facebook Page",
+                sync_online: "Online",
+                sync_offline: "Offline",
+                sync_syncing: "Syncing"
             }
         };
 
@@ -2440,6 +2909,7 @@
             renderCustomSections();
             applySectionVisibility();
             applyTranslations();
+            updateSyncStatus(syncConnected ? 'connected' : (firebaseApp ? 'syncing' : 'disconnected'));
         }
 
         function getNews() {
@@ -2650,17 +3120,26 @@
                 org: document.getElementById('reg-org').value,
                 category: document.getElementById('reg-category').value,
                 type: document.getElementById('reg-type').value,
-                notes: document.getElementById('reg-notes').value
+                notes: document.getElementById('reg-notes').value,
+                createdAt: new Date().toISOString()
             };
 
+            // Always save to localStorage
             const regs = getRegistrations();
             regs.push(newReg);
             localStorage.setItem('vet_conf_regs', JSON.stringify(regs));
+
+            // Also save to Firebase if connected
+            if (firebaseDb) {
+                firebaseDb.ref('registrations/' + newReg.id).set(newReg).catch(() => {});
+            }
+
             showCustomAlert("تم تسجيل الحضور بنجاح!");
             document.getElementById('registration-form').reset();
         }
 
         function openAdminModal() {
+            document.getElementById('login-error').classList.add('hidden');
             document.getElementById('admin-login-modal').classList.remove('hidden');
         }
 
@@ -2668,26 +3147,89 @@
             document.getElementById('admin-login-modal').classList.add('hidden');
         }
 
-        function handleAdminLogin(e) {
+        // ===== Firebase Auth Admin Login =====
+        async function handleAdminLogin(e) {
             e.preventDefault();
+            const email = document.getElementById('admin-email-input').value;
             const pass = document.getElementById('admin-pass-input').value;
-            if (pass === getAdminPassword()) {
+            const errorDiv = document.getElementById('login-error');
+            const loadingDiv = document.getElementById('login-loading');
+            const submitBtn = document.getElementById('login-submit-btn');
+
+            errorDiv.classList.add('hidden');
+            loadingDiv.classList.remove('hidden');
+            submitBtn.disabled = true;
+
+            try {
+                if (typeof firebase === 'undefined' || !firebase.app()) {
+                    showCustomAlert('⚠️ Firebase غير متصل. تحقق من اتصال الإنترنت.');
+                    return;
+                }
+                const result = await firebase.auth().signInWithEmailAndPassword(email, pass);
+                const user = result.user;
+
+                // Check if email is authorized
+                const authorized = await checkAdminAuthorization(user);
+                if (!authorized) {
+                    await firebase.auth().signOut();
+                    errorDiv.innerText = '⚠️ هذا البريد غير مصرح له بالدخول إلى لوحة التحكم.';
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+
+                currentAdminEmail = user.email;
                 closeAdminLogin();
+                document.getElementById('admin-email-input').value = '';
                 document.getElementById('admin-pass-input').value = '';
                 document.getElementById('admin-dashboard').classList.remove('hidden');
                 startDashboardClock();
-                loadSiteSettingsForm();
-                loadAdminNavButtons();
-                loadAboutSettingsForm();
-                loadVenueSettingsForm();
-                loadAdminSponsors();
-                loadAdminOrgItems();
-                loadAdminTicker();
-                loadAdminNews();
-                loadAdminRegs();
-            } else {
-                showCustomAlert("كلمة المرور غير صحيحة!");
+                loadAllAdminTabs();
+            } catch (err) {
+                const errorMap = {
+                    'auth/user-not-found': '❌ لا يوجد حساب بهذا البريد.',
+                    'auth/wrong-password': '❌ كلمة المرور غير صحيحة.',
+                    'auth/invalid-email': '❌ البريد الإلكتروني غير صالح.',
+                    'auth/user-disabled': '❌ تم تعطيل هذا الحساب.',
+                    'auth/too-many-requests': '❌ تم حظر الدخول مؤقتاً. حاول لاحقاً.'
+                };
+                errorDiv.innerText = errorMap[err.code] || '❌ خطأ في تسجيل الدخول: ' + err.message;
+                errorDiv.classList.remove('hidden');
+            } finally {
+                loadingDiv.classList.add('hidden');
+                submitBtn.disabled = false;
             }
+        }
+
+        async function checkAdminAuthorization(user) {
+            // 1. Check if primary admin (hardcoded)
+            if (user.email === PRIMARY_ADMIN_EMAIL) {
+                currentAdminRole = 'full';
+                return true;
+            }
+
+            // 2. Check if in allowed admins list from Firebase (by email key)
+            try {
+                const emailKey = user.email.replace(/\./g, ',');
+                const snapshot = await firebase.database().ref('admins/' + emailKey).once('value');
+                if (snapshot.exists()) {
+                    currentAdminRole = snapshot.val().role || 'limited';
+                    return true;
+                }
+            } catch (e) { /* ignore */ }
+
+            return false;
+        }
+
+        function loadAllAdminTabs() {
+            loadSiteSettingsForm();
+            loadAdminNavButtons();
+            loadAboutSettingsForm();
+            loadVenueSettingsForm();
+            loadAdminSponsors();
+            loadAdminOrgItems();
+            loadAdminTicker();
+            loadAdminNews();
+            loadAdminRegs();
         }
 
         function closeDashboard() {
@@ -2706,7 +3248,7 @@
         }
 
         function switchTab(tabId) {
-            const allTabs = ['site-settings', 'nav-manager', 'custom-sections', 'about-manager', 'venue-manager', 'sponsorship-manager', 'org-manager', 'ticker-manager', 'add-news', 'manage-news', 'vmg-manager', 'axes-manager', 'journal-manager', 'fees-manager', 'speakers-manager', 'committees-manager', 'papers-manager', 'schedule-manager', 'contact-manager', 'change-password', 'registrations'];
+            const allTabs = ['site-settings', 'nav-manager', 'custom-sections', 'about-manager', 'venue-manager', 'sponsorship-manager', 'org-manager', 'ticker-manager', 'add-news', 'manage-news', 'vmg-manager', 'axes-manager', 'journal-manager', 'fees-manager', 'speakers-manager', 'committees-manager', 'papers-manager', 'schedule-manager', 'contact-manager', 'firebase-settings', 'admin-managers', 'change-password', 'registrations'];
             allTabs.forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
                 const btn = document.getElementById(`tab-btn-${t}`);
@@ -2735,6 +3277,8 @@
             if (tabId === 'schedule-manager') loadAdminSchedule();
             if (tabId === 'registrations') loadAdminRegs();
             if (tabId === 'contact-manager') loadAdminContact();
+            if (tabId === 'firebase-settings') loadFirebaseConfigForm();
+            if (tabId === 'admin-managers') loadAdminManagers();
         }
 
         function handleSaveNews(e) {
@@ -3936,6 +4480,8 @@
             renderCustomSections();
             applySectionVisibility();
             applyTranslations();
+            // Attempt Firebase connection after page loads
+            setTimeout(initFirebase, 1500);
         };
     </script>
 </body>
