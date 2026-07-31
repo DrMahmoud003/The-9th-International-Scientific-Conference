@@ -2233,16 +2233,15 @@
     <!-- Firebase App (Compat SDKs for Script Tags) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
     <script>
         // إعدادات Firebase الخاصة بمشروع vet-conference
         const firebaseConfig = {
-            apiKey: "AIzaSyBzS0tTpaea6QC1ldWuIcLzAl6c4a_auN4",
-            authDomain: "vet-conference.firebaseapp.com",
-            projectId: "vet-conference",
-            storageBucket: "vet-conference.firebasestorage.app",
-            messagingSenderId: "746798730232",
-            appId: "1:746798730232:web:086191926094b8b4fe240d"
+            apiKey: "AIzaSyCeKL1G6heC-KFL5mr3qpnLlkvgFnNEEx0",
+            authDomain: "vet9-conference.firebaseapp.com",
+            projectId: "vet9-conference",
+            storageBucket: "vet9-conference.firebasestorage.app",
+            messagingSenderId: "949256375606",
+            appId: "1:949256375606:web:736f9b4f5af954c0513797"
         };
         // تهيئة Firebase
         firebase.initializeApp(firebaseConfig);
@@ -2251,14 +2250,14 @@
         console.log("Firebase initialized successfully - تم تهيئة Firebase بنجاح");
 
         // ============================================================
-        // طبقة التخزين: البيانات (JSON) في Firebase Storage
+        // طبقة التخزين السحابية: بيانات الموقع (JSON) في Firebase Realtime Database
         // والصور والفيديو على Cloudinary
         // ============================================================
         const CLOUDINARY_CLOUD = "hqhsb2wz";
         const CLOUDINARY_PRESET = "ml_default";
-        const STORAGE_FOLDER = "vetconf-data";
+        const RTDB_URL = "https://vet9-conference-default-rtdb.firebaseio.com";
+        const RTDB_NODE = "vetConfData";
         const appData = {};
-        const storage = firebase.storage();
 
         function updateSyncBadge(state) {
             const configs = {
@@ -2299,12 +2298,15 @@
             return (key in appData) ? appData[key] : null;
         }
 
-        // حفظ/تحديث ملف JSON في Firebase Storage (كل الزوار يرون التحديث فوراً)
+        // حفظ/تحديث ملف JSON في Firebase Realtime Database (كل الزوار يرون التحديث فوراً)
         async function saveJSONToStorage(key, value) {
             try {
-                const ref = storage.ref(STORAGE_FOLDER + '/' + key + '.json');
-                await ref.putString(value, 'raw', { contentType: 'application/json' });
-                updateSyncBadge('connected');
+                const res = await fetch(RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(value)
+                });
+                updateSyncBadge(res.ok ? 'connected' : 'disconnected');
             } catch (e) {
                 updateSyncBadge('disconnected');
             }
@@ -2318,31 +2320,35 @@
         async function removeStore(key) {
             delete appData[key];
             try {
-                const ref = storage.ref(STORAGE_FOLDER + '/' + key + '.json');
-                await ref.delete();
+                await fetch(RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json', { method: 'DELETE' });
             } catch (e) { /* ignore missing */ }
         }
 
-        // تحميل كل البيانات من Firebase Storage عند فتح الموقع
+        // تحميل كل البيانات من قاعدة البيانات السحابية عند فتح الموقع
         async function loadAllData() {
             const keys = ['vet_conf_settings', 'vet_conf_nav_buttons', 'vet_conf_ticker',
                 'vet_conf_news', 'vet_conf_regs', 'vet_conf_custom_sections', 'vet_conf_admin_pass'];
             updateSyncBadge('connecting');
-            let loaded = 0;
+            let loaded = 0, anyOk = false;
             for (const key of keys) {
                 try {
-                    const ref = storage.ref(STORAGE_FOLDER + '/' + key + '.json');
-                    const url = await ref.getDownloadURL();
-                    const res = await fetch(url);
+                    const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+                    const timer = setTimeout(function() { if (controller) controller.abort(); }, 8000);
+                    const res = await fetch(RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json', { signal: controller ? controller.signal : undefined });
+                    clearTimeout(timer);
                     if (res.ok) {
-                        appData[key] = await res.text();
-                        loaded++;
+                        anyOk = true;
+                        const data = await res.json();
+                        if (data !== null && data !== undefined) {
+                            appData[key] = (typeof data === 'string') ? data : JSON.stringify(data);
+                            loaded++;
+                        }
                     }
-                } catch (e) { /* ignore missing keys */ }
+                } catch (e) { /* ignore missing keys or network errors */ }
             }
-            updateSyncBadge(loaded > 0 ? 'connected' : 'disconnected');
+            updateSyncBadge(anyOk ? 'connected' : 'disconnected');
             refreshAllSections();
-            console.log('Loaded ' + loaded + ' sections from Firebase Storage');
+            console.log('Loaded ' + loaded + ' sections from Realtime Database');
         }
 
         function refreshAllSections() {
