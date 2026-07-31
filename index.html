@@ -1837,16 +1837,18 @@
                 });
         }
 
-        // يمكن استخدام هذه الدالة لمراقبة حالة الدخول تلقائياً (اختياري)
-        if (auth) {
-            auth.onAuthStateChanged(function(user) {
-                if (!user) {
-                    // المستخدم مش مسجل دخول - تأكد إن لوحة التحكم مقفولة
-                    const dash = document.getElementById('admin-dashboard');
-                    if (dash) dash.classList.add('hidden');
-                }
-            });
-        }
+        // مراقبة حالة الدخول تلقائياً (تُشغَّل بعد تحميل كل السكربتات لأن auth يُعرَّف في سكربت Firebase لاحقاً)
+        window.addEventListener('load', function() {
+            if (auth) {
+                auth.onAuthStateChanged(function(user) {
+                    if (!user) {
+                        // المستخدم مش مسجل دخول - تأكد إن لوحة التحكم مقفولة
+                        const dash = document.getElementById('admin-dashboard');
+                        if (dash) dash.classList.add('hidden');
+                    }
+                });
+            }
+        });
 
         function closeDashboard() {
             document.getElementById('admin-dashboard').classList.add('hidden');
