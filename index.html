@@ -39,6 +39,7 @@
         html { overflow-x: hidden; overflow-x: clip; }
         img { max-width: 100%; }
         .ticker-wrap { overflow: hidden; white-space: nowrap; }
+        .ticker-item { padding-inline-end: 32px; }
         .ticker-move { display: inline-flex; animation: ticker 40s linear infinite; will-change: transform; animation-play-state: running !important; }
         .ticker-move.paused { animation-play-state: paused !important; }
         @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
@@ -98,13 +99,23 @@
         .cs-rich-editor ul { list-style: disc; padding-inline-start: 1.4rem; margin: 0.4rem 0; }
         .cs-rich-editor ol { list-style: decimal; padding-inline-start: 1.4rem; margin: 0.4rem 0; }
         .cs-rich-editor a { color: #1d4ed8; text-decoration: underline; }
+        .cs-tb-btn.cs-tb-color { position: relative; overflow: hidden; }
+        .cs-tb-btn.cs-tb-color input[type=color] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .cs-tb-btn.cs-tb-color i { pointer-events: none; }
+        .cs-rich-editor font[size="1"], .custom-section-dynamic font[size="1"], #section-reader-content font[size="1"], #news-reader-content font[size="1"] { font-size: 0.7em; }
+        .cs-rich-editor font[size="2"], .custom-section-dynamic font[size="2"], #section-reader-content font[size="2"], #news-reader-content font[size="2"] { font-size: 0.85em; }
+        .cs-rich-editor font[size="3"], .custom-section-dynamic font[size="3"], #section-reader-content font[size="3"], #news-reader-content font[size="3"] { font-size: 1em; }
+        .cs-rich-editor font[size="4"], .custom-section-dynamic font[size="4"], #section-reader-content font[size="4"], #news-reader-content font[size="4"] { font-size: 1.2em; }
+        .cs-rich-editor font[size="5"], .custom-section-dynamic font[size="5"], #section-reader-content font[size="5"], #news-reader-content font[size="5"] { font-size: 1.5em; }
+        .cs-rich-editor font[size="6"], .custom-section-dynamic font[size="6"], #section-reader-content font[size="6"], #news-reader-content font[size="6"] { font-size: 1.9em; }
+        .cs-rich-editor font[size="7"], .custom-section-dynamic font[size="7"], #section-reader-content font[size="7"], #news-reader-content font[size="7"] { font-size: 2.4em; }
 
-        /* ===== عرض المحتوى في الرئيسية وشاشة القسم ===== */
-        .custom-section-dynamic ul, #section-reader-content ul { list-style: disc; padding-inline-start: 1.4rem; margin: 0.5rem 0; }
-        .custom-section-dynamic ol, #section-reader-content ol { list-style: decimal; padding-inline-start: 1.4rem; margin: 0.5rem 0; }
-        .custom-section-dynamic li, #section-reader-content li { margin: 0.25rem 0; }
-        .custom-section-dynamic h3, #section-reader-content h3 { font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 0.6rem 0; }
-        .custom-section-dynamic a, #section-reader-content a { color: #1d4ed8; text-decoration: underline; }
+        /* ===== عرض المحتوى في الرئيسية وشاشة القسم وقارئ الأخبار ===== */
+        .custom-section-dynamic ul, #section-reader-content ul, #news-reader-content ul { list-style: disc; padding-inline-start: 1.4rem; margin: 0.5rem 0; }
+        .custom-section-dynamic ol, #section-reader-content ol, #news-reader-content ol { list-style: decimal; padding-inline-start: 1.4rem; margin: 0.5rem 0; }
+        .custom-section-dynamic li, #section-reader-content li, #news-reader-content li { margin: 0.25rem 0; }
+        .custom-section-dynamic h3, #section-reader-content h3, #news-reader-content h3 { font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 0.6rem 0; }
+        .custom-section-dynamic a, #section-reader-content a, #news-reader-content a { color: #1d4ed8; text-decoration: underline; }
 
         /* ===== هيكل المؤتمر (بطاقات) ===== */
         .cs-team { border: 2px dashed #1d4ed8; border-radius: 12px; background: #eff6ff; padding: 16px; margin: 10px 0; text-align: center; color: #1d4ed8; font-weight: 700; font-size: 13px; cursor: pointer; }
@@ -187,6 +198,7 @@
                         <a href="#register" class="bg-white text-vetDark hover:bg-blue-50 px-6 py-3 rounded-xl font-bold shadow-lg transition text-sm" data-i18n="hero_btn_reg">سجل حضورك الآن</a>
                         <a href="#news" class="border-2 border-white/40 hover:border-white text-white px-6 py-3 rounded-xl font-bold transition text-sm" data-i18n="hero_btn_more">اعرف المزيد</a>
                     </div>
+                    <div id="hero-icons-row" class="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-5" style="display:none"></div>
                 </div>
             </section>
 
@@ -548,6 +560,17 @@
                             <label class="block text-sm font-bold mb-1">رابط صفحة الفيسبوك الرسمية</label>
                             <input type="url" id="set-fb-link" class="w-full px-4 py-2 border rounded-lg" placeholder="https://facebook.com/...">
                         </div>
+                        <div class="border-t border-gray-200 pt-4">
+                            <div class="flex flex-wrap items-center justify-between gap-3 mb-2">
+                                <h5 class="font-bold text-vetDark"><i class="fa-solid fa-icons ml-2 text-vetBlue"></i>أيقونات المربع الأزرق (شعارات)</h5>
+                                <div class="flex gap-2">
+                                    <button type="button" onclick="setAllHeroIcons(true)" class="text-xs font-bold bg-vetBlue text-white px-3 py-1.5 rounded-lg"><i class="fa-solid fa-check-double"></i> عرض الكل</button>
+                                    <button type="button" onclick="setAllHeroIcons(false)" class="text-xs font-bold bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg"><i class="fa-solid fa-eye-slash"></i> إخفاء الكل</button>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-400 mb-3">اختر الشعارات التي تريد عرضها في المربع الأزرق أسفل النص، أو اضغط "عرض الكل". لكل شعار: صورة (بالرفع أو الرابط) واسم تحته.</p>
+                            <div id="hero-icons-admin-list" class="space-y-3"></div>
+                        </div>
                         <button type="submit" class="bg-vetBlue text-white px-6 py-2.5 rounded-lg font-bold shadow"><i class="fa-solid fa-save"></i> حفظ وتحديث نصوص الصفحة</button>
                     </form>
                 </div>
@@ -616,6 +639,10 @@
                                         <button type="button" class="cs-tb-btn" title="عنوان فرعي" onmousedown="event.preventDefault()" onclick="execFormat('formatBlock','cs-editor-ar','<h3>')"><i class="fa-solid fa-heading"></i></button>
                                         <button type="button" class="cs-tb-btn" title="إدراج رابط" onmousedown="event.preventDefault()" onclick="insertEditorLink('cs-editor-ar')"><i class="fa-solid fa-link"></i></button>
                                         <span class="cs-tb-sep"></span>
+                                        <button type="button" class="cs-tb-btn" title="تكبير الخط" onmousedown="event.preventDefault()" onclick="changeFontSize(1,'cs-editor-ar')"><i class="fa-solid fa-font"></i> A+</button>
+                                        <button type="button" class="cs-tb-btn" title="تصغير الخط" onmousedown="event.preventDefault()" onclick="changeFontSize(-1,'cs-editor-ar')"><i class="fa-solid fa-font"></i> A-</button>
+                                        <label class="cs-tb-btn cs-tb-color" title="لون الخط" onmousedown="saveEditorSelection('cs-editor-ar')"><input type="color" value="#1d4ed8" onchange="applyColor('cs-editor-ar',this.value)"><i class="fa-solid fa-palette"></i></label>
+                                        <span class="cs-tb-sep"></span>
                                         <button type="button" class="cs-tb-btn cs-tb-team" title="إدراج هيكل: بطاقات صورة واسم ووظيفة" onmousedown="event.preventDefault()" onclick="insertTeamBlock('cs-editor-ar')"><i class="fa-solid fa-user-group"></i> إدراج هيكل</button>
                                     </div>
                                     <div id="cs-editor-ar" contenteditable="true" data-placeholder="اكتب المحتوى هنا... (محرر نصي متكامل)" class="cs-rich-editor w-full px-4 py-2 min-h-[120px] text-gray-700 leading-relaxed" dir="auto"></div>
@@ -637,6 +664,10 @@
                                         <button type="button" class="cs-tb-btn" title="Numbered list" onmousedown="event.preventDefault()" onclick="execFormat('insertOrderedList','cs-editor-en')"><i class="fa-solid fa-list-ol"></i></button>
                                         <button type="button" class="cs-tb-btn" title="Sub-heading" onmousedown="event.preventDefault()" onclick="execFormat('formatBlock','cs-editor-en','<h3>')"><i class="fa-solid fa-heading"></i></button>
                                         <button type="button" class="cs-tb-btn" title="Insert link" onmousedown="event.preventDefault()" onclick="insertEditorLink('cs-editor-en')"><i class="fa-solid fa-link"></i></button>
+                                        <span class="cs-tb-sep"></span>
+                                        <button type="button" class="cs-tb-btn" title="Increase font size" onmousedown="event.preventDefault()" onclick="changeFontSize(1,'cs-editor-en')"><i class="fa-solid fa-font"></i> A+</button>
+                                        <button type="button" class="cs-tb-btn" title="Decrease font size" onmousedown="event.preventDefault()" onclick="changeFontSize(-1,'cs-editor-en')"><i class="fa-solid fa-font"></i> A-</button>
+                                        <label class="cs-tb-btn cs-tb-color" title="Font color" onmousedown="saveEditorSelection('cs-editor-en')"><input type="color" value="#1d4ed8" onchange="applyColor('cs-editor-en',this.value)"><i class="fa-solid fa-palette"></i></label>
                                         <span class="cs-tb-sep"></span>
                                         <button type="button" class="cs-tb-btn cs-tb-team" title="Insert structure: image + name + role cards" onmousedown="event.preventDefault()" onclick="insertTeamBlock('cs-editor-en')"><i class="fa-solid fa-user-group"></i> Insert Structure</button>
                                     </div>
@@ -752,7 +783,27 @@
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold mb-1">النص الكامل (عربي)</label>
-                                    <textarea id="news-content-ar" rows="5" class="w-full px-4 py-2 border rounded-lg form-input-focus"></textarea>
+                                    <div class="border rounded-lg overflow-hidden bg-white">
+                                        <div class="cs-editor-toolbar flex flex-wrap items-center gap-1 bg-gray-50 border-b px-2 py-1.5">
+                                            <button type="button" class="cs-tb-btn" title="عريض" onmousedown="event.preventDefault()" onclick="execFormat('bold','news-content-ar')"><i class="fa-solid fa-bold"></i></button>
+                                            <button type="button" class="cs-tb-btn" title="مائل" onmousedown="event.preventDefault()" onclick="execFormat('italic','news-content-ar')"><i class="fa-solid fa-italic"></i></button>
+                                            <button type="button" class="cs-tb-btn" title="تسطير" onmousedown="event.preventDefault()" onclick="execFormat('underline','news-content-ar')"><i class="fa-solid fa-underline"></i></button>
+                                            <span class="cs-tb-sep"></span>
+                                            <button type="button" class="cs-tb-btn" title="محاذاة يمين" onmousedown="event.preventDefault()" onclick="execFormat('justifyRight','news-content-ar')"><i class="fa-solid fa-align-right"></i></button>
+                                            <button type="button" class="cs-tb-btn" title="محاذاة وسط" onmousedown="event.preventDefault()" onclick="execFormat('justifyCenter','news-content-ar')"><i class="fa-solid fa-align-center"></i></button>
+                                            <button type="button" class="cs-tb-btn" title="محاذاة يسار" onmousedown="event.preventDefault()" onclick="execFormat('justifyLeft','news-content-ar')"><i class="fa-solid fa-align-left"></i></button>
+                                            <span class="cs-tb-sep"></span>
+                                            <button type="button" class="cs-tb-btn" title="تعداد نقطي" onmousedown="event.preventDefault()" onclick="execFormat('insertUnorderedList','news-content-ar')"><i class="fa-solid fa-list-ul"></i></button>
+                                            <button type="button" class="cs-tb-btn" title="تعداد رقمي" onmousedown="event.preventDefault()" onclick="execFormat('insertOrderedList','news-content-ar')"><i class="fa-solid fa-list-ol"></i></button>
+                                            <button type="button" class="cs-tb-btn" title="عنوان فرعي" onmousedown="event.preventDefault()" onclick="execFormat('formatBlock','news-content-ar','<h3>')"><i class="fa-solid fa-heading"></i></button>
+                                            <button type="button" class="cs-tb-btn" title="إدراج رابط" onmousedown="event.preventDefault()" onclick="insertEditorLink('news-content-ar')"><i class="fa-solid fa-link"></i></button>
+                                            <span class="cs-tb-sep"></span>
+                                            <button type="button" class="cs-tb-btn" title="تكبير الخط" onmousedown="event.preventDefault()" onclick="changeFontSize(1,'news-content-ar')"><i class="fa-solid fa-font"></i> A+</button>
+                                            <button type="button" class="cs-tb-btn" title="تصغير الخط" onmousedown="event.preventDefault()" onclick="changeFontSize(-1,'news-content-ar')"><i class="fa-solid fa-font"></i> A-</button>
+                                            <label class="cs-tb-btn cs-tb-color" title="لون الخط" onmousedown="saveEditorSelection('news-content-ar')"><input type="color" value="#1d4ed8" onchange="applyColor('news-content-ar',this.value)"><i class="fa-solid fa-palette"></i></label>
+                                        </div>
+                                        <div id="news-content-ar" contenteditable="true" data-placeholder="اكتب النص الكامل هنا... (محرر نصي متكامل)" class="cs-rich-editor w-full px-4 py-2 min-h-[120px] text-gray-700 leading-relaxed" dir="auto"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -769,7 +820,27 @@
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold mb-1">Full Text (English)</label>
-                                    <textarea id="news-content-en" rows="5" class="w-full px-4 py-2 border rounded-lg form-input-focus"></textarea>
+                                    <div class="border rounded-lg overflow-hidden bg-white">
+                                        <div class="cs-editor-toolbar flex flex-wrap items-center gap-1 bg-gray-50 border-b px-2 py-1.5">
+                                            <button type="button" class="cs-tb-btn" title="Bold" onmousedown="event.preventDefault()" onclick="execFormat('bold','news-content-en')"><i class="fa-solid fa-bold"></i></button>
+                                            <button type="button" class="cs-tb-btn" title="Italic" onmousedown="event.preventDefault()" onclick="execFormat('italic','news-content-en')"><i class="fa-solid fa-italic"></i></button>
+                                            <button type="button" class="cs-tb-btn" title="Underline" onmousedown="event.preventDefault()" onclick="execFormat('underline','news-content-en')"><i class="fa-solid fa-underline"></i></button>
+                                            <span class="cs-tb-sep"></span>
+                                            <button type="button" class="cs-tb-btn" title="Align right" onmousedown="event.preventDefault()" onclick="execFormat('justifyRight','news-content-en')"><i class="fa-solid fa-align-right"></i></button>
+                                            <button type="button" class="cs-tb-btn" title="Align center" onmousedown="event.preventDefault()" onclick="execFormat('justifyCenter','news-content-en')"><i class="fa-solid fa-align-center"></i></button>
+                                            <button type="button" class="cs-tb-btn" title="Align left" onmousedown="event.preventDefault()" onclick="execFormat('justifyLeft','news-content-en')"><i class="fa-solid fa-align-left"></i></button>
+                                            <span class="cs-tb-sep"></span>
+                                            <button type="button" class="cs-tb-btn" title="Bullet list" onmousedown="event.preventDefault()" onclick="execFormat('insertUnorderedList','news-content-en')"><i class="fa-solid fa-list-ul"></i></button>
+                                            <button type="button" class="cs-tb-btn" title="Numbered list" onmousedown="event.preventDefault()" onclick="execFormat('insertOrderedList','news-content-en')"><i class="fa-solid fa-list-ol"></i></button>
+                                            <button type="button" class="cs-tb-btn" title="Sub-heading" onmousedown="event.preventDefault()" onclick="execFormat('formatBlock','news-content-en','<h3>')"><i class="fa-solid fa-heading"></i></button>
+                                            <button type="button" class="cs-tb-btn" title="Insert link" onmousedown="event.preventDefault()" onclick="insertEditorLink('news-content-en')"><i class="fa-solid fa-link"></i></button>
+                                            <span class="cs-tb-sep"></span>
+                                            <button type="button" class="cs-tb-btn" title="Increase font size" onmousedown="event.preventDefault()" onclick="changeFontSize(1,'news-content-en')"><i class="fa-solid fa-font"></i> A+</button>
+                                            <button type="button" class="cs-tb-btn" title="Decrease font size" onmousedown="event.preventDefault()" onclick="changeFontSize(-1,'news-content-en')"><i class="fa-solid fa-font"></i> A-</button>
+                                            <label class="cs-tb-btn cs-tb-color" title="Font color" onmousedown="saveEditorSelection('news-content-en')"><input type="color" value="#1d4ed8" onchange="applyColor('news-content-en',this.value)"><i class="fa-solid fa-palette"></i></label>
+                                        </div>
+                                        <div id="news-content-en" contenteditable="true" data-placeholder="Write full text here... (rich text editor)" class="cs-rich-editor w-full px-4 py-2 min-h-[120px] text-gray-700 leading-relaxed" dir="auto"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1281,6 +1352,54 @@
             ed.focus();
             const url = prompt('أدخل رابط الصفحة (يبدأ بـ https://)');
             if (url) document.execCommand('createLink', false, url);
+        }
+
+        function changeFontSize(dir, editorId) {
+            const ed = document.getElementById(editorId);
+            if (!ed) return;
+            ed.focus();
+            let cur = 3;
+            try {
+                const sel = window.getSelection();
+                if (sel && sel.rangeCount) {
+                    const range = sel.getRangeAt(0);
+                    if (range && !range.collapsed) {
+                        let node = range.commonAncestorContainer;
+                        if (node && node.nodeType !== 1 && node.parentElement) node = node.parentElement;
+                        const font = node && node.closest ? node.closest('font[size]') : null;
+                        if (font && font.getAttribute('size')) cur = parseInt(font.getAttribute('size'), 10) || 3;
+                    }
+                }
+            } catch (err) {}
+            const next = Math.min(7, Math.max(1, cur + (dir > 0 ? 1 : -1)));
+            if (next === cur) return;
+            document.execCommand('fontSize', false, String(next));
+            ed.focus();
+        }
+
+        let savedEditorRange = null;
+        function saveEditorSelection(editorId) {
+            try {
+                const ed = document.getElementById(editorId);
+                const sel = window.getSelection();
+                if (ed && sel && sel.rangeCount) savedEditorRange = sel.getRangeAt(0).cloneRange();
+            } catch (err) {}
+        }
+
+        function applyColor(editorId, color) {
+            const ed = document.getElementById(editorId);
+            if (!ed) return;
+            ed.focus();
+            try {
+                const sel = window.getSelection();
+                if (savedEditorRange && sel) {
+                    sel.removeAllRanges();
+                    sel.addRange(savedEditorRange);
+                }
+            } catch (err) {}
+            document.execCommand('foreColor', false, color);
+            savedEditorRange = null;
+            ed.focus();
         }
 
         // ========== Team Structure (إدراج هيكل) ==========
@@ -1937,13 +2056,13 @@
                 const frag = document.createDocumentFragment();
                 if (tickers.length === 0) {
                     const span = document.createElement('span');
-                    span.className = "mx-6";
+                    span.className = "ticker-item";
                     span.innerText = currentLang === 'en' ? 'No breaking news' : 'لا توجد أخبار عاجلة حالياً';
                     frag.appendChild(span);
                 } else {
                     tickers.forEach(t => {
                         const span = document.createElement('span');
-                        span.className = "mx-6";
+                        span.className = "ticker-item";
                         span.innerText = t[currentLang] || t.ar || '';
                         frag.appendChild(span);
                     });
@@ -1972,27 +2091,55 @@
         }
 
         // Site Settings Management
+        let heroIconFiles = {};
+
+        function defaultHeroIcons() {
+            return [
+                { icon: '', name: { ar: '', en: '' }, enabled: false },
+                { icon: '', name: { ar: '', en: '' }, enabled: false },
+                { icon: '', name: { ar: '', en: '' }, enabled: false },
+                { icon: '', name: { ar: '', en: '' }, enabled: false },
+                { icon: '', name: { ar: '', en: '' }, enabled: false }
+            ];
+        }
+
         function getSiteSettings() {
-            return JSON.parse(getStore('vet_conf_settings')) || {
+            const defaults = {
                 title: { ar: "المؤتمر الدولي التاسع للطب البيطري", en: "9th International Veterinary Conference" },
                 subtitle: { ar: "جامعة كفر الشيخ - مصر", en: "Kafrelsheikh University - Egypt" },
                 heroBadge: { ar: "الحدث العلمي الأبرز", en: "Premier Scientific Event" },
                 heroTitle: { ar: "المؤتمر العلمي الدولي التاسع لكلية الطب البيطري", en: "The 9th International Scientific Conference of Veterinary Medicine" },
                 heroDesc: { ar: "نحو آفاق جديدة في البحث العلمي البيطري وتنمية الثروة الحيوانية وتحقيق الأمن الغذائي المستدام.", en: "Towards new horizons in veterinary scientific research, livestock development, and sustainable food security." },
-                fbLink: "https://facebook.com"
+                fbLink: "https://facebook.com",
+                heroIcons: defaultHeroIcons()
             };
+            const stored = JSON.parse(getStore('vet_conf_settings'));
+            if (!stored) return defaults;
+            return Object.assign({}, defaults, stored);
         }
 
         async function handleSaveSiteSettings(e) {
             e.preventDefault();
+            const icons = readHeroIconsForm();
             const settings = {
                 title: { ar: document.getElementById('set-site-title-ar').value, en: document.getElementById('set-site-title-en').value },
                 subtitle: { ar: document.getElementById('set-site-subtitle-ar').value, en: document.getElementById('set-site-subtitle-en').value },
                 heroBadge: { ar: document.getElementById('set-hero-badge-ar').value, en: document.getElementById('set-hero-badge-en').value },
                 heroTitle: { ar: document.getElementById('set-hero-title-ar').value, en: document.getElementById('set-hero-title-en').value },
                 heroDesc: { ar: document.getElementById('set-hero-desc-ar').value, en: document.getElementById('set-hero-desc-en').value },
-                fbLink: document.getElementById('set-fb-link').value
+                fbLink: document.getElementById('set-fb-link').value,
+                heroIcons: icons
             };
+            const pending = Object.keys(heroIconFiles);
+            for (const idx of pending) {
+                const url = await uploadFileToCloudinary(heroIconFiles[idx]);
+                if (!url) {
+                    showCustomAlert("فشل رفع أحد الشعارات، حاول مرة أخرى!");
+                    return;
+                }
+                icons[idx].icon = url;
+            }
+            if (pending.length) heroIconFiles = {};
 
             setStore('vet_conf_settings', JSON.stringify(settings));
             showCustomAlert("تم تحديث نصوص الموقع بنجاح!");
@@ -2008,6 +2155,127 @@
             document.getElementById('hero-desc-text').innerText = s.heroDesc[currentLang] || s.heroDesc.ar;
             const fbLink = document.getElementById('fb-link-footer');
             if (fbLink) fbLink.href = s.fbLink || '#';
+            renderHeroIcons();
+        }
+
+        function renderHeroIcons() {
+            const row = document.getElementById('hero-icons-row');
+            if (!row) return;
+            const s = getSiteSettings();
+            const icons = (s.heroIcons || []).filter(function(ic) { return ic && ic.enabled; });
+            if (icons.length === 0) {
+                if (row.style) row.style.display = 'none';
+                row.innerHTML = '';
+                return;
+            }
+            if (row.style) row.style.display = '';
+            row.innerHTML = '';
+            icons.forEach(function(ic) {
+                const name = (ic.name && (ic.name[currentLang] || ic.name.ar || ic.name.en)) || '';
+                const cell = document.createElement('div');
+                cell.className = "hero-icon flex flex-col items-center gap-2 max-w-[110px]";
+                const frame = document.createElement('div');
+                frame.className = "w-16 h-16 rounded-2xl bg-white/15 border border-white/30 flex items-center justify-center overflow-hidden shadow-lg";
+                if (ic.icon) {
+                    const img = document.createElement('img');
+                    img.src = ic.icon;
+                    img.alt = name;
+                    img.loading = 'lazy';
+                    img.className = "w-full h-full object-contain p-1.5";
+                    frame.appendChild(img);
+                } else {
+                    const ph = document.createElement('i');
+                    ph.className = "fa-solid fa-image text-2xl text-white/50";
+                    frame.appendChild(ph);
+                }
+                cell.appendChild(frame);
+                if (name) {
+                    const lbl = document.createElement('span');
+                    lbl.className = "text-xs font-bold text-white/90 text-center leading-tight";
+                    lbl.innerText = name;
+                    cell.appendChild(lbl);
+                }
+                row.appendChild(cell);
+            });
+        }
+
+        function readHeroIconsForm() {
+            const icons = [];
+            for (let i = 0; i < 5; i++) {
+                const enabledEl = document.getElementById('hero-icon-enabled-' + i);
+                const urlEl = document.getElementById('hero-icon-url-' + i);
+                const arEl = document.getElementById('hero-icon-name-ar-' + i);
+                const enEl = document.getElementById('hero-icon-name-en-' + i);
+                icons.push({
+                    icon: urlEl ? urlEl.value.trim() : '',
+                    name: { ar: arEl ? arEl.value : '', en: enEl ? enEl.value : '' },
+                    enabled: enabledEl ? enabledEl.checked : false
+                });
+            }
+            return icons;
+        }
+
+        function loadHeroIconsForm() {
+            const list = document.getElementById('hero-icons-admin-list');
+            if (!list) return;
+            const s = getSiteSettings();
+            const icons = (s.heroIcons && s.heroIcons.length) ? s.heroIcons : defaultHeroIcons();
+            let html = '';
+            for (let i = 0; i < 5; i++) {
+                const ic = icons[i] || { icon: '', name: {}, enabled: false };
+                const name = ic.name || {};
+                html += `
+                    <div class="border rounded-xl p-3 bg-gray-50 flex items-start gap-3">
+                        <input type="checkbox" id="hero-icon-enabled-${i}"${ic.enabled ? ' checked' : ''} class="mt-2 w-4 h-4">
+                        <div class="flex-1 space-y-2">
+                            <div class="flex items-center gap-2">
+                                <label class="text-xs font-bold w-20 shrink-0 text-gray-600">الشعار</label>
+                                <input type="text" id="hero-icon-url-${i}" value="${esc(ic.icon || '')}" class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder="https://... أو ارفع صورة">
+                                <button type="button" onclick="pickHeroIconFile(${i})" class="text-xs font-bold bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg shrink-0"><i class="fa-solid fa-upload"></i> رفع</button>
+                                <input type="file" accept="image/*" class="hidden" id="hero-icon-file-${i}" onchange="previewHeroIconFile(${i}, this)">
+                            </div>
+                            <div class="grid sm:grid-cols-2 gap-2">
+                                <input type="text" id="hero-icon-name-ar-${i}" value="${esc(name.ar || '')}" class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder="الاسم (عربي)">
+                                <input type="text" id="hero-icon-name-en-${i}" value="${esc(name.en || '')}" class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder="Name (English)">
+                            </div>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-white border flex items-center justify-center overflow-hidden shrink-0" id="hero-icon-preview-${i}">
+                            ${ic.icon ? '<img src="' + esc(ic.icon) + '" alt="" class="w-full h-full object-contain">' : '<i class="fa-solid fa-image text-gray-300"></i>'}
+                        </div>
+                    </div>`;
+            }
+            list.innerHTML = html;
+            heroIconFiles = {};
+        }
+
+        function pickHeroIconFile(i) {
+            const f = document.getElementById('hero-icon-file-' + i);
+            if (f) f.click();
+        }
+
+        function previewHeroIconFile(i, input) {
+            const file = input && input.files && input.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                showCustomAlert("يرجى اختيار صورة فقط!");
+                return;
+            }
+            heroIconFiles[i] = file;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const prev = document.getElementById('hero-icon-preview-' + i);
+                if (prev) prev.innerHTML = '<img src="' + ev.target.result + '" alt="" class="w-full h-full object-contain">';
+                const url = document.getElementById('hero-icon-url-' + i);
+                if (url) url.placeholder = 'سيتم رفع الصورة عند الحفظ...';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function setAllHeroIcons(on) {
+            for (let i = 0; i < 5; i++) {
+                const c = document.getElementById('hero-icon-enabled-' + i);
+                if (c) c.checked = !!on;
+            }
         }
 
         function loadSiteSettingsForm() {
@@ -2023,6 +2291,7 @@
             document.getElementById('set-hero-desc-ar').value = s.heroDesc.ar || '';
             document.getElementById('set-hero-desc-en').value = s.heroDesc.en || '';
             document.getElementById('set-fb-link').value = s.fbLink || '';
+            loadHeroIconsForm();
         }
 
         function applyTranslations() {
@@ -2062,6 +2331,7 @@
             renderCustomSections();
             applySectionVisibility();
             applyTranslations();
+            renderHeroIcons();
         }
 
         function getNews() {
@@ -2149,7 +2419,7 @@
             document.getElementById('news-reader-date').innerText = item.date;
             document.getElementById('news-reader-title').innerText = title;
             document.getElementById('news-reader-summary').innerText = summary;
-            document.getElementById('news-reader-content').innerText = content;
+            document.getElementById('news-reader-content').innerHTML = content;
 
             const reader = document.getElementById('news-reader');
             const panel = reader.querySelector('.news-panel');
@@ -2434,8 +2704,8 @@
                     en: document.getElementById('news-summary-en').value
                 },
                 content: {
-                    ar: document.getElementById('news-content-ar').value,
-                    en: document.getElementById('news-content-en').value
+                    ar: document.getElementById('news-content-ar').innerHTML,
+                    en: document.getElementById('news-content-en').innerHTML
                 }
             };
             let newsList = getNews();
@@ -2533,10 +2803,10 @@
                 document.getElementById('edit-news-id').value = item.id;
                 document.getElementById('news-title-ar').value = item.title.ar || '';
                 document.getElementById('news-summary-ar').value = (item.summary && item.summary.ar) || '';
-                document.getElementById('news-content-ar').value = (item.content && item.content.ar) || '';
+                document.getElementById('news-content-ar').innerHTML = (item.content && item.content.ar) || '';
                 document.getElementById('news-title-en').value = item.title.en || '';
                 document.getElementById('news-summary-en').value = (item.summary && item.summary.en) || '';
-                document.getElementById('news-content-en').value = (item.content && item.content.en) || '';
+                document.getElementById('news-content-en').innerHTML = (item.content && item.content.en) || '';
                 if (item.media) {
                     document.getElementById('news-image-preview').src = item.media;
                     document.getElementById('news-image-preview-box').classList.remove('hidden');
@@ -2553,10 +2823,10 @@
             document.getElementById('edit-news-id').value = '';
             document.getElementById('news-title-ar').value = '';
             document.getElementById('news-summary-ar').value = '';
-            document.getElementById('news-content-ar').value = '';
+            document.getElementById('news-content-ar').innerHTML = '';
             document.getElementById('news-title-en').value = '';
             document.getElementById('news-summary-en').value = '';
-            document.getElementById('news-content-en').value = '';
+            document.getElementById('news-content-en').innerHTML = '';
             document.getElementById('news-file').value = '';
             clearNewsImage();
             document.getElementById('news-form-heading').innerText = "إضافة خبر جديد";
