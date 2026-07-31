@@ -13,6 +13,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <!-- SheetJS for Excel Export -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Cropper.js for image cropping -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -33,6 +36,8 @@
     </script>
     <style>
         body { font-family: 'Cairo', sans-serif; }
+        html { overflow-x: hidden; overflow-x: clip; }
+        img { max-width: 100%; }
         .ticker-wrap { overflow: hidden; white-space: nowrap; }
         .ticker-move { display: inline-flex; animation: ticker 40s linear infinite; will-change: transform; animation-play-state: running !important; }
         .ticker-move.paused { animation-play-state: paused !important; }
@@ -79,6 +84,40 @@
         .news-reader-body::-webkit-scrollbar { width: 6px; }
         .news-reader-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
 
+        /* ===== محرر النصوص الغني ===== */
+        .cs-editor-toolbar { border-radius: 8px 8px 0 0; }
+        .cs-tb-btn { min-width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border: 1px solid #e5e7eb; background: #fff; color: #374151; border-radius: 6px; font-size: 12px; font-weight: 600; padding: 0 7px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+        .cs-tb-btn:hover { border-color: #1d4ed8; color: #1d4ed8; background: #eff6ff; }
+        .cs-tb-btn.cs-tb-team { background: #1d4ed8; color: #fff; border-color: #1d4ed8; }
+        .cs-tb-btn.cs-tb-team:hover { background: #1e40af; color: #fff; }
+        .cs-tb-sep { width: 1px; height: 20px; background: #e5e7eb; margin: 0 2px; }
+        .cs-rich-editor { min-height: 120px; outline: none; }
+        .cs-rich-editor:focus { box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12); }
+        .cs-rich-editor:empty::before { content: attr(data-placeholder); color: #9ca3af; pointer-events: none; }
+        .cs-rich-editor h3 { font-size: 1.15rem; font-weight: 800; color: #0f172a; margin: 0.5rem 0; }
+        .cs-rich-editor ul { list-style: disc; padding-inline-start: 1.4rem; margin: 0.4rem 0; }
+        .cs-rich-editor ol { list-style: decimal; padding-inline-start: 1.4rem; margin: 0.4rem 0; }
+        .cs-rich-editor a { color: #1d4ed8; text-decoration: underline; }
+
+        /* ===== عرض المحتوى في الرئيسية وشاشة القسم ===== */
+        .custom-section-dynamic ul, #section-reader-content ul { list-style: disc; padding-inline-start: 1.4rem; margin: 0.5rem 0; }
+        .custom-section-dynamic ol, #section-reader-content ol { list-style: decimal; padding-inline-start: 1.4rem; margin: 0.5rem 0; }
+        .custom-section-dynamic li, #section-reader-content li { margin: 0.25rem 0; }
+        .custom-section-dynamic h3, #section-reader-content h3 { font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 0.6rem 0; }
+        .custom-section-dynamic a, #section-reader-content a { color: #1d4ed8; text-decoration: underline; }
+
+        /* ===== هيكل المؤتمر (بطاقات) ===== */
+        .cs-team { border: 2px dashed #1d4ed8; border-radius: 12px; background: #eff6ff; padding: 16px; margin: 10px 0; text-align: center; color: #1d4ed8; font-weight: 700; font-size: 13px; cursor: pointer; }
+        .cs-team:hover { background: #dbeafe; }
+        .cs-member-card { transition: transform 0.15s; }
+        .cs-member-card:hover { transform: translateY(-2px); }
+        .cs-member-card img { aspect-ratio: 1/1; }
+
+        /* ===== نافذة الاقتصاص ===== */
+        .crop-ratio-btn { background: #fff; color: #374151; border: 1px solid #e5e7eb; transition: all 0.15s; }
+        .crop-ratio-btn:hover { border-color: #1d4ed8; color: #1d4ed8; }
+        .crop-ratio-btn.active { background: #1d4ed8; color: #fff; border-color: #1d4ed8; }
+
             </style>
 </head>
 <body class="bg-gray-50 text-gray-800 antialiased">
@@ -93,27 +132,27 @@
     <!-- Top Bar & Navigation -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
+            <div class="flex items-center justify-between h-16 sm:h-20 gap-2">
                 <!-- Logo & Title on Right Side (لوجو المؤتمر في أقصى اليمين بجوار العنوان) -->
-                <div class="flex items-center space-x-3 space-x-reverse">
-                    <div class="bg-white p-1 rounded-2xl shadow-md border w-14 h-14 flex items-center justify-center overflow-hidden shrink-0" title="لوجو المؤتمر">
+                <div class="flex items-center space-x-2 sm:space-x-3 space-x-reverse min-w-0 flex-1">
+                    <div class="bg-white p-1 rounded-2xl shadow-md border w-10 h-10 sm:w-14 sm:h-14 flex items-center justify-center overflow-hidden shrink-0" title="لوجو المؤتمر">
                         <img src="لوجو المؤتمر.png" alt="Conference Logo" class="w-full h-full object-contain" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop'">
                     </div>
-                    <div>
-                        <h1 class="font-bold text-base md:text-lg text-vetDark" id="site-title-text" data-i18n="nav_title">المؤتمر الدولي التاسع للطب البيطري</h1>
-                        <p class="text-xs text-gray-500" id="site-subtitle-text" data-i18n="nav_subtitle">جامعة كفر الشيخ - مصر</p>
+                    <div class="min-w-0">
+                        <h1 class="font-bold text-sm sm:text-base md:text-lg text-vetDark leading-tight truncate" id="site-title-text" data-i18n="nav_title">المؤتمر الدولي التاسع للطب البيطري</h1>
+                        <p class="text-xs text-gray-500 hidden sm:block" id="site-subtitle-text" data-i18n="nav_subtitle">جامعة كفر الشيخ - مصر</p>
                     </div>
                 </div>
 
                 <!-- Actions: Language Switcher & Admin -->
                 <div class="flex items-center space-x-2 space-x-reverse shrink-0">
                     <div class="flex bg-gray-100 p-1 rounded-lg border border-gray-200">
-                        <button onclick="changeLang('ar')" id="btn-ar" class="px-2.5 py-1 text-xs font-bold rounded bg-vetBlue text-white shadow flex items-center gap-1"><img src="https://flagcdn.com/24x18/eg.png" alt="AR" class="inline-block w-4 h-3 rounded-sm"> AR</button>
-                        <button onclick="changeLang('en')" id="btn-en" class="px-2.5 py-1 text-xs font-bold rounded text-gray-600 hover:text-vetBlue flex items-center gap-1"><img src="https://flagcdn.com/24x18/gb.png" alt="EN" class="inline-block w-4 h-3 rounded-sm"> EN</button>
+                        <button onclick="changeLang('ar')" id="btn-ar" class="px-2 sm:px-2.5 py-1 text-xs font-bold rounded bg-vetBlue text-white shadow flex items-center gap-1"><img src="https://flagcdn.com/24x18/eg.png" alt="AR" class="inline-block w-4 h-3 rounded-sm"> AR</button>
+                        <button onclick="changeLang('en')" id="btn-en" class="px-2 sm:px-2.5 py-1 text-xs font-bold rounded text-gray-600 hover:text-vetBlue flex items-center gap-1"><img src="https://flagcdn.com/24x18/gb.png" alt="EN" class="inline-block w-4 h-3 rounded-sm"> EN</button>
 
                     </div>
-                    <button onclick="openAdminModal()" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg text-xs font-bold shadow transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-lock"></i> <span>دكتور محمود اللواتي</span>
+                    <button onclick="openAdminModal()" class="bg-amber-500 hover:bg-amber-600 text-white px-2 sm:px-3 py-2 rounded-lg text-xs font-bold shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-lock"></i> <span class="hidden md:inline">دكتور محمود اللواتي</span>
                     </button>
                 </div>
             </div>
@@ -144,7 +183,7 @@
                     <span class="bg-vetGold/90 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block shadow" data-i18n="hero_badge" id="hero-badge-text">الحدث العلمي الأبرز</span>
                     <h2 class="text-3xl md:text-4xl font-black mb-4 leading-tight" data-i18n="hero_title" id="hero-title-text">المؤتمر العلمي الدولي التاسع لكلية الطب البيطري</h2>
                     <p class="text-sm md:text-base text-blue-100 max-w-2xl mx-auto mb-8" data-i18n="hero_desc" id="hero-desc-text">نحو آفاق جديدة في البحث العلمي البيطري وتنمية الثروة الحيوانية وتحقيق الأمن الغذائي المستدام.</p>
-                    <div class="flex justify-center gap-4">
+                    <div class="flex justify-center gap-4 flex-wrap">
                         <a href="#register" class="bg-white text-vetDark hover:bg-blue-50 px-6 py-3 rounded-xl font-bold shadow-lg transition text-sm" data-i18n="hero_btn_reg">سجل حضورك الآن</a>
                         <a href="#news" class="border-2 border-white/40 hover:border-white text-white px-6 py-3 rounded-xl font-bold transition text-sm" data-i18n="hero_btn_more">اعرف المزيد</a>
                     </div>
@@ -314,6 +353,63 @@
                     <button onclick="closeSectionScreen(false)" class="w-full bg-vetDark hover:bg-vetBlue text-white py-3 rounded-xl text-sm font-bold transition shadow"><span data-i18n="section_back">رجوع</span></button>
                 </div>
             </article>
+        </div>
+    </div>
+
+    <!-- Crop Modal (اقتصاص الصور قبل الرفع) -->
+    <div id="crop-modal" class="fixed inset-0 z-[80] bg-black/70 flex items-center justify-center hidden p-4">
+        <div class="bg-white w-full max-w-2xl p-5 rounded-2xl shadow-2xl space-y-4">
+            <div class="flex items-center justify-between">
+                <h4 class="text-lg font-bold text-vetDark">اقتصاص الصورة</h4>
+                <button type="button" onclick="closeCropModal()" class="w-9 h-9 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="relative w-full h-72 bg-gray-900 rounded-xl overflow-hidden">
+                <img id="crop-img" alt="صورة للاقتصاص" class="max-w-full">
+            </div>
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div id="crop-ratio-buttons" class="flex flex-wrap gap-1.5">
+                    <button type="button" data-ratio="free" onclick="setCropAspect('free')" class="crop-ratio-btn px-3 py-1.5 rounded-lg border text-xs font-bold">قص حر</button>
+                    <button type="button" data-ratio="square" onclick="setCropAspect('square')" class="crop-ratio-btn px-3 py-1.5 rounded-lg border text-xs font-bold">1:1</button>
+                    <button type="button" data-ratio="4-3" onclick="setCropAspect('4-3')" class="crop-ratio-btn px-3 py-1.5 rounded-lg border text-xs font-bold">4:3</button>
+                    <button type="button" data-ratio="16-9" onclick="setCropAspect('16-9')" class="crop-ratio-btn px-3 py-1.5 rounded-lg border text-xs font-bold">16:9</button>
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" onclick="closeCropModal()" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-bold">إلغاء</button>
+                    <button type="button" onclick="confirmCrop()" class="px-5 py-2 rounded-lg bg-vetBlue text-white text-sm font-bold"><i class="fa-solid fa-crop-simple"></i> اعتماد القص</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Structure Modal (إدراج هيكل: صورة + اسم + وظيفة) -->
+    <div id="team-modal" class="fixed inset-0 z-[80] bg-black/60 backdrop-blur-sm flex items-center justify-center hidden p-4">
+        <div class="bg-white w-full max-w-3xl max-h-[90vh] flex flex-col rounded-2xl shadow-2xl">
+            <div class="flex items-center justify-between px-5 py-4 border-b">
+                <h4 id="team-modal-title" class="text-lg font-bold text-vetDark">إدراج هيكل (بطاقات)</h4>
+                <button type="button" onclick="closeTeamModal(false)" class="w-9 h-9 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-5 overflow-y-auto space-y-4 flex-1">
+                <div class="grid sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-bold mb-1">عنوان المجموعة (عربي) — اختياري</label>
+                        <input type="text" id="team-title-ar" class="w-full px-3 py-2 border rounded-lg form-input-focus" placeholder="مثال: اللجنة العلمية">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">Group title (English) — optional</label>
+                        <input type="text" id="team-title-en" class="w-full px-3 py-2 border rounded-lg form-input-focus" placeholder="e.g. Scientific Committee">
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <label class="text-sm font-bold text-vetDark">الأعضاء (صورة + اسم + وظيفة)</label>
+                    <button type="button" onclick="addTeamMemberRow(null)" class="bg-vetBlue text-white px-3 py-1.5 rounded-lg text-xs font-bold"><i class="fa-solid fa-plus"></i> إضافة عضو</button>
+                </div>
+                <div id="team-members-list" class="space-y-3"></div>
+                <p class="text-xs text-gray-400">عند اختيار صورة لأي عضو ستفتح نافذة الاقتصاص أولاً، ثم يُرفع الجزء المقتص فقط. كل بطاقة تعرض الصورة وفوقها الاسم وتحتها الوظيفة، وتقدر تضع عدة هياكل في نفس القسم.</p>
+            </div>
+            <div class="px-5 py-4 border-t flex items-center justify-between gap-2">
+                <button type="button" onclick="closeTeamModal(false)" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-bold">إلغاء</button>
+                <button type="button" id="team-save-btn" onclick="saveTeamBlock()" class="px-5 py-2 rounded-lg bg-vetBlue text-white text-sm font-bold"><i class="fa-solid fa-check"></i> حفظ وإدراج في المحتوى</button>
+            </div>
         </div>
     </div>
 
@@ -502,14 +598,50 @@
                                 <input type="text" id="cs-title-en" required class="w-full px-4 py-2 border rounded-lg form-input-focus" placeholder="e.g. Workshops">
                             </div>
                         </div>
-                        <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="grid xl:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-bold mb-1">المحتوى (عربي) *</label>
-                                <textarea id="cs-content-ar" rows="5" required class="w-full px-4 py-2 border rounded-lg form-input-focus" placeholder="اكتب المحتوى هنا... يمكنك استخدام HTML"></textarea>
+                                <div class="border rounded-lg overflow-hidden bg-white">
+                                    <div class="cs-editor-toolbar flex flex-wrap items-center gap-1 bg-gray-50 border-b px-2 py-1.5">
+                                        <button type="button" class="cs-tb-btn" title="عريض" onmousedown="event.preventDefault()" onclick="execFormat('bold','cs-editor-ar')"><i class="fa-solid fa-bold"></i></button>
+                                        <button type="button" class="cs-tb-btn" title="مائل" onmousedown="event.preventDefault()" onclick="execFormat('italic','cs-editor-ar')"><i class="fa-solid fa-italic"></i></button>
+                                        <button type="button" class="cs-tb-btn" title="تسطير" onmousedown="event.preventDefault()" onclick="execFormat('underline','cs-editor-ar')"><i class="fa-solid fa-underline"></i></button>
+                                        <span class="cs-tb-sep"></span>
+                                        <button type="button" class="cs-tb-btn" title="محاذاة يمين" onmousedown="event.preventDefault()" onclick="execFormat('justifyRight','cs-editor-ar')"><i class="fa-solid fa-align-right"></i></button>
+                                        <button type="button" class="cs-tb-btn" title="محاذاة وسط" onmousedown="event.preventDefault()" onclick="execFormat('justifyCenter','cs-editor-ar')"><i class="fa-solid fa-align-center"></i></button>
+                                        <button type="button" class="cs-tb-btn" title="محاذاة يسار" onmousedown="event.preventDefault()" onclick="execFormat('justifyLeft','cs-editor-ar')"><i class="fa-solid fa-align-left"></i></button>
+                                        <span class="cs-tb-sep"></span>
+                                        <button type="button" class="cs-tb-btn" title="تعداد نقطي" onmousedown="event.preventDefault()" onclick="execFormat('insertUnorderedList','cs-editor-ar')"><i class="fa-solid fa-list-ul"></i></button>
+                                        <button type="button" class="cs-tb-btn" title="تعداد رقمي" onmousedown="event.preventDefault()" onclick="execFormat('insertOrderedList','cs-editor-ar')"><i class="fa-solid fa-list-ol"></i></button>
+                                        <button type="button" class="cs-tb-btn" title="عنوان فرعي" onmousedown="event.preventDefault()" onclick="execFormat('formatBlock','cs-editor-ar','<h3>')"><i class="fa-solid fa-heading"></i></button>
+                                        <button type="button" class="cs-tb-btn" title="إدراج رابط" onmousedown="event.preventDefault()" onclick="insertEditorLink('cs-editor-ar')"><i class="fa-solid fa-link"></i></button>
+                                        <span class="cs-tb-sep"></span>
+                                        <button type="button" class="cs-tb-btn cs-tb-team" title="إدراج هيكل: بطاقات صورة واسم ووظيفة" onmousedown="event.preventDefault()" onclick="insertTeamBlock('cs-editor-ar')"><i class="fa-solid fa-user-group"></i> إدراج هيكل</button>
+                                    </div>
+                                    <div id="cs-editor-ar" contenteditable="true" data-placeholder="اكتب المحتوى هنا... (محرر نصي متكامل)" class="cs-rich-editor w-full px-4 py-2 min-h-[120px] text-gray-700 leading-relaxed" dir="auto"></div>
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold mb-1">Content (English) *</label>
-                                <textarea id="cs-content-en" rows="5" required class="w-full px-4 py-2 border rounded-lg form-input-focus" placeholder="Write content here... HTML is allowed"></textarea>
+                                <div class="border rounded-lg overflow-hidden bg-white">
+                                    <div class="cs-editor-toolbar flex flex-wrap items-center gap-1 bg-gray-50 border-b px-2 py-1.5">
+                                        <button type="button" class="cs-tb-btn" title="Bold" onmousedown="event.preventDefault()" onclick="execFormat('bold','cs-editor-en')"><i class="fa-solid fa-bold"></i></button>
+                                        <button type="button" class="cs-tb-btn" title="Italic" onmousedown="event.preventDefault()" onclick="execFormat('italic','cs-editor-en')"><i class="fa-solid fa-italic"></i></button>
+                                        <button type="button" class="cs-tb-btn" title="Underline" onmousedown="event.preventDefault()" onclick="execFormat('underline','cs-editor-en')"><i class="fa-solid fa-underline"></i></button>
+                                        <span class="cs-tb-sep"></span>
+                                        <button type="button" class="cs-tb-btn" title="Align right" onmousedown="event.preventDefault()" onclick="execFormat('justifyRight','cs-editor-en')"><i class="fa-solid fa-align-right"></i></button>
+                                        <button type="button" class="cs-tb-btn" title="Align center" onmousedown="event.preventDefault()" onclick="execFormat('justifyCenter','cs-editor-en')"><i class="fa-solid fa-align-center"></i></button>
+                                        <button type="button" class="cs-tb-btn" title="Align left" onmousedown="event.preventDefault()" onclick="execFormat('justifyLeft','cs-editor-en')"><i class="fa-solid fa-align-left"></i></button>
+                                        <span class="cs-tb-sep"></span>
+                                        <button type="button" class="cs-tb-btn" title="Bullet list" onmousedown="event.preventDefault()" onclick="execFormat('insertUnorderedList','cs-editor-en')"><i class="fa-solid fa-list-ul"></i></button>
+                                        <button type="button" class="cs-tb-btn" title="Numbered list" onmousedown="event.preventDefault()" onclick="execFormat('insertOrderedList','cs-editor-en')"><i class="fa-solid fa-list-ol"></i></button>
+                                        <button type="button" class="cs-tb-btn" title="Sub-heading" onmousedown="event.preventDefault()" onclick="execFormat('formatBlock','cs-editor-en','<h3>')"><i class="fa-solid fa-heading"></i></button>
+                                        <button type="button" class="cs-tb-btn" title="Insert link" onmousedown="event.preventDefault()" onclick="insertEditorLink('cs-editor-en')"><i class="fa-solid fa-link"></i></button>
+                                        <span class="cs-tb-sep"></span>
+                                        <button type="button" class="cs-tb-btn cs-tb-team" title="Insert structure: image + name + role cards" onmousedown="event.preventDefault()" onclick="insertTeamBlock('cs-editor-en')"><i class="fa-solid fa-user-group"></i> Insert Structure</button>
+                                    </div>
+                                    <div id="cs-editor-en" contenteditable="true" data-placeholder="Write content here... (rich text editor)" class="cs-rich-editor w-full px-4 py-2 min-h-[120px] text-gray-700 leading-relaxed" dir="auto"></div>
+                                </div>
                             </div>
                         </div>
                         <div>
@@ -567,6 +699,20 @@
                 <!-- Ticker Manager Tab -->
                 <div id="tab-ticker-manager" class="space-y-6 max-w-3xl hidden">
                     <h4 class="text-xl font-bold text-vetDark">إدارة أخبار الشريط العاجل المتحرك</h4>
+                    <div class="bg-white p-6 rounded-xl shadow border">
+                        <h5 class="font-bold text-vetDark mb-4" data-i18n="ticker_settings">إعدادات حركة الشريط</h5>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-1" data-i18n="ticker_speed">سرعة الحركة</label>
+                                <div class="flex items-center gap-3">
+                                    <input type="range" id="ticker-speed-range" min="1" max="10" step="1" value="5" class="flex-1" oninput="onTickerSpeedInput(this.value)">
+                                    <input type="number" id="ticker-speed-num" min="1" max="10" step="1" value="5" class="w-20 px-3 py-2 border rounded-lg text-center" oninput="onTickerSpeedInput(this.value)">
+                                </div>
+                                <div class="flex justify-between text-xs text-gray-400 mt-1"><span data-i18n="ticker_speed_slow">بطيء</span><span data-i18n="ticker_speed_fast">سريع</span></div>
+                            </div>
+                            <button type="button" onclick="saveTickerSettings()" class="bg-vetBlue text-white px-5 py-2 rounded-lg font-bold text-sm shadow"><i class="fa-solid fa-save"></i> <span data-i18n="ticker_speed_save">حفظ الإعدادات</span></button>
+                        </div>
+                    </div>
                     <form onsubmit="handleSaveTicker(event)" class="bg-white p-6 rounded-xl shadow border space-y-4">
                         <input type="hidden" id="edit-ticker-id" value="">
                         <div>
@@ -741,6 +887,11 @@
                 hero_btn_reg: "سجل حضورك الآن",
                 hero_btn_more: "اعرف المزيد",
                 ticker_label: "شريط عاجل",
+                ticker_settings: "إعدادات حركة الشريط",
+                ticker_speed: "سرعة الحركة",
+                ticker_speed_slow: "بطيء",
+                ticker_speed_fast: "سريع",
+                ticker_speed_save: "حفظ الإعدادات",
                 about_heading: "عن المؤتمر",
                 about_p1: "يُعد المؤتمر العلمي الدولي التاسع لكلية الطب البيطري بجامعة كفر الشيخ منصة عالمية تجمع نخبة من العلماء، الباحثين، والأطباء البيطريين.",
                 about_p2: "يهدف المؤتمر إلى تسليط الضوء على الابتكارات الحديثة في تشخيص وعلاج الأمراض الحيوانية وسلامة الغذاء.",
@@ -839,6 +990,11 @@
                 hero_btn_reg: "Register Now",
                 hero_btn_more: "Learn More",
                 ticker_label: "Breaking News",
+                ticker_settings: "Ticker Speed Settings",
+                ticker_speed: "Scroll Speed",
+                ticker_speed_slow: "Slow",
+                ticker_speed_fast: "Fast",
+                ticker_speed_save: "Save Settings",
                 about_heading: "About the Conference",
                 about_p1: "The 9th International Scientific Conference of the Faculty of Veterinary Medicine at Kafrelsheikh University is a global platform bringing together elite scientists, researchers, and veterinarians.",
                 about_p2: "The conference aims to highlight modern innovations in the diagnosis and treatment of animal diseases and food safety.",
@@ -1109,6 +1265,306 @@
             });
         }
 
+        // ========== Rich Text Editor ==========
+        function execFormat(cmd, editorId, value) {
+            const ed = document.getElementById(editorId);
+            if (!ed) return;
+            ed.focus();
+            if (value) document.execCommand(cmd, false, value);
+            else document.execCommand(cmd, false, null);
+            ed.focus();
+        }
+
+        function insertEditorLink(editorId) {
+            const ed = document.getElementById(editorId);
+            if (!ed) return;
+            ed.focus();
+            const url = prompt('أدخل رابط الصفحة (يبدأ بـ https://)');
+            if (url) document.execCommand('createLink', false, url);
+        }
+
+        // ========== Team Structure (إدراج هيكل) ==========
+        let teamTargetEditor = null;
+        let teamEditPlaceholderId = null;
+        let teamRows = [];
+
+        function esc(s) {
+            return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function buildTeamGridHtml(members, titleAr, titleEn) {
+            const title = (currentLang === 'en' && titleEn) ? titleEn : (titleAr || titleEn || '');
+            const cards = members.map(function(m) {
+                const name = (currentLang === 'en' && m.nameEn) ? m.nameEn : (m.nameAr || m.nameEn || '');
+                const role = (currentLang === 'en' && m.roleEn) ? m.roleEn : (m.roleAr || m.roleEn || '');
+                const imgBlock = m.img
+                    ? '<div class="aspect-square overflow-hidden bg-gray-100"><img src="' + esc(m.img) + '" alt="' + esc(name) + '" loading="lazy" class="w-full h-full object-cover"></div>'
+                    : '<div class="aspect-square bg-gray-100 flex items-center justify-center text-gray-300 text-4xl"><i class="fa-solid fa-user"></i></div>';
+                return '<div class="cs-member-card bg-white border rounded-2xl overflow-hidden shadow-sm text-center">' + imgBlock +
+                    '<div class="p-3">' +
+                    (name ? '<div class="font-bold text-vetDark text-sm leading-snug">' + esc(name) + '</div>' : '') +
+                    (role ? '<div class="text-xs text-gray-500 mt-1">' + esc(role) + '</div>' : '') +
+                    '</div></div>';
+            }).join('');
+            return (title ? '<div class="flex items-center gap-3 my-5"><h4 class="text-lg font-black text-vetDark">' + esc(title) + '</h4><div class="flex-1 h-px bg-gray-200"></div></div>' : '') +
+                '<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">' + cards + '</div>';
+        }
+
+        function buildTeamPlaceholderHtml(phId, titleAr, titleEn, members) {
+            const json = JSON.stringify(members).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return '<div id="' + esc(phId) + '" class="cs-team" contenteditable="false" onclick="editTeamBlock(this)" data-title-ar="' + esc(titleAr) + '" data-title-en="' + esc(titleEn) + '" data-team="' + json + '"><i class="fa-solid fa-user-group"></i> هيكل المؤتمر - بطاقات (' + members.length + ' عضواً) - اضغط للتعديل</div>';
+        }
+
+        function renderTeamBlocks(container) {
+            if (!container || !container.querySelectorAll) return;
+            const blocks = container.querySelectorAll('.cs-team');
+            Array.prototype.forEach.call(blocks, function(block) {
+                let members = null;
+                try { members = JSON.parse(block.getAttribute('data-team')) || []; } catch (e) { members = null; }
+                if (!members || !members.length) return;
+                const wrap = document.createElement('div');
+                wrap.innerHTML = buildTeamGridHtml(members, block.getAttribute('data-title-ar') || '', block.getAttribute('data-title-en') || '');
+                if (typeof block.replaceWith === 'function') block.replaceWith(wrap);
+                else if (block.parentNode) block.parentNode.replaceChild(wrap, block);
+            });
+        }
+
+        function insertHTMLAtCursor(editor, html) {
+            editor.focus();
+            document.execCommand('insertHTML', false, html);
+        }
+
+        function insertTeamBlock(editorId) {
+            teamTargetEditor = editorId;
+            teamEditPlaceholderId = null;
+            resetTeamModalForm();
+            document.getElementById('team-modal-title').textContent = 'إدراج هيكل (بطاقات)';
+            openTeamModal();
+        }
+
+        function openTeamModal() {
+            document.getElementById('team-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTeamModal(clearTarget) {
+            document.getElementById('team-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+            if (clearTarget) { teamTargetEditor = null; teamEditPlaceholderId = null; }
+        }
+
+        function resetTeamModalForm() {
+            document.getElementById('team-title-ar').value = '';
+            document.getElementById('team-title-en').value = '';
+            const list = document.getElementById('team-members-list');
+            list.innerHTML = '';
+            teamRows = [];
+            addTeamMemberRow(null);
+        }
+
+        function addTeamMemberRow(data) {
+            const list = document.getElementById('team-members-list');
+            const row = document.createElement('div');
+            row.className = 'team-member-row bg-gray-50 border rounded-xl p-3 grid grid-cols-1 sm:grid-cols-2 gap-3';
+            row.innerHTML =
+                '<div class="sm:col-span-2 flex items-center gap-3">' +
+                '<div class="w-16 h-16 rounded-xl bg-white border flex items-center justify-center overflow-hidden shrink-0">' +
+                '<img class="tm-preview hidden w-full h-full object-cover" alt=""><i class="fa-solid fa-user text-gray-300 text-2xl tm-usericon"></i></div>' +
+                '<input type="file" class="tm-file text-xs" accept="image/*">' +
+                '<button type="button" onclick="removeTeamMemberRow(this)" class="mr-auto text-red-500 text-xs font-bold"><i class="fa-solid fa-trash"></i> حذف</button>' +
+                '</div>' +
+                '<div><label class="block text-xs font-bold mb-1">الاسم (عربي)</label><input type="text" class="tm-name-ar w-full px-3 py-1.5 border rounded-lg form-input-focus text-sm"></div>' +
+                '<div><label class="block text-xs font-bold mb-1">الوظيفة (عربي)</label><input type="text" class="tm-role-ar w-full px-3 py-1.5 border rounded-lg form-input-focus text-sm"></div>' +
+                '<div><label class="block text-xs font-bold mb-1">Name (English)</label><input type="text" class="tm-name-en w-full px-3 py-1.5 border rounded-lg form-input-focus text-sm"></div>' +
+                '<div><label class="block text-xs font-bold mb-1">Role (English)</label><input type="text" class="tm-role-en w-full px-3 py-1.5 border rounded-lg form-input-focus text-sm"></div>';
+            const fields = {
+                nameAr: row.querySelector('.tm-name-ar'),
+                roleAr: row.querySelector('.tm-role-ar'),
+                nameEn: row.querySelector('.tm-name-en'),
+                roleEn: row.querySelector('.tm-role-en'),
+                file: row.querySelector('.tm-file'),
+                preview: row.querySelector('.tm-preview'),
+                usericon: row.querySelector('.tm-usericon')
+            };
+            row._fields = fields;
+            if (data) {
+                fields.nameAr.value = data.nameAr || '';
+                fields.roleAr.value = data.roleAr || '';
+                fields.nameEn.value = data.nameEn || '';
+                fields.roleEn.value = data.roleEn || '';
+                if (data.img) {
+                    row.setAttribute('data-member-image', data.img);
+                    fields.preview.src = data.img;
+                    fields.preview.classList.remove('hidden');
+                    fields.usericon.classList.add('hidden');
+                }
+            }
+            fields.file.addEventListener('change', function(ev) { onTeamImagePick(ev, row); });
+            list.appendChild(row);
+            teamRows.push(row);
+            return row;
+        }
+
+        function removeTeamMemberRow(btn) {
+            const row = btn.closest('.team-member-row');
+            if (row) { teamRows = teamRows.filter(r => r !== row); row.remove(); }
+        }
+
+        function onTeamImagePick(ev, row) {
+            const file = ev.target.files[0];
+            if (!file || !file.type.startsWith('image/')) return;
+            openCropModal(file, function(cropped) {
+                row._cropFile = cropped;
+                const preview = row.querySelector('.tm-preview');
+                if (preview) { preview.src = URL.createObjectURL(cropped); preview.classList.remove('hidden'); }
+                const uicon = row.querySelector('.tm-usericon');
+                if (uicon) uicon.classList.add('hidden');
+            });
+        }
+
+        async function saveTeamBlock() {
+            const titleAr = (document.getElementById('team-title-ar').value || '').trim();
+            const titleEn = (document.getElementById('team-title-en').value || '').trim();
+            const rows = teamRows.slice();
+            const hasUploads = rows.some(function(r) { return !!r._cropFile; });
+            const btn = document.getElementById('team-save-btn');
+            const setLoading = function(on) {
+                if (!btn) return;
+                btn.disabled = on;
+                btn.innerHTML = on ? '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري رفع الصور...' : '<i class="fa-solid fa-check"></i> حفظ وإدراج في المحتوى';
+            };
+
+            function finish(members) {
+                if (!members.length) {
+                    showCustomAlert('أضف عضواً واحداً على الأقل (اسم أو صورة).');
+                    return;
+                }
+                const phId = teamEditPlaceholderId || ('cs-team-' + Date.now());
+                const html = buildTeamPlaceholderHtml(phId, titleAr, titleEn, members);
+                const editor = document.getElementById(teamTargetEditor);
+                if (teamEditPlaceholderId) {
+                    const old = document.getElementById(teamEditPlaceholderId);
+                    if (old) old.outerHTML = html;
+                } else if (editor) {
+                    insertHTMLAtCursor(editor, html);
+                }
+                closeTeamModal(true);
+            }
+
+            const collected = [];
+            rows.forEach(function(row) {
+                const nameAr = (row.querySelector('.tm-name-ar').value || '').trim();
+                const roleAr = (row.querySelector('.tm-role-ar').value || '').trim();
+                const nameEn = (row.querySelector('.tm-name-en').value || '').trim();
+                const roleEn = (row.querySelector('.tm-role-en').value || '').trim();
+                if (!nameAr && !roleAr && !nameEn && !roleEn && !row._cropFile) return;
+                collected.push({ row: row, nameAr: nameAr, roleAr: roleAr, nameEn: nameEn, roleEn: roleEn });
+            });
+
+            if (!hasUploads) {
+                finish(collected.map(function(c) {
+                    return { img: c.row.getAttribute('data-member-image') || '', nameAr: c.nameAr, roleAr: c.roleAr, nameEn: c.nameEn, roleEn: c.roleEn };
+                }));
+                return;
+            }
+
+            setLoading(true);
+            const members = [];
+            for (const c of collected) {
+                let img = c.row.getAttribute('data-member-image') || '';
+                if (c.row._cropFile) {
+                    const url = await uploadFileToCloudinary(c.row._cropFile);
+                    if (!url) {
+                        setLoading(false);
+                        showCustomAlert('فشل رفع إحدى الصور. جرب صورة أصغر أو تحقق من اتصالك.');
+                        return;
+                    }
+                    img = url;
+                }
+                members.push({ img: img, nameAr: c.nameAr, roleAr: c.roleAr, nameEn: c.nameEn, roleEn: c.roleEn });
+            }
+            setLoading(false);
+            finish(members);
+        }
+
+        function uploadFileToCloudinary(file) {
+            return new Promise(function(resolve) { uploadMediaToCloudinary(file, resolve); });
+        }
+
+        function editTeamBlock(el) {
+            if (el && typeof el.closest === 'function') {
+                let n = el;
+                while (n && n.getAttribute && n.getAttribute('contenteditable') !== 'true') n = n.parentNode;
+                if (n && n.id) teamTargetEditor = n.id;
+            }
+            if (!teamTargetEditor) teamTargetEditor = 'cs-editor-ar';
+            teamEditPlaceholderId = el.id;
+            document.getElementById('team-title-ar').value = el.getAttribute('data-title-ar') || '';
+            document.getElementById('team-title-en').value = el.getAttribute('data-title-en') || '';
+            const list = document.getElementById('team-members-list');
+            list.innerHTML = '';
+            teamRows = [];
+            let members = [];
+            try { members = JSON.parse(el.getAttribute('data-team')) || []; } catch (e) { members = []; }
+            (members.length ? members : [null]).forEach(function(m) { addTeamMemberRow(m); });
+            document.getElementById('team-modal-title').textContent = 'تعديل الهيكل';
+            openTeamModal();
+        }
+
+        // ========== Image Crop Modal (اقتصاص الصور) ==========
+        let cropPendingCallback = null;
+        let cropCropper = null;
+
+        function openCropModal(file, onDone) {
+            cropPendingCallback = onDone;
+            const img = document.getElementById('crop-img');
+            if (img) img.src = URL.createObjectURL(file);
+            document.getElementById('crop-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            setCropAspect('free');
+            if (cropCropper) { try { cropCropper.destroy(); } catch (e) {} cropCropper = null; }
+            setTimeout(function() {
+                if (typeof Cropper === 'undefined' || !img) return;
+                try {
+                    cropCropper = new Cropper(img, { aspectRatio: NaN, viewMode: 1, autoCropArea: 0.85, background: true, modal: true, dragMode: 'move' });
+                } catch (e) { cropCropper = null; }
+            }, 80);
+        }
+
+        function setCropAspect(key) {
+            const map = { square: 1, '4-3': 4 / 3, '16-9': 16 / 9, free: NaN };
+            const ratio = (key in map) ? map[key] : NaN;
+            if (cropCropper) cropCropper.setAspectRatio(ratio);
+            const buttons = document.querySelectorAll('#crop-ratio-buttons button');
+            Array.prototype.forEach.call(buttons, function(b) {
+                const active = b.getAttribute('data-ratio') === key;
+                b.classList.toggle('active', active);
+            });
+        }
+
+        function confirmCrop() {
+            if (!cropCropper) { showCustomAlert('الصورة لم تجهز بعد، حاول مرة أخرى'); return; }
+            const cb = cropPendingCallback;
+            let canvas = null;
+            try { canvas = cropCropper.getCroppedCanvas({ maxWidth: 1600, maxHeight: 1600 }); } catch (e) { canvas = null; }
+            closeCropModal();
+            if (!cb || !canvas) return;
+            canvas.toBlob(function(blob) {
+                if (!blob) { showCustomAlert('تعذر اقتصاص الصورة'); return; }
+                try { cb(new File([blob], 'cropped.jpg', { type: 'image/jpeg' })); }
+                catch (e) { cb(blob); }
+            }, 'image/jpeg', 0.92);
+        }
+
+        function closeCropModal() {
+            document.getElementById('crop-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+            if (cropCropper) { try { cropCropper.destroy(); } catch (e) {} cropCropper = null; }
+            cropPendingCallback = null;
+            const img = document.getElementById('crop-img');
+            if (img && img.src) { try { URL.revokeObjectURL(img.src); } catch (e) {} img.src = ''; }
+        }
+
         // ========== Custom Sections Management ==========
         function getCustomSections() {
             const list = JSON.parse(getStore('vet_conf_custom_sections')) || [];
@@ -1133,10 +1589,16 @@
             const editId = document.getElementById('edit-cs-id').value;
             const titleAr = document.getElementById('cs-title-ar').value;
             const titleEn = document.getElementById('cs-title-en').value;
-            const contentAr = document.getElementById('cs-content-ar').value;
-            const contentEn = document.getElementById('cs-content-en').value;
+            const contentAr = document.getElementById('cs-editor-ar').innerHTML.trim();
+            const contentEn = document.getElementById('cs-editor-en').innerHTML.trim();
+            const plainAr = contentAr.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+            const plainEn = contentEn.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+            if (!plainAr || !plainEn) {
+                showCustomAlert('يرجى كتابة المحتوى بالعربية والإنجليزية قبل الحفظ.');
+                return;
+            }
             const fileInput = document.getElementById('cs-image');
-            const file = fileInput ? fileInput.files[0] : null;
+            const file = (fileInput && (fileInput._cropFile || fileInput.files[0])) || null;
             const icon = document.getElementById('cs-icon').value || 'fa-bullseye';
             const showOnHome = !!document.getElementById('cs-show-home').checked;
             let sections = getCustomSections();
@@ -1222,9 +1684,10 @@
                         <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
                     </div>
                     ${s.image ? `<div class="mb-6"><img src="${s.image}" alt="${title}" class="w-full rounded-2xl object-cover shadow-sm" style="max-height:400px;"></div>` : ''}
-                    <div class="text-gray-600 leading-relaxed">${content}</div>
+                    <div class="text-gray-600 leading-relaxed rich-content">${content}</div>
                 `;
                 main.appendChild(section);
+                renderTeamBlocks(section);
             });
         }
 
@@ -1235,8 +1698,8 @@
                 document.getElementById('edit-cs-id').value = s.id;
                 document.getElementById('cs-title-ar').value = s.title.ar || '';
                 document.getElementById('cs-title-en').value = s.title.en || '';
-                document.getElementById('cs-content-ar').value = s.content.ar || '';
-                document.getElementById('cs-content-en').value = s.content.en || '';
+                document.getElementById('cs-editor-ar').innerHTML = s.content.ar || '';
+                document.getElementById('cs-editor-en').innerHTML = s.content.en || '';
                 const icon = s.icon || 'fa-bullseye';
                 document.getElementById('cs-icon').value = icon;
                 document.querySelectorAll('#cs-icon-picker button').forEach(function(b) {
@@ -1259,32 +1722,30 @@
 
         function clearCustomSectionImage() {
             const imageInput = document.getElementById('cs-image');
-            if (imageInput) imageInput.value = '';
+            if (imageInput) { imageInput.value = ''; imageInput._cropFile = null; }
             const preview = document.getElementById('cs-image-preview');
             if (preview) preview.classList.add('hidden');
         }
 
         function previewCustomSectionImage(e) {
             const file = e.target.files[0];
-            const preview = document.getElementById('cs-image-preview');
-            const img = document.getElementById('cs-image-preview-img');
-            if (!file || !preview || !img) return;
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(ev) {
-                    img.src = ev.target.result;
-                    preview.classList.remove('hidden');
-                };
-                reader.readAsDataURL(file);
-            }
+            const input = document.getElementById('cs-image');
+            if (!file || !file.type.startsWith('image/')) return;
+            openCropModal(file, function(cropped) {
+                if (input) input._cropFile = cropped;
+                const preview = document.getElementById('cs-image-preview');
+                const img = document.getElementById('cs-image-preview-img');
+                if (img) img.src = URL.createObjectURL(cropped);
+                if (preview) preview.classList.remove('hidden');
+            });
         }
 
         function resetCustomSectionForm() {
             document.getElementById('edit-cs-id').value = '';
             document.getElementById('cs-title-ar').value = '';
             document.getElementById('cs-title-en').value = '';
-            document.getElementById('cs-content-ar').value = '';
-            document.getElementById('cs-content-en').value = '';
+            document.getElementById('cs-editor-ar').innerHTML = '';
+            document.getElementById('cs-editor-en').innerHTML = '';
             document.getElementById('cs-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> إضافة قسم مخصص';
             document.getElementById('cs-cancel-btn').classList.add('hidden');
             const imageInput = document.getElementById('cs-image');
@@ -1404,6 +1865,7 @@
             const container = document.getElementById('admin-ticker-list');
             const tickers = getTickerItems();
             container.innerHTML = '';
+            loadTickerSettings();
             tickers.forEach(t => {
                 const div = document.createElement('div');
                 div.className = "flex items-center justify-between bg-gray-50 p-3 rounded-lg border";
@@ -1421,34 +1883,92 @@
             });
         }
 
+        function getTickerSettings() {
+            const raw = JSON.parse(getStore('vet_conf_ticker_settings'));
+            if (!raw || typeof raw.speed !== 'number' || isNaN(raw.speed) || raw.speed < 1 || raw.speed > 10) return { speed: 5 };
+            return { speed: Math.round(raw.speed) };
+        }
+
+        function tickerPxPerSec(level) { return 30 + (level - 1) * 15; }
+
+        function applyTickerSpeed(level) {
+            const container = document.getElementById('ticker-content-container');
+            if (!container) return;
+            const totalW = container.scrollWidth;
+            const duration = Math.max(2, totalW / (2 * tickerPxPerSec(level)));
+            container.style.animation = `ticker ${duration}s linear infinite`;
+        }
+
+        function onTickerSpeedInput(value) {
+            let level = parseInt(value, 10);
+            if (isNaN(level)) level = getTickerSettings().speed;
+            level = Math.min(10, Math.max(1, level));
+            const range = document.getElementById('ticker-speed-range');
+            const num = document.getElementById('ticker-speed-num');
+            if (range) range.value = level;
+            if (num) num.value = level;
+            applyTickerSpeed(level);
+        }
+
+        function saveTickerSettings() {
+            const num = document.getElementById('ticker-speed-num');
+            let level = num ? parseInt(num.value, 10) : NaN;
+            if (isNaN(level)) level = getTickerSettings().speed;
+            level = Math.min(10, Math.max(1, level));
+            setStore('vet_conf_ticker_settings', JSON.stringify({ speed: level }));
+            showCustomAlert(currentLang === 'en' ? 'Ticker speed settings saved!' : 'تم حفظ إعدادات سرعة الشريط بنجاح!');
+        }
+
+        function loadTickerSettings() {
+            const s = getTickerSettings();
+            const range = document.getElementById('ticker-speed-range');
+            const num = document.getElementById('ticker-speed-num');
+            if (range) range.value = s.speed;
+            if (num) num.value = s.speed;
+            applyTickerSpeed(s.speed);
+        }
+
         function renderTicker() {
             const container = document.getElementById('ticker-content-container');
+            const wrap = container.closest('.ticker-wrap') || container.parentElement || container;
             const tickers = getTickerItems();
             container.innerHTML = '';
-            if (tickers.length === 0) {
-                const span = document.createElement('span');
-                span.className = "mx-6";
-                span.innerText = currentLang === 'en' ? 'No breaking news' : 'لا توجد أخبار عاجلة حالياً';
-                container.appendChild(span);
-                return;
+            const build = function() {
+                const frag = document.createDocumentFragment();
+                if (tickers.length === 0) {
+                    const span = document.createElement('span');
+                    span.className = "mx-6";
+                    span.innerText = currentLang === 'en' ? 'No breaking news' : 'لا توجد أخبار عاجلة حالياً';
+                    frag.appendChild(span);
+                } else {
+                    tickers.forEach(t => {
+                        const span = document.createElement('span');
+                        span.className = "mx-6";
+                        span.innerText = t[currentLang] || t.ar || '';
+                        frag.appendChild(span);
+                    });
+                }
+                return frag;
+            };
+            container.appendChild(build());
+            container.appendChild(build());
+            let guard = 0;
+            const wrapW = wrap.clientWidth || window.innerWidth || 1200;
+            while (container.scrollWidth < wrapW * 2 && guard < 500) {
+                container.appendChild(build());
+                container.appendChild(build());
+                guard++;
             }
-            tickers.forEach(t => {
-                const span = document.createElement('span');
-                span.className = "mx-6";
-                span.innerText = t[currentLang] || t.ar || '';
-                container.appendChild(span);
-            });
-            tickers.forEach(t => {
-                const span = document.createElement('span');
-                span.className = "mx-6";
-                span.innerText = t[currentLang] || t.ar || '';
-                container.appendChild(span);
-            });
-            const tickerMove = container.closest('.ticker-move') || container;
-            tickerMove.style.animation = 'none';
-            void tickerMove.offsetHeight;
-            const duration = Math.max(20, tickers.length * 8);
-            tickerMove.style.animation = `ticker ${duration}s linear infinite`;
+            container.style.animation = 'none';
+            void container.offsetHeight;
+            applyTickerSpeed(getTickerSettings().speed);
+            if (!window.__tickerResizeBound) {
+                window.__tickerResizeBound = true;
+                window.addEventListener('resize', function() {
+                    clearTimeout(window.__tickerResizeTimer);
+                    window.__tickerResizeTimer = setTimeout(renderTicker, 200);
+                });
+            }
         }
 
         // Site Settings Management
@@ -1673,6 +2193,7 @@
             const iconEl = document.getElementById('section-reader-icon');
             if (iconEl) iconEl.className = 'fa-solid ' + (item.icon || 'fa-bullseye');
             document.getElementById('section-reader-content').innerHTML = content;
+            renderTeamBlocks(document.getElementById('section-reader-content'));
             const reader = document.getElementById('section-reader');
             const panel = reader.querySelector('.news-panel');
             reader.classList.remove('hidden');
@@ -2281,6 +2802,7 @@
             document.documentElement.setAttribute('dir', 'rtl');
             // تحميل البيانات من Cloudinary أولاً ثم الرسم
             loadAllData();
+            startLiveSync();
             applyTranslations();
 
             // تظليل الأيقونة الافتراضية في منتقي أيقونات الأقسام
@@ -2399,11 +2921,12 @@
         }
 
         // تحميل كل البيانات من قاعدة البيانات السحابية عند فتح الموقع
-        async function loadAllData() {
-            const keys = ['vet_conf_settings', 'vet_conf_nav_buttons', 'vet_conf_ticker',
+        async function loadAllData(opts) {
+            const silent = !!(opts && opts.silent);
+            const keys = ['vet_conf_settings', 'vet_conf_nav_buttons', 'vet_conf_ticker', 'vet_conf_ticker_settings',
                 'vet_conf_news', 'vet_conf_regs', 'vet_conf_custom_sections', 'vet_conf_admin_pass'];
-            updateSyncBadge('connecting');
-            let loaded = 0, anyOk = false;
+            if (!silent) updateSyncBadge('connecting');
+            let loaded = 0, anyOk = false, changed = false;
             for (const key of keys) {
                 try {
                     const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
@@ -2415,15 +2938,34 @@
                         updateSyncBadge('connected');
                         const data = await res.json();
                         if (data !== null && data !== undefined) {
-                            appData[key] = (typeof data === 'string') ? data : JSON.stringify(data);
-                            loaded++;
+                            const value = (typeof data === 'string') ? data : JSON.stringify(data);
+                            if (appData[key] !== value) {
+                                appData[key] = value;
+                                loaded++;
+                                changed = true;
+                            }
                         }
                     }
                 } catch (e) { /* ignore missing keys or network errors */ }
             }
             if (!anyOk) updateSyncBadge('disconnected');
-            refreshAllSections();
+            if (!silent || changed) refreshAllSections();
             console.log('Loaded ' + loaded + ' sections from Realtime Database');
+        }
+
+        // مزامنة فورية: متابعة أي تعديل من لوحة التحكم وظهوره على الموقع بدون ريفريش
+        let __liveSyncTimer = null;
+        let __liveSyncBusy = false;
+        function startLiveSync() {
+            if (__liveSyncTimer) return;
+            __liveSyncTimer = setInterval(function() {
+                if (__liveSyncBusy) return;
+                if (typeof document !== 'undefined' && document.hidden) return;
+                __liveSyncBusy = true;
+                Promise.resolve(loadAllData({ silent: true }))
+                    .then(function() { __liveSyncBusy = false; })
+                    .catch(function() { __liveSyncBusy = false; });
+            }, 5000);
         }
 
         function refreshAllSections() {
