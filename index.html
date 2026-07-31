@@ -694,7 +694,7 @@
             </main>
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
-            <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة محلياً في المتصفح</span>
+            <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
             <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v2.0</span>
         </footer>
     </div>
@@ -1753,6 +1753,11 @@
             submitBtn.disabled = true;
             submitBtn.textContent = "جاري الدخول...";
 
+            if (!auth) {
+                errorEl.textContent = "تعذر الاتصال بخدمة الدخول. تأكد من اتصالك بالإنترنت.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
             auth.signInWithEmailAndPassword(email, pass)
                 .then((userCredential) => {
                     submitBtn.disabled = false;
@@ -1782,17 +1787,19 @@
         }
 
         // يمكن استخدام هذه الدالة لمراقبة حالة الدخول تلقائياً (اختياري)
-        auth.onAuthStateChanged(function(user) {
-            if (!user) {
-                // المستخدم مش مسجل دخول - تأكد إن لوحة التحكم مقفولة
-                const dash = document.getElementById('admin-dashboard');
-                if (dash) dash.classList.add('hidden');
-            }
-        });
+        if (auth) {
+            auth.onAuthStateChanged(function(user) {
+                if (!user) {
+                    // المستخدم مش مسجل دخول - تأكد إن لوحة التحكم مقفولة
+                    const dash = document.getElementById('admin-dashboard');
+                    if (dash) dash.classList.add('hidden');
+                }
+            });
+        }
 
         function closeDashboard() {
             document.getElementById('admin-dashboard').classList.add('hidden');
-            auth.signOut();
+            if (auth) auth.signOut();
         }
 
         function startDashboardClock() {
@@ -2234,7 +2241,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
     <script>
-        // إعدادات Firebase الخاصة بمشروع vet-conference
+        // إعدادات Firebase الخاصة بمشروع vet9-conference
         const firebaseConfig = {
             apiKey: "AIzaSyCeKL1G6heC-KFL5mr3qpnLlkvgFnNEEx0",
             authDomain: "vet9-conference.firebaseapp.com",
@@ -2243,11 +2250,17 @@
             messagingSenderId: "949256375606",
             appId: "1:949256375606:web:736f9b4f5af954c0513797"
         };
-        // تهيئة Firebase
-        firebase.initializeApp(firebaseConfig);
-        // متغير المصادقة للاستخدام في كافة الدوال
-        const auth = firebase.auth();
-        console.log("Firebase initialized successfully - تم تهيئة Firebase بنجاح");
+        // تهيئة Firebase (لو فشل SDK تبقى البيانات السحابية شغالة والموقع يعمل عادي)
+        let auth = null;
+        try {
+            if (typeof firebase !== 'undefined') {
+                firebase.initializeApp(firebaseConfig);
+                auth = firebase.auth();
+                console.log("Firebase initialized successfully - تم تهيئة Firebase بنجاح");
+            }
+        } catch (e) {
+            console.warn('Firebase auth init failed:', e);
+        }
 
         // ============================================================
         // طبقة التخزين السحابية: بيانات الموقع (JSON) في Firebase Realtime Database
