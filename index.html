@@ -569,7 +569,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v3.3</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v3.4</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -1105,7 +1105,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v3.3</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v3.4</span>
         </footer>
     </div>
 
@@ -2784,7 +2784,7 @@
             const content = (item.content && item.content[lang]) || (item.content && item.content.ar) || "";
 
             __currentNewsId = item.id;
-            updateShareMeta(title, summary, item.media || (item.gallery && item.gallery[0]) || "");
+            applyNewsOgMeta(item);
 
             const galleryUrls = [item.media].concat(item.gallery || []);
             setupSlider('news-reader', galleryUrls, title);
@@ -2816,10 +2816,24 @@
             }, 220);
         }
 
-        // ===== مشاركة الخبر عبر فيسبوك مع الصورة + نسخ رابط الخبر =====
+        // ===== مشاركة الخبر عبر فيسبوك مع صورة الخبر نفسها + نسخ رابط الخبر =====
         let __currentNewsId = null;
+        let __newsOgAppliedId = null;
+        function ogImageUrl(u) {
+            const s = String(u || '');
+            if (s.indexOf('res.cloudinary.com') >= 0 && s.indexOf('/upload/') >= 0) {
+                return s.replace('/upload/', '/upload/w_800,q_auto,f_auto/');
+            }
+            return s;
+        }
         function newsDeepLink(id) {
-            return location.origin + location.pathname + '?news=' + id;
+            const base = location.origin + location.pathname;
+            const item = getNews().find(n => n.id == id);
+            if (!item) return base + '?news=' + id;
+            let seed = ((item.title && (item.title.ar || item.title.en || JSON.stringify(item.title))) || '') + '|' + (item.media || '') + '|' + (item.date || '');
+            let v = 0;
+            for (let i = 0; i < seed.length; i++) v = (v * 31 + seed.charCodeAt(i)) >>> 0;
+            return base + '?news=' + item.id + '&v=' + (v % 1000000);
         }
         function updateShareMeta(title, desc, img) {
             function upsert(prop, val) {
@@ -2829,15 +2843,30 @@
             }
             if (title) upsert('og:title', title);
             if (desc) upsert('og:description', desc);
-            if (img) { upsert('og:image', img); upsert('og:image:width', '1200'); upsert('og:image:height', '630'); }
+            if (img) {
+                const full = ogImageUrl(img);
+                upsert('og:image', full);
+                upsert('og:image:width', '1200');
+                upsert('og:image:height', '630');
+                let tw = document.querySelector('meta[name="twitter:image"]');
+                if (!tw) { tw = document.createElement('meta'); tw.setAttribute('name', 'twitter:image'); document.head.appendChild(tw); }
+                tw.setAttribute('content', full);
+            }
+        }
+        function applyNewsOgMeta(item) {
+            const lang = currentLang in (item.title || {}) ? currentLang : 'ar';
+            const title = (item.title && item.title[lang]) || (item.title && item.title.ar) || "";
+            const summary = (item.summary && (item.summary[lang] || item.summary.ar)) || "";
+            const img = item.media || (item.gallery && item.gallery[0]) || "";
+            updateShareMeta(title, summary, img);
+            let u = document.querySelector('meta[property="og:url"]');
+            if (!u) { u = document.createElement('meta'); u.setAttribute('property', 'og:url'); document.head.appendChild(u); }
+            u.setAttribute('content', newsDeepLink(item.id));
         }
         function prepareNewsShare(id) {
             const item = getNews().find(n => n.id == id);
             if (!item) return;
-            const lang = currentLang in (item.title || {}) ? currentLang : 'ar';
-            const title = (item.title && item.title[lang]) || (item.title && item.title.ar) || "";
-            const summary = (item.summary && (item.summary[lang] || item.summary.ar)) || "";
-            updateShareMeta(title, summary, item.media || (item.gallery && item.gallery[0]) || "");
+            applyNewsOgMeta(item);
         }
         function shareCurrentNews() {
             const item = getNews().find(n => n.id == __currentNewsId);
@@ -3760,6 +3789,7 @@
                 if (!id) return;
                 const item = getNews().find(function(n) { return String(n.id) === String(id); });
                 if (item) {
+                    applyNewsOgMeta(item);
                     openNewsScreen(item.id);
                     return;
                 }
@@ -3771,7 +3801,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v3.3 (Facebook share with image + copy news link + individual/group WhatsApp + registration filter)');
+            console.log('[BUILD] v3.4 (per-news og:image injected early + versioned share URL so Facebook re-scrapes the news image)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
@@ -4061,6 +4091,17 @@
             renderCustomSections();
             renderHomeGallery();
             applySectionVisibility();
+            // حقن وسوم مشاركة الخبر فور توفر بياناته (لكي يلتقطها فيسبوك من الصفحة عند فتح رابط الخبر)
+            try {
+                const dp = new URLSearchParams(window.location.search).get('news');
+                if (dp) {
+                    const item = getNews().find(function(n) { return String(n.id) === String(dp); });
+                    if (item && __newsOgAppliedId !== String(item.id)) {
+                        __newsOgAppliedId = String(item.id);
+                        applyNewsOgMeta(item);
+                    }
+                }
+            } catch (e) {}
         }
     </script>
 </body>
