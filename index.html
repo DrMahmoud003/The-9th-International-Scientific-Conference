@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="google" content="notranslate">
     <title id="page-title">المؤتمر العلمي الدولي التاسع | كلية الطب البيطري - جامعة كفرالشيخ</title>
+    <meta property="og:site_name" content="المؤتمر العلمي الدولي التاسع - كلية الطب البيطري">
+    <meta property="og:type" content="article">
+    <meta property="og:locale" content="ar_AR">
+    <meta property="og:title" content="المؤتمر العلمي الدولي التاسع | كلية الطب البيطري - جامعة كفرالشيخ">
+    <meta property="og:description" content="التسجيل والمشاركة في فعاليات المؤتمر العلمي الدولي التاسع لكلية الطب البيطري - جامعة كفرالشيخ، وأبرز الأخبار والفعاليات العلمية.">
+    <meta property="og:image" content="https://res.cloudinary.com/hqhsb2wz/image/upload/v1785547605/sv2dgzlmgj4z0vgukaxk.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -389,6 +398,10 @@
                     <span id="news-reader-date"></span>
                     <span class="bg-blue-50 px-3 py-1 rounded-full border border-blue-100 flex items-center gap-1.5"><i class="fa-solid fa-newspaper"></i><span data-i18n="news_badge">أخبار المؤتمر</span></span>
                 </div>
+                <div class="mt-4 flex flex-wrap items-center gap-2">
+                    <button type="button" onclick="shareCurrentNews()" class="bg-[#1877f2] hover:bg-[#145fbf] text-white text-xs font-bold px-4 py-2 rounded-full flex items-center gap-2 transition shadow"><i class="fa-brands fa-facebook-f"></i> مشاركة الخبر على فيسبوك</button>
+                    <button type="button" onclick="copyCurrentNewsLink()" class="bg-gray-100 hover:bg-gray-200 text-vetDark text-xs font-bold px-4 py-2 rounded-full flex items-center gap-2 transition shadow"><i class="fa-solid fa-link"></i> نسخ رابط الخبر</button>
+                </div>
                 <h1 id="news-reader-title" class="text-2xl sm:text-3xl font-black text-vetDark leading-tight mt-3"></h1>
                 <div class="w-14 h-1 bg-vetGold rounded-full mt-4 mb-6"></div>
                 <p id="news-reader-summary" class="text-vetDark/80 font-bold text-base sm:text-lg leading-relaxed mb-6"></p>
@@ -504,6 +517,33 @@
         </div>
     </div>
 
+    <!-- Group WhatsApp Modal -->
+    <div id="group-whatsapp-modal" class="fixed inset-0 z-[80] bg-black/60 backdrop-blur-sm flex items-center justify-center hidden p-4">
+        <div class="bg-white w-full max-w-lg p-6 rounded-2xl shadow-2xl">
+            <div class="flex items-center justify-between mb-4">
+                <h4 class="text-lg font-bold text-vetDark flex items-center gap-2"><i class="fa-brands fa-whatsapp text-green-500 text-xl"></i> إرسال واتساب جماعي</h4>
+                <button onclick="closeGroupWhatsApp()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p id="group-wa-info" class="text-sm text-gray-500 font-bold mb-4"></p>
+            <label class="block text-xs font-bold text-vetDark mb-1.5">نص الرسالة (تُرسل لكل المسجّلين):</label>
+            <textarea id="group-wa-message" rows="4" class="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none" placeholder="اكتب نص الرسالة التي ستُرسل لجميع المسجّلين هنا..."></textarea>
+            <div id="group-wa-progress" class="mt-3 hidden">
+                <div class="flex items-center justify-between text-xs font-bold text-gray-600 mb-1">
+                    <span id="group-wa-current"></span>
+                    <span id="group-wa-counter"></span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-2">
+                    <div id="group-wa-bar" class="bg-green-500 h-2 rounded-full transition-all" style="width:0%"></div>
+                </div>
+            </div>
+            <div class="flex gap-2 mt-5">
+                <button id="group-wa-start" onclick="startGroupWhatsApp()" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2.5 rounded-lg text-sm font-bold flex items-center justify-center gap-2"><i class="fa-brands fa-whatsapp"></i> بدء الإرسال</button>
+                <button id="group-wa-next" onclick="sendNextWhatsApp()" class="hidden flex-1 bg-vetBlue hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-bold items-center justify-center gap-2"><i class="fa-solid fa-arrow-right"></i> فتح التالي</button>
+                <button id="group-wa-close" onclick="closeGroupWhatsApp()" class="hidden px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-lg text-sm font-bold">إنهاء</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Admin Password Modal -->
     <div id="admin-login-modal" class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center hidden p-4">
         <div class="bg-white max-w-md w-full p-6 rounded-2xl shadow-xl">
@@ -529,7 +569,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v3.2</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v3.3</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -1029,6 +1069,20 @@
                             <button onclick="exportToPDF()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> PDF / طباعة</button>
                         </div>
                     </div>
+                    <div class="flex flex-wrap items-center justify-between gap-3 bg-green-50/60 border border-green-100 rounded-xl p-3">
+                        <div class="flex flex-wrap items-center gap-2 text-sm font-bold text-vetDark">
+                            <i class="fa-solid fa-filter text-vetBlue"></i>
+                            <label for="reg-filter-category">فرز حسب:</label>
+                            <select id="reg-filter-category" onchange="applyRegFilter()" class="border border-gray-200 rounded-lg px-3 py-2 text-sm font-semibold bg-white focus:outline-none focus:ring-2 focus:ring-vetBlue">
+                                <option value="__all">الكل (طالب / باحث / عضو هيئة تدريس)</option>
+                                <option value="student">طالب</option>
+                                <option value="researcher">باحث</option>
+                                <option value="faculty">عضو هيئة تدريس</option>
+                                <option value="other">أخرى</option>
+                            </select>
+                        </div>
+                        <button onclick="openGroupWhatsApp()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-1.5 shadow"><i class="fa-brands fa-whatsapp text-base"></i> إرسال واتساب جماعي</button>
+                    </div>
                     <div class="bg-white rounded-xl shadow overflow-x-auto border">
                         <table class="w-full text-right border-collapse">
                             <thead>
@@ -1051,7 +1105,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v3.2</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v3.3</span>
         </footer>
     </div>
 
@@ -2654,7 +2708,7 @@
                         <div class="mt-4 pt-3 border-t flex items-center justify-between gap-2 text-xs font-bold text-vetBlue">
                             <span class="flex items-center gap-2"><span>${t('news_read_more')}</span><i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i></span>
                             <span class="flex items-center gap-1.5">
-                                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.origin + location.pathname + '?news=' + item.id)}&quote=${encodeURIComponent(title)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="مشاركة على فيسبوك" class="w-7 h-7 rounded-full bg-[#1877f2] text-white flex items-center justify-center hover:bg-[#145fbf] transition shadow"><i class="fa-brands fa-facebook-f text-[11px]"></i></a>
+                                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.origin + location.pathname + '?news=' + item.id)}&quote=${encodeURIComponent(title)}" target="_blank" rel="noopener" onclick="event.stopPropagation(); prepareNewsShare(${item.id})" title="مشاركة على فيسبوك" class="w-7 h-7 rounded-full bg-[#1877f2] text-white flex items-center justify-center hover:bg-[#145fbf] transition shadow"><i class="fa-brands fa-facebook-f text-[11px]"></i></a>
                             </span>
                         </div>
                     </div>
@@ -2729,6 +2783,9 @@
             const summary = (item.summary && item.summary[lang]) || (item.summary && item.summary.ar) || "";
             const content = (item.content && item.content[lang]) || (item.content && item.content.ar) || "";
 
+            __currentNewsId = item.id;
+            updateShareMeta(title, summary, item.media || (item.gallery && item.gallery[0]) || "");
+
             const galleryUrls = [item.media].concat(item.gallery || []);
             setupSlider('news-reader', galleryUrls, title);
             document.getElementById('news-reader-date').innerText = item.date;
@@ -2757,6 +2814,61 @@
                 document.body.style.overflow = '';
                 if (goHome) window.scrollTo(0, 0);
             }, 220);
+        }
+
+        // ===== مشاركة الخبر عبر فيسبوك مع الصورة + نسخ رابط الخبر =====
+        let __currentNewsId = null;
+        function newsDeepLink(id) {
+            return location.origin + location.pathname + '?news=' + id;
+        }
+        function updateShareMeta(title, desc, img) {
+            function upsert(prop, val) {
+                let el = document.querySelector('meta[property="' + prop + '"]');
+                if (!el) { el = document.createElement('meta'); el.setAttribute('property', prop); document.head.appendChild(el); }
+                el.setAttribute('content', val || '');
+            }
+            if (title) upsert('og:title', title);
+            if (desc) upsert('og:description', desc);
+            if (img) { upsert('og:image', img); upsert('og:image:width', '1200'); upsert('og:image:height', '630'); }
+        }
+        function prepareNewsShare(id) {
+            const item = getNews().find(n => n.id == id);
+            if (!item) return;
+            const lang = currentLang in (item.title || {}) ? currentLang : 'ar';
+            const title = (item.title && item.title[lang]) || (item.title && item.title.ar) || "";
+            const summary = (item.summary && (item.summary[lang] || item.summary.ar)) || "";
+            updateShareMeta(title, summary, item.media || (item.gallery && item.gallery[0]) || "");
+        }
+        function shareCurrentNews() {
+            const item = getNews().find(n => n.id == __currentNewsId);
+            if (!item) return;
+            prepareNewsShare(item.id);
+            const lang = currentLang in (item.title || {}) ? currentLang : 'ar';
+            const title = (item.title && item.title[lang]) || (item.title && item.title.ar) || "";
+            const summary = (item.summary && (item.summary[lang] || item.summary.ar)) || "";
+            const q = (title + (summary ? "\n\n" + summary : "")).slice(0, 2000);
+            window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(newsDeepLink(item.id)) + '&quote=' + encodeURIComponent(q), '_blank', 'width=650,height=560');
+        }
+        function copyCurrentNewsLink() {
+            const item = getNews().find(n => n.id == __currentNewsId);
+            if (!item) return;
+            const link = newsDeepLink(item.id);
+            function ok() { showCustomAlert('تم نسخ رابط الخبر بنجاح ✓'); }
+            function fallbackCopy() {
+                const ta = document.createElement('textarea');
+                ta.value = link;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.focus();
+                ta.select();
+                try { document.execCommand('copy'); } catch (e) {}
+                ta.remove();
+                ok();
+            }
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(link).then(ok).catch(fallbackCopy);
+            } else { fallbackCopy(); }
         }
 
         function openSectionScreen(id) {
@@ -3414,17 +3526,55 @@
             }
         }
 
+        let __regFilter = '__all';
+        function applyRegFilter() {
+            __regFilter = document.getElementById('reg-filter-category').value;
+            loadAdminRegs();
+        }
+        function regCategoryGroup(cat) {
+            const c = String(cat || '');
+            if (c.indexOf('عضو هيئة تدريس') >= 0 || c.indexOf('هيئة التدريس') >= 0 || c.indexOf('مدرس') >= 0 || c.indexOf('أستاذ') >= 0) return 'faculty';
+            if (c.indexOf('باحث') >= 0 || c.indexOf('محاضر') >= 0) return 'researcher';
+            if (c.indexOf('طالب') >= 0) return 'student';
+            return 'other';
+        }
+        function getFilteredRegs() {
+            const regs = getRegistrations();
+            if (__regFilter && __regFilter !== '__all') return regs.filter(r => regCategoryGroup(r.category) === __regFilter);
+            return regs;
+        }
+        function waPhone(p) {
+            let s = String(p || '').replace(/[^0-9]/g, '');
+            if (s.indexOf('00') === 0) s = s.slice(2);
+            if (s.charAt(0) === '0') s = '20' + s.slice(1);
+            else if (s.length <= 11 && s.charAt(0) !== '2') s = '20' + s;
+            return s;
+        }
+        function waLink(phone, msg) {
+            const p = waPhone(phone);
+            return p ? 'https://wa.me/' + p + '?text=' + encodeURIComponent(msg || '') : '';
+        }
         function loadAdminRegs() {
             const tbody = document.getElementById('admin-regs-table');
-            const regs = getRegistrations();
+            const regs = getFilteredRegs();
             tbody.innerHTML = '';
+            if (regs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center text-gray-400 font-bold">لا توجد سجلات مطابقة للفرز الحالي</td></tr>';
+                return;
+            }
             regs.forEach(r => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-50";
+                const wa = waLink(r.phone, '');
                 tr.innerHTML = `
                     <td class="p-3 font-semibold">${r.name}</td>
                     <td class="p-3 text-gray-600">${r.email}</td>
-                    <td class="p-3 text-gray-600">${r.phone}</td>
+                    <td class="p-3 text-gray-600">
+                        <div class="flex items-center gap-2">
+                            <span dir="ltr">${r.phone}</span>
+                            ${wa ? '<a href="' + wa + '" target="_blank" rel="noopener" title="مراسلة عبر واتساب" class="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition shadow"><i class="fa-brands fa-whatsapp text-[10px]"></i></a>' : ''}
+                        </div>
+                    </td>
                     <td class="p-3 text-gray-600">${r.country}</td>
                     <td class="p-3 text-gray-600">${r.org}</td>
                     <td class="p-3"><span class="bg-blue-100 text-vetBlue px-2 py-1 rounded text-xs font-bold">${r.category}</span></td>
@@ -3444,8 +3594,60 @@
             }
         }
 
+        // ===== إرسال واتساب جماعي (واحد تلو الآخر) =====
+        let __groupWaList = [];
+        let __groupWaIndex = 0;
+        function openGroupWhatsApp() {
+            __groupWaList = getFilteredRegs().filter(r => waPhone(r.phone)).map(r => ({ name: r.name, phone: waPhone(r.phone) }));
+            if (__groupWaList.length === 0) {
+                showCustomAlert('لا توجد أرقام هواتف للرسائل في القائمة الحالية!');
+                return;
+            }
+            __groupWaIndex = 0;
+            document.getElementById('group-wa-message').value = '';
+            document.getElementById('group-wa-progress').classList.add('hidden');
+            document.getElementById('group-wa-bar').style.width = '0%';
+            document.getElementById('group-wa-start').classList.remove('hidden');
+            document.getElementById('group-wa-next').classList.add('hidden');
+            document.getElementById('group-wa-close').classList.add('hidden');
+            const n = __groupWaList.length;
+            document.getElementById('group-wa-info').textContent = 'سيتم فتح محادثة واتساب مع ' + n + ' مسجّل (واحد تلو الآخر). اكتب الرسالة، اضغط "بدء الإرسال"، ثم أرسل في كل محادثة واضغط "فتح التالي".';
+            document.getElementById('group-whatsapp-modal').classList.remove('hidden');
+        }
+        function closeGroupWhatsApp() {
+            document.getElementById('group-whatsapp-modal').classList.add('hidden');
+        }
+        function startGroupWhatsApp() {
+            const msg = document.getElementById('group-wa-message').value.trim();
+            if (!msg) { showCustomAlert('اكتب نص الرسالة أولاً!'); return; }
+            __groupWaIndex = 0;
+            document.getElementById('group-wa-start').classList.add('hidden');
+            document.getElementById('group-wa-progress').classList.remove('hidden');
+            document.getElementById('group-wa-next').classList.remove('hidden');
+            document.getElementById('group-wa-next').classList.add('flex');
+            document.getElementById('group-wa-close').classList.remove('hidden');
+            sendNextWhatsApp();
+        }
+        function sendNextWhatsApp() {
+            if (__groupWaIndex >= __groupWaList.length) {
+                document.getElementById('group-whatsapp-modal').classList.add('hidden');
+                showCustomAlert('تم فتح جميع محادثات واتساب (' + __groupWaList.length + ') ✓');
+                return;
+            }
+            const r = __groupWaList[__groupWaIndex];
+            __groupWaIndex++;
+            const msg = document.getElementById('group-wa-message').value.trim();
+            const url = 'https://wa.me/' + r.phone + '?text=' + encodeURIComponent(msg);
+            const win = window.open(url, '_blank');
+            if (!win) showCustomAlert('المتصفح منع فتح النافذة — افتح واتساب يدوياً للرقم: ' + r.phone);
+            document.getElementById('group-wa-current').textContent = 'جارٍ فتح: ' + r.name + ' (' + r.phone + ')';
+            document.getElementById('group-wa-counter').textContent = __groupWaIndex + ' / ' + __groupWaList.length;
+            document.getElementById('group-wa-bar').style.width = Math.round(__groupWaIndex / __groupWaList.length * 100) + '%';
+            document.getElementById('group-wa-next').textContent = (__groupWaIndex >= __groupWaList.length ? 'إنهاء' : 'فتح التالي') + ' (' + __groupWaIndex + '/' + __groupWaList.length + ')';
+        }
+
         function exportToExcel() {
-            const regs = getRegistrations();
+            const regs = getFilteredRegs();
             if (regs.length === 0) {
                 showCustomAlert("لا توجد بيانات لتصديرها!");
                 return;
@@ -3457,7 +3659,7 @@
         }
 
         function exportToPDF() {
-            const regs = getRegistrations();
+            const regs = getFilteredRegs();
             if (regs.length === 0) {
                 showCustomAlert("لا توجد بيانات للطباعة!");
                 return;
@@ -3569,7 +3771,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v3.2 (Firebase locked rules + admin token writes + password via Firebase Auth + backup/restore)');
+            console.log('[BUILD] v3.3 (Facebook share with image + copy news link + individual/group WhatsApp + registration filter)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
