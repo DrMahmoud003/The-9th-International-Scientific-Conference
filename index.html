@@ -569,7 +569,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v3.4</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v3.5</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -1105,7 +1105,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v3.4</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v3.5</span>
         </footer>
     </div>
 
@@ -2708,7 +2708,7 @@
                         <div class="mt-4 pt-3 border-t flex items-center justify-between gap-2 text-xs font-bold text-vetBlue">
                             <span class="flex items-center gap-2"><span>${t('news_read_more')}</span><i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i></span>
                             <span class="flex items-center gap-1.5">
-                                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.origin + location.pathname + '?news=' + item.id)}&quote=${encodeURIComponent(title)}" target="_blank" rel="noopener" onclick="event.stopPropagation(); prepareNewsShare(${item.id})" title="مشاركة على فيسبوك" class="w-7 h-7 rounded-full bg-[#1877f2] text-white flex items-center justify-center hover:bg-[#145fbf] transition shadow"><i class="fa-brands fa-facebook-f text-[11px]"></i></a>
+                                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(newsDeepLink(item.id))}&quote=${encodeURIComponent(title)}" target="_blank" rel="noopener" onclick="event.stopPropagation(); prepareNewsShare(${item.id})" title="مشاركة على فيسبوك" class="w-7 h-7 rounded-full bg-[#1877f2] text-white flex items-center justify-center hover:bg-[#145fbf] transition shadow"><i class="fa-brands fa-facebook-f text-[11px]"></i></a>
                             </span>
                         </div>
                     </div>
@@ -2827,13 +2827,7 @@
             return s;
         }
         function newsDeepLink(id) {
-            const base = location.origin + location.pathname;
-            const item = getNews().find(n => n.id == id);
-            if (!item) return base + '?news=' + id;
-            let seed = ((item.title && (item.title.ar || item.title.en || JSON.stringify(item.title))) || '') + '|' + (item.media || '') + '|' + (item.date || '');
-            let v = 0;
-            for (let i = 0; i < seed.length; i++) v = (v * 31 + seed.charCodeAt(i)) >>> 0;
-            return base + '?news=' + item.id + '&v=' + (v % 1000000);
+            return location.origin + location.pathname + 'news/' + id + '/';
         }
         function updateShareMeta(title, desc, img) {
             function upsert(prop, val) {
@@ -3801,7 +3795,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v3.4 (per-news og:image injected early + versioned share URL so Facebook re-scrapes the news image)');
+            console.log('[BUILD] v3.5 (static per-news pages with og:image in raw HTML so Facebook always shows the news image)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
