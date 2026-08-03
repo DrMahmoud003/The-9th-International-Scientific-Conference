@@ -662,7 +662,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v4.5</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v4.6</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -941,20 +941,49 @@
                 <!-- Conference Sections Admin Tab (قسم الإدارة والرعاية) -->
                 <div id="tab-conf-sections" class="space-y-6 hidden max-w-4xl">
                     <div class="bg-white rounded-2xl border shadow-sm p-5">
+                        <h5 class="font-bold text-vetDark mb-1"><i class="fa-solid fa-heading ml-2 text-vetBlue"></i>أسماء الأقسام في الصفحة الرئيسية</h5>
+                        <p class="text-sm text-gray-500 mb-4">عدّل اسم كل قسم بالعربية والإنجليزية (يظهر التغيير فوراً في الصفحة الرئيسية)</p>
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 border rounded-xl p-4">
+                                <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-user-tie text-vetBlue"></i><span class="font-bold text-sm">قسم "إدارة المؤتمر"</span></div>
+                                <div class="grid sm:grid-cols-2 gap-3">
+                                    <input type="text" id="conf-title-management-ar" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="الاسم بالعربية">
+                                    <input type="text" id="conf-title-management-en" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Name in English" dir="ltr">
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 border rounded-xl p-4">
+                                <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-handshake text-vetBlue"></i><span class="font-bold text-sm">قسم "رعاية المؤتمر"</span></div>
+                                <div class="grid sm:grid-cols-2 gap-3">
+                                    <input type="text" id="conf-title-sponsors-ar" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="الاسم بالعربية">
+                                    <input type="text" id="conf-title-sponsors-en" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Name in English" dir="ltr">
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 border rounded-xl p-4">
+                                <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-headset text-vetBlue"></i><span class="font-bold text-sm">قسم "التواصل والاستفسار"</span></div>
+                                <div class="grid sm:grid-cols-2 gap-3">
+                                    <input type="text" id="conf-title-contact-ar" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="الاسم بالعربية">
+                                    <input type="text" id="conf-title-contact-en" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Name in English" dir="ltr">
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="saveConfSectionTitles()" class="mt-4 bg-vetBlue hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-bold text-sm shadow"><i class="fa-solid fa-save ml-1"></i> حفظ أسماء الأقسام</button>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border shadow-sm p-5">
                         <h5 class="font-bold text-vetDark mb-1"><i class="fa-solid fa-eye ml-2 text-vetBlue"></i>إظهار الأقسام في الصفحة الرئيسية</h5>
                         <p class="text-sm text-gray-500 mb-4">عند الإخفاء يختفي القسم تماماً من الصفحة</p>
                         <div class="space-y-3">
                             <label class="flex items-center gap-3 bg-gray-50 border rounded-xl p-3 cursor-pointer">
                                 <input type="checkbox" id="show-management-toggle" class="w-5 h-5 accent-vetBlue">
-                                <span class="font-bold text-sm">إظهار قسم "إدارة المؤتمر"</span>
+                                <span class="font-bold text-sm" id="show-management-toggle-label">إظهار قسم "إدارة المؤتمر"</span>
                             </label>
                             <label class="flex items-center gap-3 bg-gray-50 border rounded-xl p-3 cursor-pointer">
                                 <input type="checkbox" id="show-sponsors-toggle" class="w-5 h-5 accent-vetBlue">
-                                <span class="font-bold text-sm">إظهار قسم "رعاية المؤتمر"</span>
+                                <span class="font-bold text-sm" id="show-sponsors-toggle-label">إظهار قسم "رعاية المؤتمر"</span>
                             </label>
                             <label class="flex items-center gap-3 bg-gray-50 border rounded-xl p-3 cursor-pointer">
                                 <input type="checkbox" id="show-contact-toggle" class="w-5 h-5 accent-vetBlue">
-                                <span class="font-bold text-sm">إظهار قسم "التواصل والاستفسار"</span>
+                                <span class="font-bold text-sm" id="show-contact-toggle-label">إظهار قسم "التواصل والاستفسار"</span>
                             </label>
                         </div>
                         <button onclick="saveConfSectionSettings()" class="mt-4 bg-vetBlue hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-bold text-sm shadow"><i class="fa-solid fa-save ml-1"></i> حفظ إعدادات الإظهار</button>
@@ -1453,7 +1482,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v4.5</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v4.6</span>
         </footer>
     </div>
 
@@ -3774,6 +3803,42 @@
             renderConfCards('mgmt');
             renderConfCards('spons');
             renderConfCards('contact');
+            loadConfSectionTitles();
+        }
+        function getEffectiveLabel(key, lang) {
+            const stored = getStoredLabels();
+            return (stored[lang] && stored[lang][key]) || translations[lang][key] || '';
+        }
+        function loadConfSectionTitles() {
+            [['management', 'conf_management_title'], ['sponsors', 'conf_sponsors_title'], ['contact', 'conf_contact_title']].forEach(pair => {
+                const prefix = pair[0], key = pair[1];
+                const arEl = document.getElementById('conf-title-' + prefix + '-ar');
+                const enEl = document.getElementById('conf-title-' + prefix + '-en');
+                if (arEl) arEl.value = getEffectiveLabel(key, 'ar');
+                if (enEl) enEl.value = getEffectiveLabel(key, 'en');
+                const lbl = document.getElementById('show-' + prefix + '-toggle-label');
+                if (lbl) lbl.textContent = 'إظهار قسم "' + getEffectiveLabel(key, 'ar') + '"';
+            });
+        }
+        function saveConfSectionTitles() {
+            const stored = getStoredLabels();
+            const ar = Object.assign({}, stored.ar || {});
+            const en = Object.assign({}, stored.en || {});
+            [['management', 'conf_management_title'], ['sponsors', 'conf_sponsors_title'], ['contact', 'conf_contact_title']].forEach(pair => {
+                const prefix = pair[0], key = pair[1];
+                const arVal = document.getElementById('conf-title-' + prefix + '-ar').value.trim();
+                const enVal = document.getElementById('conf-title-' + prefix + '-en').value.trim();
+                if (arVal && arVal !== (translations.ar[key] || '')) ar[key] = arVal; else delete ar[key];
+                if (enVal && enVal !== (translations.en[key] || '')) en[key] = enVal; else delete en[key];
+            });
+            const payload = {};
+            if (Object.keys(ar).length) payload.ar = ar;
+            if (Object.keys(en).length) payload.en = en;
+            setStore('vet_conf_labels', JSON.stringify(payload));
+            applyTranslations();
+            renderConferenceSections();
+            loadConfSectionTitles();
+            showCustomAlert('تم حفظ أسماء الأقسام وتحديث الصفحة الرئيسية بنجاح!');
         }
         function renderHomeOrderList() {
             const ul = document.getElementById('home-order-list');
@@ -4615,7 +4680,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v4.5 (registration success modal: important fee payment notice + WhatsApp contact)');
+            console.log('[BUILD] v4.6 (edit conference section titles AR/EN from admin: management, sponsors, contact)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
