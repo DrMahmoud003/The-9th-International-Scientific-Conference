@@ -166,6 +166,17 @@
         .conf-card { width: 100%; max-width: 320px; background: #fff; border: 1px solid #eef2f7; border-radius: 1.1rem; padding: 1.5rem 1.25rem; text-align: center; box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06); transition: transform 0.15s, box-shadow 0.15s; }
         .conf-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12); }
         .conf-card-img { width: 7rem; height: 7rem; border-radius: 9999px; object-fit: cover; margin: 0 auto 0.8rem; border: 3px solid #eaf1ff; background: #f1f5f9; display: block; }
+        .conf-card-img--circle { border-radius: 9999px; }
+        .conf-card-img--square { border-radius: 0.85rem; }
+        .conf-card-img--rect { border-radius: 0.85rem; }
+        .conf-card-img--size-small { width: 4rem; height: 4rem; }
+        .conf-card-img--size-medium { width: 7rem; height: 7rem; }
+        .conf-card-img--size-large { width: 10rem; height: 10rem; }
+        .conf-card-img--rect.conf-card-img--size-small { width: 6rem; height: 4rem; }
+        .conf-card-img--rect.conf-card-img--size-medium { width: 10.5rem; height: 7rem; }
+        .conf-card-img--rect.conf-card-img--size-large { width: 15rem; height: 10rem; }
+        .conf-card-img--size-small.conf-card-img-placeholder { font-size: 1.2rem; }
+        .conf-card-img--size-large.conf-card-img-placeholder { font-size: 3rem; }
         .conf-card-img-placeholder { display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #94a3b8; }
         .conf-card-name { font-weight: 800; color: #0f172a; font-size: 1.05rem; margin: 0; }
         .conf-card-role { color: #4b5563; font-size: 0.85rem; margin-top: 0.25rem; }
@@ -629,7 +640,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v4.1</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v4.2</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -960,6 +971,24 @@
                                 <label class="block text-xs font-bold mb-1">رقم الهاتف</label>
                                 <input type="tel" id="mgmt-phone" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="01xxxxxxxxx">
                             </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">شكل الصورة</label>
+                                    <select id="mgmt-img-shape" onchange="confImgPreview('mgmt')" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                        <option value="circle">دائري</option>
+                                        <option value="square">مربع</option>
+                                        <option value="rect">مستطيل</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">حجم الصورة</label>
+                                    <select id="mgmt-img-size" onchange="confImgPreview('mgmt')" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                        <option value="small">صغير</option>
+                                        <option value="medium">متوسط</option>
+                                        <option value="large">كبير</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="flex gap-2">
                                 <button onclick="saveConfCard('mgmt')" class="bg-vetBlue hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-bold flex-1"><i class="fa-solid fa-check ml-1"></i> حفظ العضو</button>
                                 <button onclick="cancelConfCardForm('mgmt')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2 rounded-lg text-sm font-bold">إلغاء</button>
@@ -995,6 +1024,24 @@
                                 <label class="block text-xs font-bold mb-1">رقم الهاتف</label>
                                 <input type="tel" id="spons-phone" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="01xxxxxxxxx">
                             </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">شكل الصورة</label>
+                                    <select id="spons-img-shape" onchange="confImgPreview('spons')" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                        <option value="circle">دائري</option>
+                                        <option value="square">مربع</option>
+                                        <option value="rect">مستطيل</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">حجم الصورة</label>
+                                    <select id="spons-img-size" onchange="confImgPreview('spons')" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                        <option value="small">صغير</option>
+                                        <option value="medium">متوسط</option>
+                                        <option value="large">كبير</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="flex gap-2">
                                 <button onclick="saveConfCard('spons')" class="bg-vetBlue hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-bold flex-1"><i class="fa-solid fa-check ml-1"></i> حفظ الراعي</button>
                                 <button onclick="cancelConfCardForm('spons')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2 rounded-lg text-sm font-bold">إلغاء</button>
@@ -1029,6 +1076,24 @@
                             <div>
                                 <label class="block text-xs font-bold mb-1">رقم الهاتف</label>
                                 <input type="tel" id="contact-phone" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="01xxxxxxxxx">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">شكل الصورة</label>
+                                    <select id="contact-img-shape" onchange="confImgPreview('contact')" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                        <option value="circle">دائري</option>
+                                        <option value="square">مربع</option>
+                                        <option value="rect">مستطيل</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">حجم الصورة</label>
+                                    <select id="contact-img-size" onchange="confImgPreview('contact')" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                        <option value="small">صغير</option>
+                                        <option value="medium">متوسط</option>
+                                        <option value="large">كبير</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="flex gap-2">
                                 <button onclick="saveConfCard('contact')" class="bg-vetBlue hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-bold flex-1"><i class="fa-solid fa-check ml-1"></i> حفظ جهة التواصل</button>
@@ -1308,7 +1373,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v4.1</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v4.2</span>
         </footer>
     </div>
 
@@ -3456,11 +3521,14 @@
 
         function confCardHtml(it) {
             const name = esc(it.name || '');
+            const shape = ['circle', 'square', 'rect'].indexOf(it.imgShape) >= 0 ? it.imgShape : 'circle';
+            const size = ['small', 'medium', 'large'].indexOf(it.imgSize) >= 0 ? it.imgSize : 'medium';
+            const cls = 'conf-card-img conf-card-img--' + shape + ' conf-card-img--size-' + size;
             const role = it.role ? '<p class="conf-card-role">' + esc(it.role) + '</p>' : '';
             const phone = it.phone ? '<a class="conf-card-phone" href="https://wa.me/' + waPhone(it.phone) + '" target="_blank" rel="noopener" title="مراسلة عبر واتساب"><i class="fa-solid fa-phone"></i>' + esc(it.phone) + '</a>' : '';
             const img = it.img
-                ? '<img class="conf-card-img" src="' + esc(it.img) + '" alt="' + name + '" loading="lazy" onerror="this.remove()">'
-                : '<div class="conf-card-img conf-card-img-placeholder"><i class="fa-solid fa-user"></i></div>';
+                ? '<img class="' + cls + '" src="' + esc(it.img) + '" alt="' + name + '" loading="lazy" onerror="this.remove()">'
+                : '<div class="' + cls + ' conf-card-img-placeholder"><i class="fa-solid fa-user"></i></div>';
             return '<div class="conf-card">' + img + '<p class="conf-card-name">' + name + '</p>' + role + phone + '</div>';
         }
         function renderConfGrid(sectionId, list, visible) {
@@ -3571,6 +3639,9 @@
         function confImgPreview(type) {
             const url = document.getElementById(type + '-img').value.trim();
             const p = document.getElementById(type + '-img-preview');
+            const shape = document.getElementById(type + '-img-shape').value;
+            const size = document.getElementById(type + '-img-size').value;
+            p.className = 'mt-2 object-cover border-2 border-white shadow conf-card-img conf-card-img--' + shape + ' conf-card-img--size-' + size;
             if (url) { p.src = url; p.classList.remove('hidden'); } else { p.classList.add('hidden'); }
         }
         function pickConfImage(type) {
@@ -3596,6 +3667,8 @@
             document.getElementById(type + '-name').value = it ? (it.name || '') : '';
             document.getElementById(type + '-role').value = it ? (it.role || '') : '';
             document.getElementById(type + '-phone').value = it ? (it.phone || '') : '';
+            document.getElementById(type + '-img-shape').value = (it && it.imgShape) || 'circle';
+            document.getElementById(type + '-img-size').value = (it && it.imgSize) || 'medium';
             confImgPreview(type);
             document.getElementById(type + '-card-form').classList.remove('hidden');
         }
@@ -3609,13 +3682,15 @@
             const img = document.getElementById(type + '-img').value.trim();
             const role = document.getElementById(type + '-role').value.trim();
             const phone = document.getElementById(type + '-phone').value.trim();
+            const imgShape = document.getElementById(type + '-img-shape').value;
+            const imgSize = document.getElementById(type + '-img-size').value;
             const list = getConfList(type);
             const editId = __confEditId[type];
             if (editId) {
                 const it = list.find(x => String(x.id) === String(editId));
-                if (it) { it.name = name; it.img = img; it.role = role; it.phone = phone; }
+                if (it) { it.name = name; it.img = img; it.role = role; it.phone = phone; it.imgShape = imgShape; it.imgSize = imgSize; }
             } else {
-                list.push({ id: Date.now(), name: name, img: img, role: role, phone: phone });
+                list.push({ id: Date.now(), name: name, img: img, role: role, phone: phone, imgShape: imgShape, imgSize: imgSize });
             }
             saveConfList(type, list);
             renderConfCards(type);
@@ -4335,7 +4410,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v4.1 (contact & inquiries section; English titles for management/sponsors/contact sections)');
+            console.log('[BUILD] v4.2 (per-card image shape: circle/square/rect + size: small/medium/large)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
