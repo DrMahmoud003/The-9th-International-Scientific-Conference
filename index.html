@@ -295,7 +295,7 @@
                     <div class="grid sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold mb-1" data-i18n="form_name">الاسم الكامل *</label>
-                            <input type="text" id="reg-name" required class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="الاسم رباعي باللغة العربية (الاسم + الأب + الجد + العائلة)">
+                            <input type="text" id="reg-name" required oninput="validateRegNameLive()" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="الاسم رباعي باللغة العربية (الاسم + الأب + الجد + العائلة)">
                             <p id="reg-name-err" class="hidden text-red-500 text-[11px] font-bold mt-1"></p>
                         </div>
                         <div>
@@ -341,10 +341,6 @@
                                 <option value="الاشتراك الكامل / شرم الشيخ" data-i18n="type_full">الاشتراك الكامل / شرم الشيخ</option>
                             </select>
                         </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold mb-1" data-i18n="form_notes">ملاحظات أو عنوان البحث</label>
-                        <textarea id="reg-notes" rows="2" class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
                     </div>
                     <button type="submit" class="w-full bg-vetBlue hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow text-sm" data-i18n="form_submit">إرسال التسجيل</button>
                 </form>
@@ -595,7 +591,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v3.8</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v3.9</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -1139,7 +1135,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v3.8</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v3.9</span>
         </footer>
     </div>
 
@@ -2984,6 +2980,20 @@
                 if (el) { el.textContent = ''; el.classList.add('hidden'); }
             });
         }
+        function validateRegNameLive() {
+            const el = document.getElementById('reg-name');
+            const err = document.getElementById('reg-name-err');
+            if (!el || !err) return;
+            const val = el.value.trim();
+            const parts = val.split(/\s+/).filter(Boolean);
+            if (val.length > 0 && parts.length < 4) {
+                err.textContent = 'الاسم يجب أن يكون رباعياً على الأقل (الاسم + الأب + الجد + العائلة)';
+                err.classList.remove('hidden');
+            } else {
+                err.textContent = '';
+                err.classList.add('hidden');
+            }
+        }
         function validateRegName(name) {
             const parts = name.trim().split(/\s+/);
             if (parts.length < 4) return 'الاسم يجب أن يكون رباعياً على الأقل (الاسم + الأب + الجد + العائلة)';
@@ -3022,8 +3032,8 @@
             window.__feeAcknowledged = type;
             document.getElementById('reg-fee-modal').classList.add('hidden');
             document.body.style.overflow = '';
-            const notes = document.getElementById('reg-notes');
-            if (notes) notes.focus();
+            const submitBtn = document.getElementById('registration-form').querySelector('button[type=submit]');
+            if (submitBtn) submitBtn.focus();
         }
         function cancelRegistration() {
             window.__feeAcknowledged = '';
@@ -3073,8 +3083,7 @@
                 country: document.getElementById('reg-country').value,
                 org: document.getElementById('reg-org').value,
                 category: document.getElementById('reg-category').value,
-                type: document.getElementById('reg-type').value,
-                notes: document.getElementById('reg-notes').value
+                type: document.getElementById('reg-type').value
             };
 
             const regs = getRegistrations();
@@ -3936,7 +3945,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v3.8 (registration: fee confirmation modal on type select - opening 1000/1500 LE, full 8000 LE)');
+            console.log('[BUILD] v3.9 (removed notes field; live 4-part Arabic name warning while typing)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
