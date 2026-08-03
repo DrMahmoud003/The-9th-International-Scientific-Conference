@@ -640,7 +640,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v4.2</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v4.3</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -959,13 +959,23 @@
                                 </div>
                                 <img id="mgmt-img-preview" class="hidden mt-2 w-20 h-20 rounded-full object-cover border-2 border-white shadow" alt="">
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold mb-1">الاسم الكامل *</label>
-                                <input type="text" id="mgmt-name" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="اسم العضو">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold mb-1">الصفة / المسمى الوظيفي</label>
-                                <input type="text" id="mgmt-role" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="مثال: رئيس المؤتمر">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">الاسم الكامل (عربي) *</label>
+                                    <input type="text" id="mgmt-name" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="اسم العضو">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">Full Name (English)</label>
+                                    <input type="text" id="mgmt-name-en" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Member name in English">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">الصفة / المسمى (عربي)</label>
+                                    <input type="text" id="mgmt-role" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="مثال: رئيس المؤتمر">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">Role (English)</label>
+                                    <input type="text" id="mgmt-role-en" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Role in English">
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold mb-1">رقم الهاتف</label>
@@ -1012,13 +1022,23 @@
                                 </div>
                                 <img id="spons-img-preview" class="hidden mt-2 w-20 h-20 rounded-full object-cover border-2 border-white shadow" alt="">
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold mb-1">اسم الجهة / الراعي *</label>
-                                <input type="text" id="spons-name" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="اسم الجهة الراعية">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold mb-1">الصفة / نوع الرعاية</label>
-                                <input type="text" id="spons-role" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="مثال: الراعي الذهبي">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">اسم الجهة / الراعي (عربي) *</label>
+                                    <input type="text" id="spons-name" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="اسم الجهة الراعية">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">Entity / Sponsor Name (English)</label>
+                                    <input type="text" id="spons-name-en" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Sponsor name in English">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">الصفة / نوع الرعاية (عربي)</label>
+                                    <input type="text" id="spons-role" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="مثال: الراعي الذهبي">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">Sponsorship Type (English)</label>
+                                    <input type="text" id="spons-role-en" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Sponsorship type in English">
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold mb-1">رقم الهاتف</label>
@@ -1065,13 +1085,23 @@
                                 </div>
                                 <img id="contact-img-preview" class="hidden mt-2 w-20 h-20 rounded-full object-cover border-2 border-white shadow" alt="">
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold mb-1">الاسم الكامل *</label>
-                                <input type="text" id="contact-name" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="اسم جهة التواصل">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold mb-1">الصفة / المسمى</label>
-                                <input type="text" id="contact-role" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="مثال: للاستفسار عن التسجيل">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">الاسم الكامل (عربي) *</label>
+                                    <input type="text" id="contact-name" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="اسم جهة التواصل">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">Full Name (English)</label>
+                                    <input type="text" id="contact-name-en" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Contact name in English">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">الصفة / المسمى (عربي)</label>
+                                    <input type="text" id="contact-role" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="مثال: للاستفسار عن التسجيل">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold mb-1">Role (English)</label>
+                                    <input type="text" id="contact-role-en" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Role in English">
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold mb-1">رقم الهاتف</label>
@@ -1373,7 +1403,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v4.2</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v4.3</span>
         </footer>
     </div>
 
@@ -2920,6 +2950,7 @@
             renderNews();
             renderTicker();
             renderCustomSections();
+            renderConferenceSections();
             applySectionVisibility();
             applyTranslations();
             renderHeroIcons();
@@ -3520,11 +3551,12 @@
         }
 
         function confCardHtml(it) {
-            const name = esc(it.name || '');
+            const name = esc((currentLang === 'en' && it.nameEn) ? it.nameEn : (it.name || ''));
             const shape = ['circle', 'square', 'rect'].indexOf(it.imgShape) >= 0 ? it.imgShape : 'circle';
             const size = ['small', 'medium', 'large'].indexOf(it.imgSize) >= 0 ? it.imgSize : 'medium';
             const cls = 'conf-card-img conf-card-img--' + shape + ' conf-card-img--size-' + size;
-            const role = it.role ? '<p class="conf-card-role">' + esc(it.role) + '</p>' : '';
+            const roleTxt = (currentLang === 'en' && it.roleEn) ? it.roleEn : (it.role || '');
+            const role = roleTxt ? '<p class="conf-card-role">' + esc(roleTxt) + '</p>' : '';
             const phone = it.phone ? '<a class="conf-card-phone" href="https://wa.me/' + waPhone(it.phone) + '" target="_blank" rel="noopener" title="مراسلة عبر واتساب"><i class="fa-solid fa-phone"></i>' + esc(it.phone) + '</a>' : '';
             const img = it.img
                 ? '<img class="' + cls + '" src="' + esc(it.img) + '" alt="' + name + '" loading="lazy" onerror="this.remove()">'
@@ -3665,7 +3697,9 @@
             __confEditId[type] = it ? it.id : null;
             document.getElementById(type + '-img').value = it && it.img ? it.img : '';
             document.getElementById(type + '-name').value = it ? (it.name || '') : '';
+            document.getElementById(type + '-name-en').value = it ? (it.nameEn || '') : '';
             document.getElementById(type + '-role').value = it ? (it.role || '') : '';
+            document.getElementById(type + '-role-en').value = it ? (it.roleEn || '') : '';
             document.getElementById(type + '-phone').value = it ? (it.phone || '') : '';
             document.getElementById(type + '-img-shape').value = (it && it.imgShape) || 'circle';
             document.getElementById(type + '-img-size').value = (it && it.imgSize) || 'medium';
@@ -3679,8 +3713,10 @@
         function saveConfCard(type) {
             const name = document.getElementById(type + '-name').value.trim();
             if (!name) { showCustomAlert('الاسم مطلوب'); return; }
+            const nameEn = document.getElementById(type + '-name-en').value.trim();
             const img = document.getElementById(type + '-img').value.trim();
             const role = document.getElementById(type + '-role').value.trim();
+            const roleEn = document.getElementById(type + '-role-en').value.trim();
             const phone = document.getElementById(type + '-phone').value.trim();
             const imgShape = document.getElementById(type + '-img-shape').value;
             const imgSize = document.getElementById(type + '-img-size').value;
@@ -3688,9 +3724,9 @@
             const editId = __confEditId[type];
             if (editId) {
                 const it = list.find(x => String(x.id) === String(editId));
-                if (it) { it.name = name; it.img = img; it.role = role; it.phone = phone; it.imgShape = imgShape; it.imgSize = imgSize; }
+                if (it) { it.name = name; it.nameEn = nameEn; it.img = img; it.role = role; it.roleEn = roleEn; it.phone = phone; it.imgShape = imgShape; it.imgSize = imgSize; }
             } else {
-                list.push({ id: Date.now(), name: name, img: img, role: role, phone: phone, imgShape: imgShape, imgSize: imgSize });
+                list.push({ id: Date.now(), name: name, nameEn: nameEn, img: img, role: role, roleEn: roleEn, phone: phone, imgShape: imgShape, imgSize: imgSize });
             }
             saveConfList(type, list);
             renderConfCards(type);
@@ -4410,7 +4446,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v4.2 (per-card image shape: circle/square/rect + size: small/medium/large)');
+            console.log('[BUILD] v4.3 (bilingual cards: English name/role for management, sponsors & contact sections)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
