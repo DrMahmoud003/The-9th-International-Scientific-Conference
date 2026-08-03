@@ -569,7 +569,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v3.5</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v3.6</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -1080,6 +1080,13 @@
                                 <option value="faculty">عضو هيئة تدريس</option>
                                 <option value="other">أخرى</option>
                             </select>
+                            <label for="reg-filter-type" class="ms-1">نوع الاشتراك:</label>
+                            <select id="reg-filter-type" onchange="applyRegTypeFilter()" class="border border-gray-200 rounded-lg px-3 py-2 text-sm font-semibold bg-white focus:outline-none focus:ring-2 focus:ring-vetBlue">
+                                <option value="__all_type">كل أنواع الاشتراك</option>
+                                <option value="opening">حضور يوم الافتتاح فقط</option>
+                                <option value="full">الاشتراك الكامل / شرم الشيخ</option>
+                                <option value="other_type">أخرى</option>
+                            </select>
                         </div>
                         <button onclick="openGroupWhatsApp()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-1.5 shadow"><i class="fa-brands fa-whatsapp text-base"></i> إرسال واتساب جماعي</button>
                     </div>
@@ -1105,7 +1112,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v3.5</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v3.6</span>
         </footer>
     </div>
 
@@ -3550,9 +3557,20 @@
         }
 
         let __regFilter = '__all';
+        let __regTypeFilter = '__all_type';
         function applyRegFilter() {
             __regFilter = document.getElementById('reg-filter-category').value;
             loadAdminRegs();
+        }
+        function applyRegTypeFilter() {
+            __regTypeFilter = document.getElementById('reg-filter-type').value;
+            loadAdminRegs();
+        }
+        function regTypeGroup(type) {
+            const t = String(type || '');
+            if (t.indexOf('الافتتاح') >= 0) return 'opening';
+            if (t.indexOf('شرم') >= 0 || t.indexOf('الاشتراك') >= 0 || t.indexOf('كامل') >= 0) return 'full';
+            return 'other_type';
         }
         function regCategoryGroup(cat) {
             const c = String(cat || '');
@@ -3563,8 +3581,10 @@
         }
         function getFilteredRegs() {
             const regs = getRegistrations();
-            if (__regFilter && __regFilter !== '__all') return regs.filter(r => regCategoryGroup(r.category) === __regFilter);
-            return regs;
+            let list = regs;
+            if (__regFilter && __regFilter !== '__all') list = list.filter(r => regCategoryGroup(r.category) === __regFilter);
+            if (__regTypeFilter && __regTypeFilter !== '__all_type') list = list.filter(r => regTypeGroup(r.type) === __regTypeFilter);
+            return list;
         }
         function waPhone(p) {
             let s = String(p || '').replace(/[^0-9]/g, '');
@@ -3795,7 +3815,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v3.5 (static per-news pages with og:image in raw HTML so Facebook always shows the news image)');
+            console.log('[BUILD] v3.6 (registrations: second filter by subscription type - opening day only / full subscription Sharm)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
