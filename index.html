@@ -375,6 +375,15 @@
                 </form>
             </section>
 
+            <!-- Conference Contact Section (التواصل والاستفسار) -->
+            <section id="conf-contact" class="home-only-section bg-white p-8 rounded-3xl shadow-sm border">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="conf_contact_title">التواصل والاستفسار</h3>
+                    <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
+                </div>
+                <div id="conf-contact-grid" class="conf-grid"></div>
+            </section>
+
         </main>
     </div>
 
@@ -620,7 +629,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v4.0</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v4.1</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -909,6 +918,10 @@
                                 <input type="checkbox" id="show-sponsors-toggle" class="w-5 h-5 accent-vetBlue">
                                 <span class="font-bold text-sm">إظهار قسم "رعاية المؤتمر"</span>
                             </label>
+                            <label class="flex items-center gap-3 bg-gray-50 border rounded-xl p-3 cursor-pointer">
+                                <input type="checkbox" id="show-contact-toggle" class="w-5 h-5 accent-vetBlue">
+                                <span class="font-bold text-sm">إظهار قسم "التواصل والاستفسار"</span>
+                            </label>
                         </div>
                         <button onclick="saveConfSectionSettings()" class="mt-4 bg-vetBlue hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-bold text-sm shadow"><i class="fa-solid fa-save ml-1"></i> حفظ إعدادات الإظهار</button>
                     </div>
@@ -985,6 +998,41 @@
                             <div class="flex gap-2">
                                 <button onclick="saveConfCard('spons')" class="bg-vetBlue hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-bold flex-1"><i class="fa-solid fa-check ml-1"></i> حفظ الراعي</button>
                                 <button onclick="cancelConfCardForm('spons')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2 rounded-lg text-sm font-bold">إلغاء</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border shadow-sm p-5">
+                        <div class="flex items-center justify-between mb-4">
+                            <h5 class="font-bold text-vetDark"><i class="fa-solid fa-headset ml-2 text-emerald-600"></i>التواصل والاستفسار</h5>
+                            <button onclick="openConfCardForm('contact')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs font-bold shadow"><i class="fa-solid fa-plus ml-1"></i> إضافة جهة</button>
+                        </div>
+                        <div id="contact-cards-list" class="space-y-2 mb-4"></div>
+                        <div id="contact-card-form" class="hidden bg-emerald-50/60 border border-emerald-100 rounded-xl p-4 space-y-3">
+                            <div>
+                                <label class="block text-xs font-bold mb-1">صورة / شعار الجهة</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="text" id="contact-img" oninput="confImgPreview('contact')" class="flex-1 px-3 py-2 border rounded-lg text-sm" placeholder="رابط الصورة أو ارفع صورة">
+                                    <button type="button" onclick="pickConfImage('contact')" class="bg-vetBlue text-white px-3 py-2 rounded-lg text-xs font-bold shrink-0"><i class="fa-solid fa-cloud-arrow-up ml-1"></i>رفع صورة</button>
+                                    <input type="file" id="contact-img-file" accept="image/*" class="hidden" onchange="handleConfImageFile('contact', event)">
+                                </div>
+                                <img id="contact-img-preview" class="hidden mt-2 w-20 h-20 rounded-full object-cover border-2 border-white shadow" alt="">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1">الاسم الكامل *</label>
+                                <input type="text" id="contact-name" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="اسم جهة التواصل">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1">الصفة / المسمى</label>
+                                <input type="text" id="contact-role" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="مثال: للاستفسار عن التسجيل">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1">رقم الهاتف</label>
+                                <input type="tel" id="contact-phone" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="01xxxxxxxxx">
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="saveConfCard('contact')" class="bg-vetBlue hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-bold flex-1"><i class="fa-solid fa-check ml-1"></i> حفظ جهة التواصل</button>
+                                <button onclick="cancelConfCardForm('contact')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2 rounded-lg text-sm font-bold">إلغاء</button>
                             </div>
                         </div>
                     </div>
@@ -1260,7 +1308,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v4.0</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v4.1</span>
         </footer>
     </div>
 
@@ -1363,6 +1411,7 @@
                 sponsorship_desc: "يُقام المؤتمر تحت رعاية ومصادقة كبرى المؤسسات الأكاديمية والبحثية والجهات الداعمة للقطاع البيطري.",
                 conf_management_title: "إدارة المؤتمر",
                 conf_sponsors_title: "رعاية المؤتمر",
+                conf_contact_title: "التواصل والاستفسار",
                 vmg_vision: "رؤية المؤتمر",
                 vmg_mission: "رسالة المؤتمر",
                 vmg_goals: "أهداف المؤتمر",
@@ -1469,6 +1518,7 @@
                 sponsorship_desc: "The conference is held under the patronage of major academic and research institutions supporting the veterinary sector.",
                 conf_management_title: "Conference Management",
                 conf_sponsors_title: "Conference Sponsors",
+                conf_contact_title: "Contact & Inquiries",
                 vmg_vision: "Conference Vision",
                 vmg_mission: "Conference Mission",
                 vmg_goals: "Conference Goals",
@@ -2586,7 +2636,8 @@
                 heroIcons: defaultHeroIcons(),
                 showManagement: true,
                 showSponsors: true,
-                homeSectionOrder: ['ticker', 'management', 'sponsors', 'news', 'gallery', 'register']
+                showContact: true,
+                homeSectionOrder: ['ticker', 'management', 'sponsors', 'news', 'gallery', 'register', 'contact']
             };
             const stored = JSON.parse(getStore('vet_conf_settings'));
             if (!stored) return defaults;
@@ -3378,11 +3429,12 @@
         // ===== قسما إدارة المؤتمر ورعاية المؤتمر (بطاقات ديناميكية + ترتيب الأقسام) =====
         const CONF_TYPES = {
             mgmt: { store: 'vet_conf_management', label: 'عضو' },
-            spons: { store: 'vet_conf_sponsors', label: 'راعي' }
+            spons: { store: 'vet_conf_sponsors', label: 'راعي' },
+            contact: { store: 'vet_conf_contact', label: 'جهة' }
         };
-        const CONF_SECTION_KEYS = { ticker: 'home-ticker', management: 'conf-management', sponsors: 'conf-sponsors', news: 'news', gallery: 'gallery', register: 'register' };
-        const CONF_SECTION_LABELS = { ticker: 'الشريط العاجل', management: 'إدارة المؤتمر', sponsors: 'رعاية المؤتمر', news: 'أخبار المؤتمر', gallery: 'معرض الصور', register: 'تسجيل الحضور' };
-        const CONF_DEFAULT_ORDER = ['ticker', 'management', 'sponsors', 'news', 'gallery', 'register'];
+        const CONF_SECTION_KEYS = { ticker: 'home-ticker', management: 'conf-management', sponsors: 'conf-sponsors', news: 'news', gallery: 'gallery', register: 'register', contact: 'conf-contact' };
+        const CONF_SECTION_LABELS = { ticker: 'الشريط العاجل', management: 'إدارة المؤتمر', sponsors: 'رعاية المؤتمر', news: 'أخبار المؤتمر', gallery: 'معرض الصور', register: 'تسجيل الحضور', contact: 'التواصل والاستفسار' };
+        const CONF_DEFAULT_ORDER = ['ticker', 'management', 'sponsors', 'news', 'gallery', 'register', 'contact'];
 
         function getConfList(type) {
             try {
@@ -3395,7 +3447,11 @@
         }
         function getConfOrder() {
             const s = getSiteSettings();
-            return (Array.isArray(s.homeSectionOrder) && s.homeSectionOrder.length) ? s.homeSectionOrder.slice() : CONF_DEFAULT_ORDER.slice();
+            const base = (Array.isArray(s.homeSectionOrder) && s.homeSectionOrder.length) ? s.homeSectionOrder.slice() : CONF_DEFAULT_ORDER.slice();
+            CONF_DEFAULT_ORDER.forEach(k => {
+                if (base.indexOf(k) === -1) base.push(k);
+            });
+            return base;
         }
 
         function confCardHtml(it) {
@@ -3423,6 +3479,7 @@
             const s = getSiteSettings();
             renderConfGrid('conf-management', getConfList('mgmt'), s.showManagement !== false);
             renderConfGrid('conf-sponsors', getConfList('spons'), s.showSponsors !== false);
+            renderConfGrid('conf-contact', getConfList('contact'), s.showContact !== false);
         }
         function applyHomeSectionOrder() {
             const main = document.querySelector('main');
@@ -3435,17 +3492,20 @@
             els.forEach(el => main.appendChild(el));
         }
 
-        let __confEditId = { mgmt: null, spons: null };
+        let __confEditId = { mgmt: null, spons: null, contact: null };
 
         function renderConfAdmin() {
             const s = getSiteSettings();
             const tm = document.getElementById('show-management-toggle');
             const ts = document.getElementById('show-sponsors-toggle');
+            const tc = document.getElementById('show-contact-toggle');
             if (tm) tm.checked = s.showManagement !== false;
             if (ts) ts.checked = s.showSponsors !== false;
+            if (tc) tc.checked = s.showContact !== false;
             renderHomeOrderList();
             renderConfCards('mgmt');
             renderConfCards('spons');
+            renderConfCards('contact');
         }
         function renderHomeOrderList() {
             const ul = document.getElementById('home-order-list');
@@ -3479,7 +3539,8 @@
             const s = getSiteSettings();
             const settings = Object.assign({}, s, {
                 showManagement: document.getElementById('show-management-toggle').checked,
-                showSponsors: document.getElementById('show-sponsors-toggle').checked
+                showSponsors: document.getElementById('show-sponsors-toggle').checked,
+                showContact: document.getElementById('show-contact-toggle').checked
             });
             setStore('vet_conf_settings', JSON.stringify(settings));
             renderConferenceSections();
@@ -4274,7 +4335,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v4.0 (dynamic conference management + sponsors sections; reorderable home sections)');
+            console.log('[BUILD] v4.1 (contact & inquiries section; English titles for management/sponsors/contact sections)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
@@ -4437,7 +4498,7 @@
             status.className = 'text-sm font-bold text-blue-600';
             const keys = ['vet_conf_settings', 'vet_conf_nav_buttons', 'vet_conf_ticker', 'vet_conf_ticker_settings',
                 'vet_conf_news', 'vet_conf_regs', 'vet_conf_custom_sections', 'vet_conf_gallery',
-                'vet_conf_management', 'vet_conf_sponsors'];
+                'vet_conf_management', 'vet_conf_sponsors', 'vet_conf_contact'];
             const snapshot = { _app: 'vet9-conference', _created: new Date().toISOString() };
             let anyLoaded = false;
             for (const key of keys) {
@@ -4514,7 +4575,7 @@
             const silent = !!(opts && opts.silent);
             const keys = ['vet_conf_settings', 'vet_conf_nav_buttons', 'vet_conf_ticker', 'vet_conf_ticker_settings',
                 'vet_conf_news', 'vet_conf_regs', 'vet_conf_custom_sections', 'vet_conf_gallery',
-                'vet_conf_management', 'vet_conf_sponsors'];
+                'vet_conf_management', 'vet_conf_sponsors', 'vet_conf_contact'];
             if (!silent) updateSyncBadge('connecting');
             let loaded = 0, anyOk = false, changed = false;
             for (const key of keys) {
