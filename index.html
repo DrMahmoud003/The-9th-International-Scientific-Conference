@@ -446,6 +446,28 @@
         </div>
     </div>
 
+    <!-- رسالة نجاح التسجيل + إشعار هام (رسوم الاشتراك) -->
+    <div id="reg-success-modal" class="fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm flex items-center justify-center hidden p-4">
+        <div class="bg-white max-w-md w-full rounded-3xl shadow-2xl overflow-hidden">
+            <div class="bg-gradient-to-l from-green-700 to-emerald-500 px-6 py-5 text-center relative">
+                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto text-3xl border-2 border-white/40 shadow-lg mb-3">
+                    <i class="fa-solid fa-circle-check text-white"></i>
+                </div>
+                <h4 class="text-white text-xl font-black" data-i18n="reg_success_title">تم تسجيل الحضور بنجاح!</h4>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 relative pt-5">
+                    <span class="inline-flex items-center gap-1.5 bg-amber-400 text-white text-[11px] font-black px-3 py-1 rounded-full shadow mb-2"><i class="fa-solid fa-triangle-exclamation"></i> <span data-i18n="reg_success_alert">تنبيه هام</span></span>
+                    <p class="text-sm text-amber-900 leading-relaxed font-semibold" data-i18n="reg_success_notice">لن يتم تسجيل اسم سيادتكم في قوائم الحضور إذا لم تقم بتسديد رسوم الاشتراك بخزينة الكلية في مدة أقصاها أسبوع من تاريخ التسجيل.</p>
+                </div>
+                <a href="https://wa.me/201008678832" target="_blank" rel="noopener" class="flex items-center justify-center gap-2 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition shadow text-sm">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> <span data-i18n="reg_success_contact">للتواصل والاستفسار واتساب على رقم 01008678832</span>
+                </a>
+                <button onclick="closeRegSuccess()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2.5 rounded-xl transition text-sm"><i class="fa-solid fa-check ml-1"></i> حسناً</button>
+            </div>
+        </div>
+    </div>
+
     <!-- News Reader Screen -->
     <div id="news-reader" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-white news-reader-body overflow-y-auto news-panel">
@@ -640,7 +662,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v4.4</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v4.5</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -1431,7 +1453,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v4.4</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v4.5</span>
         </footer>
     </div>
 
@@ -1444,6 +1466,16 @@
         }
         function closeCustomAlert() {
             document.getElementById('custom-alert-modal').classList.add('hidden');
+        }
+
+        function showRegSuccess() {
+            applyTranslations();
+            document.getElementById('reg-success-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeRegSuccess() {
+            document.getElementById('reg-success-modal').classList.add('hidden');
+            document.body.style.overflow = '';
         }
 
         let currentLang = 'ar';
@@ -1506,6 +1538,10 @@
                 type_choose: "اختر نوع الحضور...",
                 form_notes: "ملاحظات أو عنوان البحث",
                 form_submit: "إرسال التسجيل",
+                reg_success_title: "تم تسجيل الحضور بنجاح!",
+                reg_success_alert: "تنبيه هام",
+                reg_success_notice: "لن يتم تسجيل اسم سيادتكم في قوائم الحضور إذا لم تقم بتسديد رسوم الاشتراك بخزينة الكلية في مدة أقصاها أسبوع من تاريخ التسجيل.",
+                reg_success_contact: "للتواصل والاستفسار واتساب على رقم 01008678832",
                 credits_text: "تمت البرمجة والتصميم بواسطة دكتور محمود اللواتي © 2026",
                 footer_copy: "© 2026 كلية الطب البيطري - جامعة كفرالشيخ. جميع الحقوق محفوظة.",
                 admin_login_title: "تسجيل دخول لوحة التحكم",
@@ -1613,6 +1649,10 @@
                 type_choose: "Choose Attendance Type...",
                 form_notes: "Notes or Paper Title",
                 form_submit: "Submit Registration",
+                reg_success_title: "Registration Completed Successfully!",
+                reg_success_alert: "Important Notice",
+                reg_success_notice: "Your name will not be included in the attendance lists unless you pay the registration fees at the faculty treasury within a maximum of one week from the registration date.",
+                reg_success_contact: "For contact and inquiries, WhatsApp: 01008678832",
                 credits_text: "Programmed & Designed by Dr. Mahmoud Ellawatiy © 2026",
                 footer_copy: "© 2026 Faculty of Veterinary Medicine - Kafrelsheikh University. All rights reserved.",
                 admin_login_title: "Admin Dashboard Login",
@@ -3496,8 +3536,8 @@
             const regs = getRegistrations();
             regs.push(newReg);
             setStore('vet_conf_regs', JSON.stringify(regs));
-            showCustomAlert("تم تسجيل الحضور بنجاح!");
             document.getElementById('registration-form').reset();
+            showRegSuccess();
         }
 
         // ===== طبقة حماية رمزية إضافية (تصعيب بسيط - ليست حماية حقيقية) =====
@@ -4575,7 +4615,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v4.4 (edit all static labels & translations from admin: vet_conf_labels overrides merged over defaults)');
+            console.log('[BUILD] v4.5 (registration success modal: important fee payment notice + WhatsApp contact)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
