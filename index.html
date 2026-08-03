@@ -335,7 +335,8 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold mb-1" data-i18n="form_type">نوع الحضور *</label>
-                            <select id="reg-type" class="w-full px-3 py-2 border rounded-lg text-sm">
+                            <select id="reg-type" required onchange="showRegFeeModal()" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                <option value="" selected disabled data-i18n="type_choose">اختر نوع الحضور...</option>
                                 <option value="حضور يوم الافتتاح فقط" data-i18n="type_opening">حضور يوم الافتتاح فقط</option>
                                 <option value="الاشتراك الكامل / شرم الشيخ" data-i18n="type_full">الاشتراك الكامل / شرم الشيخ</option>
                             </select>
@@ -379,6 +380,24 @@
                 <p id="custom-alert-message" class="text-sm text-gray-600 leading-relaxed"></p>
             </div>
             <button onclick="closeCustomAlert()" class="w-full bg-vetBlue hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl transition shadow">حسناً</button>
+        </div>
+    </div>
+
+    <!-- رسوم الاشتراك - نافذة تأكيد -->
+    <div id="reg-fee-modal" class="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-center justify-center hidden p-4">
+        <div class="bg-white max-w-md w-full p-6 rounded-2xl shadow-2xl text-center space-y-4">
+            <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-2xl shadow-inner">
+                <i class="fa-solid fa-money-bill-wave"></i>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold text-vetDark mb-2">رسوم الاشتراك</h4>
+                <div id="reg-fee-message" class="text-sm text-gray-700 leading-relaxed space-y-1.5"></div>
+                <p class="mt-3 text-xs font-bold text-blue-700 bg-blue-50 border border-blue-100 rounded-lg py-2 px-3"><i class="fa-solid fa-building-columns ml-1"></i>برجاء التوجه للكلية لسداد رسم الاشتراك</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="confirmRegFee()" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-xl transition shadow text-sm"><i class="fa-solid fa-check ml-1"></i>علم واستمرار</button>
+                <button onclick="cancelRegistration()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2.5 rounded-xl transition text-sm"><i class="fa-solid fa-xmark ml-1"></i>خروج</button>
+            </div>
         </div>
     </div>
 
@@ -576,7 +595,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v3.7</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v3.8</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -1120,7 +1139,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v3.7</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v3.8</span>
         </footer>
     </div>
 
@@ -1192,6 +1211,7 @@
                 type_paper: "تقديم بحث",
                 type_opening: "حضور يوم الافتتاح فقط",
                 type_full: "الاشتراك الكامل / شرم الشيخ",
+                type_choose: "اختر نوع الحضور...",
                 form_notes: "ملاحظات أو عنوان البحث",
                 form_submit: "إرسال التسجيل",
                 credits_text: "تمت البرمجة والتصميم بواسطة دكتور محمود اللواتي © 2026",
@@ -1295,6 +1315,7 @@
                 type_paper: "Paper Presentation",
                 type_opening: "Opening Day Only",
                 type_full: "Full Subscription / Sharm El-Sheikh",
+                type_choose: "Choose Attendance Type...",
                 form_notes: "Notes or Paper Title",
                 form_submit: "Submit Registration",
                 credits_text: "Programmed & Designed by Dr. Mahmoud Ellawatiy © 2026",
@@ -2980,9 +3001,52 @@
             if (digits.length !== 14) return 'الرقم القومي يجب أن يكون 14 رقماً بالضبط';
             return '';
         }
+        function showRegFeeModal() {
+            const type = document.getElementById('reg-type').value;
+            if (!type) return;
+            let msg = '';
+            if (type === 'الاشتراك الكامل / شرم الشيخ') {
+                msg = '<p class="font-bold text-vetDark">رسوم الاشتراك الكامل / شرم الشيخ: 8000 جنيهاً</p>';
+            } else {
+                msg = '<p class="font-bold text-vetDark">رسم اشتراك يوم الافتتاح:</p>'
+                    + '<p>1000 جنيهاً للهيئة المعاونة</p>'
+                    + '<p>1500 جنيهاً للباحثين والخريجين وأعضاء هيئة التدريس</p>';
+            }
+            document.getElementById('reg-fee-message').innerHTML = msg;
+            document.getElementById('reg-fee-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function confirmRegFee() {
+            const type = document.getElementById('reg-type').value;
+            if (!type) return;
+            window.__feeAcknowledged = type;
+            document.getElementById('reg-fee-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+            const notes = document.getElementById('reg-notes');
+            if (notes) notes.focus();
+        }
+        function cancelRegistration() {
+            window.__feeAcknowledged = '';
+            document.getElementById('reg-fee-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+            document.getElementById('registration-form').reset();
+            clearFieldErrors();
+            showCustomAlert('تم إلغاء التسجيل');
+        }
         function handleRegistration(e) {
             e.preventDefault();
             clearFieldErrors();
+            if (typeof window.__feeAcknowledged === 'undefined') window.__feeAcknowledged = '';
+
+            const regType = document.getElementById('reg-type').value;
+            if (!regType) {
+                showCustomAlert('برجاء اختيار نوع الحضور أولاً');
+                return;
+            }
+            if (regType !== window.__feeAcknowledged) {
+                showRegFeeModal();
+                return;
+            }
 
             const name = document.getElementById('reg-name').value.trim();
             const phone = document.getElementById('reg-phone').value.trim();
@@ -3872,7 +3936,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v3.7 (registration validation: 4-part Arabic name + 11-digit phone + 14-digit national ID)');
+            console.log('[BUILD] v3.8 (registration: fee confirmation modal on type select - opening 1000/1500 LE, full 8000 LE)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
