@@ -295,17 +295,24 @@
                     <div class="grid sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold mb-1" data-i18n="form_name">الاسم الكامل *</label>
-                            <input type="text" id="reg-name" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                            <input type="text" id="reg-name" required class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="الاسم رباعي باللغة العربية (الاسم + الأب + الجد + العائلة)">
+                            <p id="reg-name-err" class="hidden text-red-500 text-[11px] font-bold mt-1"></p>
                         </div>
                         <div>
                             <label class="block text-xs font-bold mb-1" data-i18n="form_email">البريد الإلكتروني *</label>
                             <input type="email" id="reg-email" required class="w-full px-3 py-2 border rounded-lg text-sm">
                         </div>
                     </div>
-                    <div class="grid sm:grid-cols-2 gap-4">
+                    <div class="grid sm:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-bold mb-1" data-i18n="form_phone">رقم الهاتف *</label>
-                            <input type="tel" id="reg-phone" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                            <input type="tel" id="reg-phone" required class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="11 رقم - مثال: 01012345678" maxlength="11" inputmode="numeric">
+                            <p id="reg-phone-err" class="hidden text-red-500 text-[11px] font-bold mt-1"></p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold mb-1">الرقم القومي *</label>
+                            <input type="tel" id="reg-national-id" required class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="14 رقم" maxlength="14" inputmode="numeric">
+                            <p id="reg-national-id-err" class="hidden text-red-500 text-[11px] font-bold mt-1"></p>
                         </div>
                         <div>
                             <label class="block text-xs font-bold mb-1" data-i18n="form_country">الدولة *</label>
@@ -569,7 +576,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v3.6</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v3.7</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -1097,6 +1104,7 @@
                                     <th class="p-3" data-i18n="th_name">الاسم</th>
                                     <th class="p-3" data-i18n="th_email">البريد</th>
                                     <th class="p-3" data-i18n="th_phone">الهاتف</th>
+                                    <th class="p-3">الرقم القومي</th>
                                     <th class="p-3" data-i18n="th_country">الدولة</th>
                                     <th class="p-3" data-i18n="th_org">الجهة</th>
                                     <th class="p-3" data-i18n="th_category">الفئة</th>
@@ -1112,7 +1120,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v3.6</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v3.7</span>
         </footer>
     </div>
 
@@ -2945,13 +2953,59 @@
             }, 220);
         }
 
+        function showFieldError(id, msg) {
+            const el = document.getElementById(id);
+            if (el) { el.textContent = msg; el.classList.remove('hidden'); }
+        }
+        function clearFieldErrors() {
+            ['reg-name-err', 'reg-phone-err', 'reg-national-id-err'].forEach(function(id) {
+                const el = document.getElementById(id);
+                if (el) { el.textContent = ''; el.classList.add('hidden'); }
+            });
+        }
+        function validateRegName(name) {
+            const parts = name.trim().split(/\s+/);
+            if (parts.length < 4) return 'الاسم يجب أن يكون رباعياً على الأقل (الاسم + الأب + الجد + العائلة)';
+            if (/[A-Za-z0-9]/.test(name)) return 'الاسم يجب أن يكون باللغة العربية فقط (ممنوع الحروف اللاتينية والأرقام)';
+            if (!/[\u0600-\u06FF]/.test(name)) return 'الاسم يجب أن يكون باللغة العربية فقط';
+            return '';
+        }
+        function validatePhone(phone) {
+            const digits = String(phone || '').replace(/[^0-9]/g, '');
+            if (digits.length !== 11) return 'رقم الهاتف يجب أن يكون 11 رقماً بالضبط (مثال: 01012345678)';
+            return '';
+        }
+        function validateNationalId(id) {
+            const digits = String(id || '').replace(/[^0-9]/g, '');
+            if (digits.length !== 14) return 'الرقم القومي يجب أن يكون 14 رقماً بالضبط';
+            return '';
+        }
         function handleRegistration(e) {
             e.preventDefault();
+            clearFieldErrors();
+
+            const name = document.getElementById('reg-name').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const nationalId = document.getElementById('reg-national-id').value.trim();
+
+            let hasError = false;
+            const nameErr = validateRegName(name);
+            if (nameErr) { showFieldError('reg-name-err', nameErr); hasError = true; }
+            const phoneErr = validatePhone(phone);
+            if (phoneErr) { showFieldError('reg-phone-err', phoneErr); hasError = true; }
+            const natErr = validateNationalId(nationalId);
+            if (natErr) { showFieldError('reg-national-id-err', natErr); hasError = true; }
+            if (hasError) {
+                showCustomAlert('برجاء تصحيح الحقول المحددة بالأحمر والمحاولة مرة أخرى');
+                return;
+            }
+
             const newReg = {
                 id: Date.now(),
-                name: document.getElementById('reg-name').value,
+                name: name,
                 email: document.getElementById('reg-email').value,
-                phone: document.getElementById('reg-phone').value,
+                phone: phone,
+                nationalId: nationalId,
                 country: document.getElementById('reg-country').value,
                 org: document.getElementById('reg-org').value,
                 category: document.getElementById('reg-category').value,
@@ -3602,7 +3656,7 @@
             const regs = getFilteredRegs();
             tbody.innerHTML = '';
             if (regs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center text-gray-400 font-bold">لا توجد سجلات مطابقة للفرز الحالي</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-gray-400 font-bold">لا توجد سجلات مطابقة للفرز الحالي</td></tr>';
                 return;
             }
             regs.forEach(r => {
@@ -3618,6 +3672,7 @@
                             ${wa ? '<a href="' + wa + '" target="_blank" rel="noopener" title="مراسلة عبر واتساب" class="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition shadow"><i class="fa-brands fa-whatsapp text-[10px]"></i></a>' : ''}
                         </div>
                     </td>
+                    <td class="p-3 text-gray-600" dir="ltr">${r.nationalId || '—'}</td>
                     <td class="p-3 text-gray-600">${r.country}</td>
                     <td class="p-3 text-gray-600">${r.org}</td>
                     <td class="p-3"><span class="bg-blue-100 text-vetBlue px-2 py-1 rounded text-xs font-bold">${r.category}</span></td>
@@ -3762,6 +3817,7 @@
                                 <th>الاسم</th>
                                 <th>البريد</th>
                                 <th>الهاتف</th>
+                                <th>الرقم القومي</th>
                                 <th>الدولة</th>
                                 <th>الجهة</th>
                                 <th>الفئة</th>
@@ -3776,6 +3832,7 @@
                     <td style="font-weight:600;">${r.name}</td>
                     <td style="direction:ltr;text-align:left;">${r.email}</td>
                     <td style="direction:ltr;text-align:left;">${r.phone}</td>
+                    <td style="direction:ltr;text-align:left;">${r.nationalId || '—'}</td>
                     <td>${r.country}</td>
                     <td>${r.org}</td>
                     <td><span class="badge">${r.category}</span></td>
@@ -3815,7 +3872,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v3.6 (registrations: second filter by subscription type - opening day only / full subscription Sharm)');
+            console.log('[BUILD] v3.7 (registration validation: 4-part Arabic name + 11-digit phone + 14-digit national ID)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
