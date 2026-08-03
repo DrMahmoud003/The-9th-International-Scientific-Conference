@@ -162,6 +162,17 @@
         .cs-member-card { transition: transform 0.15s; }
         .cs-member-card:hover { transform: translateY(-2px); }
         .cs-member-card img { aspect-ratio: 1/1; }
+        .conf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; justify-items: center; }
+        .conf-card { width: 100%; max-width: 320px; background: #fff; border: 1px solid #eef2f7; border-radius: 1.1rem; padding: 1.5rem 1.25rem; text-align: center; box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06); transition: transform 0.15s, box-shadow 0.15s; }
+        .conf-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12); }
+        .conf-card-img { width: 7rem; height: 7rem; border-radius: 9999px; object-fit: cover; margin: 0 auto 0.8rem; border: 3px solid #eaf1ff; background: #f1f5f9; display: block; }
+        .conf-card-img-placeholder { display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #94a3b8; }
+        .conf-card-name { font-weight: 800; color: #0f172a; font-size: 1.05rem; margin: 0; }
+        .conf-card-role { color: #4b5563; font-size: 0.85rem; margin-top: 0.25rem; }
+        .conf-card-phone { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.55rem; color: #2563eb; font-size: 0.8rem; font-weight: 700; direction: ltr; }
+        .conf-card-phone:hover { color: #1e40af; }
+        .conf-empty { text-align: center; color: #9ca3af; font-weight: 700; padding: 1.5rem 0; }
+        .conf-order-row { transition: background 0.15s; }
 
         /* ===== نافذة الاقتصاص ===== */
         .crop-ratio-btn { background: #fff; color: #374151; border: 1px solid #e5e7eb; transition: all 0.15s; }
@@ -250,7 +261,7 @@
             </section>
 
             <!-- Continuous News Ticker -->
-            <div class="home-only-section bg-blue-950 text-blue-100 py-3 rounded-2xl overflow-hidden shadow-inner">
+            <div id="home-ticker" class="home-only-section bg-blue-950 text-blue-100 py-3 rounded-2xl overflow-hidden shadow-inner">
                 <div class="flex items-center px-4">
                     <span class="bg-vetGold text-white text-xs font-black px-2.5 py-1 rounded ml-4 uppercase tracking-wider shrink-0" data-i18n="ticker_label">شريط عاجل</span>
                     <div class="ticker-wrap w-full">
@@ -260,6 +271,24 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Conference Management Section (إدارة المؤتمر) -->
+            <section id="conf-management" class="home-only-section bg-white p-8 rounded-3xl shadow-sm border">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="conf_management_title">إدارة المؤتمر</h3>
+                    <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
+                </div>
+                <div id="conf-management-grid" class="conf-grid"></div>
+            </section>
+
+            <!-- Conference Sponsors Section (رعاية المؤتمر) -->
+            <section id="conf-sponsors" class="home-only-section bg-white p-8 rounded-3xl shadow-sm border">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black text-vetDark mb-3" data-i18n="conf_sponsors_title">رعاية المؤتمر</h3>
+                    <div class="w-16 h-1 bg-vetGold mx-auto rounded-full"></div>
+                </div>
+                <div id="conf-sponsors-grid" class="conf-grid"></div>
+            </section>
 
             <!-- News Section -->
             <section id="news" class="home-only-section bg-white p-8 rounded-3xl shadow-sm border">
@@ -591,7 +620,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v3.9</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v4.0</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -611,6 +640,7 @@
                     <button onclick="switchTab('site-settings')" id="tab-btn-site-settings" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm bg-vetBlue text-white flex items-center gap-2"><i class="fa-solid fa-gear w-4 text-center"></i> <span data-i18n="tab_site_settings">إعدادات ونصوص الصفحة</span></button>
                     <button onclick="switchTab('nav-manager')" id="tab-btn-nav-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-bars w-4 text-center"></i> <span>الأقسام الجانبية</span></button>
                     <button onclick="switchTab('custom-sections')" id="tab-btn-custom-sections" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-layer-group w-4 text-center"></i> <span>أقسام مخصصة</span></button>
+                    <button onclick="switchTab('conf-sections')" id="tab-btn-conf-sections" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-people-group w-4 text-center"></i> <span>قسم الإدارة والرعاية</span></button>
                 </div>
                 <div class="mb-4">
                     <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-3">المحتوى الإعلامي</div>
@@ -862,6 +892,101 @@
                     <div class="bg-white p-6 rounded-xl shadow border">
                         <h5 class="font-bold text-vetDark mb-4">الأقسام المخصصة الحالية</h5>
                         <div id="admin-cs-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- Conference Sections Admin Tab (قسم الإدارة والرعاية) -->
+                <div id="tab-conf-sections" class="space-y-6 hidden max-w-4xl">
+                    <div class="bg-white rounded-2xl border shadow-sm p-5">
+                        <h5 class="font-bold text-vetDark mb-1"><i class="fa-solid fa-eye ml-2 text-vetBlue"></i>إظهار الأقسام في الصفحة الرئيسية</h5>
+                        <p class="text-sm text-gray-500 mb-4">عند الإخفاء يختفي القسم تماماً من الصفحة</p>
+                        <div class="space-y-3">
+                            <label class="flex items-center gap-3 bg-gray-50 border rounded-xl p-3 cursor-pointer">
+                                <input type="checkbox" id="show-management-toggle" class="w-5 h-5 accent-vetBlue">
+                                <span class="font-bold text-sm">إظهار قسم "إدارة المؤتمر"</span>
+                            </label>
+                            <label class="flex items-center gap-3 bg-gray-50 border rounded-xl p-3 cursor-pointer">
+                                <input type="checkbox" id="show-sponsors-toggle" class="w-5 h-5 accent-vetBlue">
+                                <span class="font-bold text-sm">إظهار قسم "رعاية المؤتمر"</span>
+                            </label>
+                        </div>
+                        <button onclick="saveConfSectionSettings()" class="mt-4 bg-vetBlue hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-bold text-sm shadow"><i class="fa-solid fa-save ml-1"></i> حفظ إعدادات الإظهار</button>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border shadow-sm p-5">
+                        <h5 class="font-bold text-vetDark mb-1"><i class="fa-solid fa-arrow-up-wide-short ml-2 text-vetBlue"></i>ترتيب الأقسام في الصفحة</h5>
+                        <p class="text-sm text-gray-500 mb-4">استخدم الأسهم لنقل أي قسم لأي مكان في العمود الرئيسي (الرئيسية تبقى دائماً أولاً)</p>
+                        <ul id="home-order-list" class="space-y-2"></ul>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border shadow-sm p-5">
+                        <div class="flex items-center justify-between mb-4">
+                            <h5 class="font-bold text-vetDark"><i class="fa-solid fa-user-tie ml-2 text-vetBlue"></i>أعضاء إدارة المؤتمر</h5>
+                            <button onclick="openConfCardForm('mgmt')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs font-bold shadow"><i class="fa-solid fa-plus ml-1"></i> إضافة عضو</button>
+                        </div>
+                        <div id="mgmt-cards-list" class="space-y-2 mb-4"></div>
+                        <div id="mgmt-card-form" class="hidden bg-blue-50/50 border border-blue-100 rounded-xl p-4 space-y-3">
+                            <div>
+                                <label class="block text-xs font-bold mb-1">صورة العضو</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="text" id="mgmt-img" oninput="confImgPreview('mgmt')" class="flex-1 px-3 py-2 border rounded-lg text-sm" placeholder="رابط الصورة أو ارفع صورة">
+                                    <button type="button" onclick="pickConfImage('mgmt')" class="bg-vetBlue text-white px-3 py-2 rounded-lg text-xs font-bold shrink-0"><i class="fa-solid fa-cloud-arrow-up ml-1"></i>رفع صورة</button>
+                                    <input type="file" id="mgmt-img-file" accept="image/*" class="hidden" onchange="handleConfImageFile('mgmt', event)">
+                                </div>
+                                <img id="mgmt-img-preview" class="hidden mt-2 w-20 h-20 rounded-full object-cover border-2 border-white shadow" alt="">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1">الاسم الكامل *</label>
+                                <input type="text" id="mgmt-name" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="اسم العضو">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1">الصفة / المسمى الوظيفي</label>
+                                <input type="text" id="mgmt-role" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="مثال: رئيس المؤتمر">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1">رقم الهاتف</label>
+                                <input type="tel" id="mgmt-phone" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="01xxxxxxxxx">
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="saveConfCard('mgmt')" class="bg-vetBlue hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-bold flex-1"><i class="fa-solid fa-check ml-1"></i> حفظ العضو</button>
+                                <button onclick="cancelConfCardForm('mgmt')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2 rounded-lg text-sm font-bold">إلغاء</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border shadow-sm p-5">
+                        <div class="flex items-center justify-between mb-4">
+                            <h5 class="font-bold text-vetDark"><i class="fa-solid fa-handshake ml-2 text-amber-600"></i>رعاة المؤتمر</h5>
+                            <button onclick="openConfCardForm('spons')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs font-bold shadow"><i class="fa-solid fa-plus ml-1"></i> إضافة راعي</button>
+                        </div>
+                        <div id="spons-cards-list" class="space-y-2 mb-4"></div>
+                        <div id="spons-card-form" class="hidden bg-amber-50/60 border border-amber-100 rounded-xl p-4 space-y-3">
+                            <div>
+                                <label class="block text-xs font-bold mb-1">شعار / صورة الراعي</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="text" id="spons-img" oninput="confImgPreview('spons')" class="flex-1 px-3 py-2 border rounded-lg text-sm" placeholder="رابط الصورة أو ارفع صورة">
+                                    <button type="button" onclick="pickConfImage('spons')" class="bg-vetBlue text-white px-3 py-2 rounded-lg text-xs font-bold shrink-0"><i class="fa-solid fa-cloud-arrow-up ml-1"></i>رفع صورة</button>
+                                    <input type="file" id="spons-img-file" accept="image/*" class="hidden" onchange="handleConfImageFile('spons', event)">
+                                </div>
+                                <img id="spons-img-preview" class="hidden mt-2 w-20 h-20 rounded-full object-cover border-2 border-white shadow" alt="">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1">اسم الجهة / الراعي *</label>
+                                <input type="text" id="spons-name" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="اسم الجهة الراعية">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1">الصفة / نوع الرعاية</label>
+                                <input type="text" id="spons-role" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="مثال: الراعي الذهبي">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1">رقم الهاتف</label>
+                                <input type="tel" id="spons-phone" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="01xxxxxxxxx">
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="saveConfCard('spons')" class="bg-vetBlue hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-bold flex-1"><i class="fa-solid fa-check ml-1"></i> حفظ الراعي</button>
+                                <button onclick="cancelConfCardForm('spons')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2 rounded-lg text-sm font-bold">إلغاء</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1135,7 +1260,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v3.9</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v4.0</span>
         </footer>
     </div>
 
@@ -1236,6 +1361,8 @@
                 th_action: "إجراء",
                 sponsorship_title: "رعاية ومؤسسات المؤتمر",
                 sponsorship_desc: "يُقام المؤتمر تحت رعاية ومصادقة كبرى المؤسسات الأكاديمية والبحثية والجهات الداعمة للقطاع البيطري.",
+                conf_management_title: "إدارة المؤتمر",
+                conf_sponsors_title: "رعاية المؤتمر",
                 vmg_vision: "رؤية المؤتمر",
                 vmg_mission: "رسالة المؤتمر",
                 vmg_goals: "أهداف المؤتمر",
@@ -1340,6 +1467,8 @@
                 th_action: "Action",
                 sponsorship_title: "Conference Sponsors",
                 sponsorship_desc: "The conference is held under the patronage of major academic and research institutions supporting the veterinary sector.",
+                conf_management_title: "Conference Management",
+                conf_sponsors_title: "Conference Sponsors",
                 vmg_vision: "Conference Vision",
                 vmg_mission: "Conference Mission",
                 vmg_goals: "Conference Goals",
@@ -2454,7 +2583,10 @@
                 heroTitle: { ar: "المؤتمر العلمي الدولي التاسع لكلية الطب البيطري", en: "The 9th International Scientific Conference of Veterinary Medicine" },
                 heroDesc: { ar: "نحو آفاق جديدة في البحث العلمي البيطري وتنمية الثروة الحيوانية وتحقيق الأمن الغذائي المستدام.", en: "Towards new horizons in veterinary scientific research, livestock development, and sustainable food security." },
                 fbLink: "https://facebook.com",
-                heroIcons: defaultHeroIcons()
+                heroIcons: defaultHeroIcons(),
+                showManagement: true,
+                showSponsors: true,
+                homeSectionOrder: ['ticker', 'management', 'sponsors', 'news', 'gallery', 'register']
             };
             const stored = JSON.parse(getStore('vet_conf_settings'));
             if (!stored) return defaults;
@@ -3243,8 +3375,204 @@
             setInterval(updateClock, 1000);
         }
 
+        // ===== قسما إدارة المؤتمر ورعاية المؤتمر (بطاقات ديناميكية + ترتيب الأقسام) =====
+        const CONF_TYPES = {
+            mgmt: { store: 'vet_conf_management', label: 'عضو' },
+            spons: { store: 'vet_conf_sponsors', label: 'راعي' }
+        };
+        const CONF_SECTION_KEYS = { ticker: 'home-ticker', management: 'conf-management', sponsors: 'conf-sponsors', news: 'news', gallery: 'gallery', register: 'register' };
+        const CONF_SECTION_LABELS = { ticker: 'الشريط العاجل', management: 'إدارة المؤتمر', sponsors: 'رعاية المؤتمر', news: 'أخبار المؤتمر', gallery: 'معرض الصور', register: 'تسجيل الحضور' };
+        const CONF_DEFAULT_ORDER = ['ticker', 'management', 'sponsors', 'news', 'gallery', 'register'];
+
+        function getConfList(type) {
+            try {
+                const d = JSON.parse(getStore(CONF_TYPES[type].store));
+                return Array.isArray(d) ? d : [];
+            } catch (e) { return []; }
+        }
+        function saveConfList(type, list) {
+            setStore(CONF_TYPES[type].store, JSON.stringify(list));
+        }
+        function getConfOrder() {
+            const s = getSiteSettings();
+            return (Array.isArray(s.homeSectionOrder) && s.homeSectionOrder.length) ? s.homeSectionOrder.slice() : CONF_DEFAULT_ORDER.slice();
+        }
+
+        function confCardHtml(it) {
+            const name = esc(it.name || '');
+            const role = it.role ? '<p class="conf-card-role">' + esc(it.role) + '</p>' : '';
+            const phone = it.phone ? '<a class="conf-card-phone" href="https://wa.me/' + waPhone(it.phone) + '" target="_blank" rel="noopener" title="مراسلة عبر واتساب"><i class="fa-solid fa-phone"></i>' + esc(it.phone) + '</a>' : '';
+            const img = it.img
+                ? '<img class="conf-card-img" src="' + esc(it.img) + '" alt="' + name + '" loading="lazy" onerror="this.remove()">'
+                : '<div class="conf-card-img conf-card-img-placeholder"><i class="fa-solid fa-user"></i></div>';
+            return '<div class="conf-card">' + img + '<p class="conf-card-name">' + name + '</p>' + role + phone + '</div>';
+        }
+        function renderConfGrid(sectionId, list, visible) {
+            const sec = document.getElementById(sectionId);
+            const grid = document.getElementById(sectionId + '-grid');
+            if (!sec || !grid) return;
+            if (!visible || !list.length) {
+                sec.style.display = 'none';
+                grid.innerHTML = '';
+                return;
+            }
+            sec.style.display = '';
+            grid.innerHTML = list.map(confCardHtml).join('') || '<p class="conf-empty">لا توجد بيانات</p>';
+        }
+        function renderConferenceSections() {
+            const s = getSiteSettings();
+            renderConfGrid('conf-management', getConfList('mgmt'), s.showManagement !== false);
+            renderConfGrid('conf-sponsors', getConfList('spons'), s.showSponsors !== false);
+        }
+        function applyHomeSectionOrder() {
+            const main = document.querySelector('main');
+            if (!main) return;
+            const order = getConfOrder();
+            const hero = document.getElementById('home');
+            const ordered = order.map(k => document.getElementById(CONF_SECTION_KEYS[k])).filter(Boolean);
+            const custom = Array.prototype.slice.call(document.querySelectorAll('.custom-section-dynamic'));
+            const els = [hero].concat(ordered).concat(custom).filter(Boolean);
+            els.forEach(el => main.appendChild(el));
+        }
+
+        let __confEditId = { mgmt: null, spons: null };
+
+        function renderConfAdmin() {
+            const s = getSiteSettings();
+            const tm = document.getElementById('show-management-toggle');
+            const ts = document.getElementById('show-sponsors-toggle');
+            if (tm) tm.checked = s.showManagement !== false;
+            if (ts) ts.checked = s.showSponsors !== false;
+            renderHomeOrderList();
+            renderConfCards('mgmt');
+            renderConfCards('spons');
+        }
+        function renderHomeOrderList() {
+            const ul = document.getElementById('home-order-list');
+            if (!ul) return;
+            const order = getConfOrder();
+            ul.innerHTML = '';
+            order.forEach((k, i) => {
+                const li = document.createElement('li');
+                li.className = "conf-order-row flex items-center justify-between bg-gray-50 border rounded-xl px-4 py-2.5";
+                li.innerHTML =
+                    '<span class="font-bold text-sm">' + (CONF_SECTION_LABELS[k] || k) + '</span>' +
+                    '<div class="flex gap-1.5">' +
+                    '<button onclick="moveHomeSection(' + i + ', -1)" class="w-9 h-9 rounded-lg bg-white border text-vetBlue hover:bg-blue-50" ' + (i === 0 ? 'disabled title="بالفعل في الأعلى"' : '') + '><i class="fa-solid fa-arrow-up"></i></button>' +
+                    '<button onclick="moveHomeSection(' + i + ', 1)" class="w-9 h-9 rounded-lg bg-white border text-vetBlue hover:bg-blue-50" ' + (i === order.length - 1 ? 'disabled title="بالفعل في الأسفل"' : '') + '><i class="fa-solid fa-arrow-down"></i></button>' +
+                    '</div>';
+                ul.appendChild(li);
+            });
+        }
+        function moveHomeSection(i, dir) {
+            const order = getConfOrder();
+            const j = i + dir;
+            if (j < 0 || j >= order.length) return;
+            const tmp = order[i]; order[i] = order[j]; order[j] = tmp;
+            const s = getSiteSettings();
+            setStore('vet_conf_settings', JSON.stringify(Object.assign({}, s, { homeSectionOrder: order })));
+            renderHomeOrderList();
+            applyHomeSectionOrder();
+            showCustomAlert('تم تحديث ترتيب الأقسام ✓');
+        }
+        function saveConfSectionSettings() {
+            const s = getSiteSettings();
+            const settings = Object.assign({}, s, {
+                showManagement: document.getElementById('show-management-toggle').checked,
+                showSponsors: document.getElementById('show-sponsors-toggle').checked
+            });
+            setStore('vet_conf_settings', JSON.stringify(settings));
+            renderConferenceSections();
+            showCustomAlert('تم حفظ إعدادات الإظهار بنجاح!');
+        }
+
+        function renderConfCards(type) {
+            const c = document.getElementById(type + '-cards-list');
+            if (!c) return;
+            const list = getConfList(type);
+            if (!list.length) {
+                c.innerHTML = '<p class="text-sm text-gray-400 font-bold text-center py-4">لا توجد بيانات — أضف أول ' + CONF_TYPES[type].label + '</p>';
+                return;
+            }
+            c.innerHTML = list.map(it =>
+                '<div class="flex items-center gap-3 bg-gray-50 border rounded-xl p-3">' +
+                    (it.img ? '<img src="' + esc(it.img) + '" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow" alt="">' : '<div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 shrink-0"><i class="fa-solid fa-user"></i></div>') +
+                    '<div class="flex-1 min-w-0">' +
+                        '<p class="font-bold text-sm truncate">' + esc(it.name || '') + '</p>' +
+                        (it.role ? '<p class="text-xs text-gray-500 truncate">' + esc(it.role) + '</p>' : '') +
+                        (it.phone ? '<p class="text-xs text-blue-600 font-bold" dir="ltr">' + esc(it.phone) + '</p>' : '') +
+                    '</div>' +
+                    '<button onclick="openConfCardForm(\'' + type + '\', ' + it.id + ')" class="w-9 h-9 rounded-lg bg-blue-50 text-vetBlue hover:bg-blue-100 shrink-0" title="تعديل"><i class="fa-solid fa-pen"></i></button>' +
+                    '<button onclick="deleteConfCard(\'' + type + '\', ' + it.id + ')" class="w-9 h-9 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 shrink-0" title="حذف"><i class="fa-solid fa-trash"></i></button>' +
+                '</div>'
+            ).join('');
+        }
+        function confImgPreview(type) {
+            const url = document.getElementById(type + '-img').value.trim();
+            const p = document.getElementById(type + '-img-preview');
+            if (url) { p.src = url; p.classList.remove('hidden'); } else { p.classList.add('hidden'); }
+        }
+        function pickConfImage(type) {
+            document.getElementById(type + '-img-file').click();
+        }
+        async function handleConfImageFile(type, e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            showCustomAlert('جاري رفع الصورة...');
+            const resized = await resizeImageForUpload(file, 1000);
+            const url = await uploadFileToCloudinary(resized);
+            if (!url) { showCustomAlert('فشل رفع الصورة، حاول مرة أخرى'); return; }
+            document.getElementById(type + '-img').value = url;
+            confImgPreview(type);
+            showCustomAlert('تم رفع الصورة ✓');
+            e.target.value = '';
+        }
+        function openConfCardForm(type, id) {
+            const list = getConfList(type);
+            const it = (id === undefined || id === null) ? null : list.find(x => String(x.id) === String(id));
+            __confEditId[type] = it ? it.id : null;
+            document.getElementById(type + '-img').value = it && it.img ? it.img : '';
+            document.getElementById(type + '-name').value = it ? (it.name || '') : '';
+            document.getElementById(type + '-role').value = it ? (it.role || '') : '';
+            document.getElementById(type + '-phone').value = it ? (it.phone || '') : '';
+            confImgPreview(type);
+            document.getElementById(type + '-card-form').classList.remove('hidden');
+        }
+        function cancelConfCardForm(type) {
+            __confEditId[type] = null;
+            document.getElementById(type + '-card-form').classList.add('hidden');
+        }
+        function saveConfCard(type) {
+            const name = document.getElementById(type + '-name').value.trim();
+            if (!name) { showCustomAlert('الاسم مطلوب'); return; }
+            const img = document.getElementById(type + '-img').value.trim();
+            const role = document.getElementById(type + '-role').value.trim();
+            const phone = document.getElementById(type + '-phone').value.trim();
+            const list = getConfList(type);
+            const editId = __confEditId[type];
+            if (editId) {
+                const it = list.find(x => String(x.id) === String(editId));
+                if (it) { it.name = name; it.img = img; it.role = role; it.phone = phone; }
+            } else {
+                list.push({ id: Date.now(), name: name, img: img, role: role, phone: phone });
+            }
+            saveConfList(type, list);
+            renderConfCards(type);
+            cancelConfCardForm(type);
+            renderConferenceSections();
+            showCustomAlert('تم الحفظ بنجاح!');
+        }
+        function deleteConfCard(type, id) {
+            if (!confirm('هل أنت متأكد من حذف هذا العنصر؟')) return;
+            const list = getConfList(type).filter(x => String(x.id) !== String(id));
+            saveConfList(type, list);
+            renderConfCards(type);
+            renderConferenceSections();
+            showCustomAlert('تم الحذف ✓');
+        }
+
         function switchTab(tabId) {
-            const allTabs = ['site-settings', 'nav-manager', 'custom-sections', 'ticker-manager', 'add-news', 'manage-news', 'gallery', 'change-password', 'registrations', 'backup'];
+            const allTabs = ['site-settings', 'nav-manager', 'custom-sections', 'conf-sections', 'ticker-manager', 'add-news', 'manage-news', 'gallery', 'change-password', 'registrations', 'backup'];
             allTabs.forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
                 const btn = document.getElementById(`tab-btn-${t}`);
@@ -3257,6 +3585,7 @@
             if (tabId === 'site-settings') loadSiteSettingsForm();
             if (tabId === 'nav-manager') loadAdminNavButtons();
             if (tabId === 'custom-sections') loadAdminCustomSections();
+            if (tabId === 'conf-sections') renderConfAdmin();
             if (tabId === 'ticker-manager') loadAdminTicker();
             if (tabId === 'manage-news') loadAdminNews();
             if (tabId === 'gallery') loadAdminGallery();
@@ -3945,7 +4274,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v3.9 (removed notes field; live 4-part Arabic name warning while typing)');
+            console.log('[BUILD] v4.0 (dynamic conference management + sponsors sections; reorderable home sections)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
@@ -4107,7 +4436,8 @@
             status.textContent = 'جاري تجهيز النسخة الاحتياطية...';
             status.className = 'text-sm font-bold text-blue-600';
             const keys = ['vet_conf_settings', 'vet_conf_nav_buttons', 'vet_conf_ticker', 'vet_conf_ticker_settings',
-                'vet_conf_news', 'vet_conf_regs', 'vet_conf_custom_sections', 'vet_conf_gallery'];
+                'vet_conf_news', 'vet_conf_regs', 'vet_conf_custom_sections', 'vet_conf_gallery',
+                'vet_conf_management', 'vet_conf_sponsors'];
             const snapshot = { _app: 'vet9-conference', _created: new Date().toISOString() };
             let anyLoaded = false;
             for (const key of keys) {
@@ -4183,7 +4513,8 @@
         async function loadAllData(opts) {
             const silent = !!(opts && opts.silent);
             const keys = ['vet_conf_settings', 'vet_conf_nav_buttons', 'vet_conf_ticker', 'vet_conf_ticker_settings',
-                'vet_conf_news', 'vet_conf_regs', 'vet_conf_custom_sections', 'vet_conf_gallery'];
+                'vet_conf_news', 'vet_conf_regs', 'vet_conf_custom_sections', 'vet_conf_gallery',
+                'vet_conf_management', 'vet_conf_sponsors'];
             if (!silent) updateSyncBadge('connecting');
             let loaded = 0, anyOk = false, changed = false;
             for (const key of keys) {
@@ -4233,6 +4564,8 @@
             renderTicker();
             renderNews();
             renderCustomSections();
+            renderConferenceSections();
+            applyHomeSectionOrder();
             renderHomeGallery();
             applySectionVisibility();
             // حقن وسوم مشاركة الخبر فور توفر بياناته (لكي يلتقطها فيسبوك من الصفحة عند فتح رابط الخبر)
