@@ -640,7 +640,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v4.3</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v4.4</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -661,6 +661,7 @@
                     <button onclick="switchTab('nav-manager')" id="tab-btn-nav-manager" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-bars w-4 text-center"></i> <span>الأقسام الجانبية</span></button>
                     <button onclick="switchTab('custom-sections')" id="tab-btn-custom-sections" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-layer-group w-4 text-center"></i> <span>أقسام مخصصة</span></button>
                     <button onclick="switchTab('conf-sections')" id="tab-btn-conf-sections" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-people-group w-4 text-center"></i> <span>قسم الإدارة والرعاية</span></button>
+                    <button onclick="switchTab('labels')" id="tab-btn-labels" class="admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"><i class="fa-solid fa-language w-4 text-center"></i> <span>تعديل النصوص والترجمات</span></button>
                 </div>
                 <div class="mb-4">
                     <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-3">المحتوى الإعلامي</div>
@@ -1133,6 +1134,33 @@
                     </div>
                 </div>
 
+                <!-- Labels & Translations Admin Tab (تعديل النصوص والترجمات) -->
+                <div id="tab-labels" class="space-y-6 hidden max-w-4xl">
+                    <div class="bg-white rounded-2xl border shadow-sm p-5">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-vetBlue/10 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-language text-vetBlue text-lg"></i></div>
+                            <div>
+                                <h5 class="font-bold text-vetDark">تعديل النصوص والترجمات</h5>
+                                <p class="text-xs text-gray-500">كل المسميات الثابتة في الموقع بالعربية والإنجليزية. اترك الحقل فارغاً لإرجاع النص الافتراضي.</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 mt-3"><i class="fa-solid fa-circle-info ml-1"></i> عنوان الموقع والهيرو (الرئيسية) تُعدّل من تبويب "إعدادات ونصوص الصفحة" لذلك ليست مدرجة هنا.</p>
+                        <div class="flex items-center gap-2 mt-4">
+                            <div class="relative flex-1">
+                                <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                <input type="text" id="labels-search" oninput="filterLabels()" class="w-full px-9 py-2.5 border rounded-xl text-sm" placeholder="ابحث عن مسمى بالعربية أو الإنجليزية أو اسم المفتاح...">
+                            </div>
+                            <button onclick="filterLabels()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2.5 rounded-xl text-sm font-bold shrink-0"><i class="fa-solid fa-magnifying-glass ml-1"></i> بحث</button>
+                        </div>
+                        <div id="labels-groups" class="mt-5"></div>
+                        <div class="sticky bottom-0 bg-white/95 backdrop-blur pt-3 border-t border-gray-100 mt-4 flex flex-wrap items-center gap-2">
+                            <button onclick="saveLabels()" class="bg-vetBlue hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold text-sm shadow"><i class="fa-solid fa-save ml-1"></i> حفظ كل التعديلات</button>
+                            <button onclick="resetLabels()" class="bg-red-50 hover:bg-red-100 text-red-600 px-6 py-3 rounded-xl font-bold text-sm border border-red-100"><i class="fa-solid fa-rotate-left ml-1"></i> إعادة الكل للافتراضي</button>
+                            <span id="labels-save-status" class="text-sm font-bold"></span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Ticker Manager Tab -->
                 <div id="tab-ticker-manager" class="space-y-6 max-w-3xl hidden">
                     <h4 class="text-xl font-bold text-vetDark">إدارة أخبار الشريط العاجل المتحرك</h4>
@@ -1403,7 +1431,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v4.3</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v4.4</span>
         </footer>
     </div>
 
@@ -2916,20 +2944,25 @@
         }
 
         function applyTranslations() {
+            const stored = getStoredLabels();
+            const dict = {};
+            Object.assign(dict, translations[currentLang] || {});
+            if (stored && stored[currentLang]) Object.assign(dict, stored[currentLang]);
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (translations[currentLang] && translations[currentLang][key]) {
+                if (LABEL_SITE_SETTINGS_KEYS.indexOf(key) !== -1) return;
+                if (dict[key]) {
                     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                        el.setAttribute('placeholder', translations[currentLang][key]);
+                        el.setAttribute('placeholder', dict[key]);
                     } else if (el.tagName === 'SELECT') {
                         Array.from(el.options).forEach(opt => {
                             const optKey = opt.getAttribute('data-i18n');
-                            if (optKey && translations[currentLang][optKey]) {
-                                opt.textContent = translations[currentLang][optKey];
+                            if (optKey && dict[optKey]) {
+                                opt.textContent = dict[optKey];
                             }
                         });
                     } else {
-                        el.innerText = translations[currentLang][key];
+                        el.innerText = dict[key];
                     }
                 }
             });
@@ -2954,6 +2987,99 @@
             applySectionVisibility();
             applyTranslations();
             renderHeroIcons();
+        }
+
+        // ===== تعديل النصوص والترجمات (v4.4) =====
+        const LABEL_SITE_SETTINGS_KEYS = ['nav_title', 'nav_subtitle', 'hero_badge', 'hero_title', 'hero_desc'];
+        function getStoredLabels() {
+            try {
+                const d = JSON.parse(getStore('vet_conf_labels'));
+                if (d && typeof d === 'object') return d;
+            } catch (e) {}
+            return {};
+        }
+        function labelGroups() {
+            const g = { 'عام': [], 'الأقسام والعناوين': [], 'نموذج التسجيل': [], 'الأخبار والمواعيد': [], 'لوحة التحكم': [], 'الشريط العاجل': [], 'التذييل': [] };
+            Object.keys(translations.ar || {}).forEach(key => {
+                if (LABEL_SITE_SETTINGS_KEYS.indexOf(key) !== -1) return;
+                if (key === 'ticker_label') { g['عام'].push(key); return; }
+                if (key === 'credits_text' || key === 'footer_copy') { g['التذييل'].push(key); return; }
+                if (key.indexOf('ticker_') === 0) { g['الشريط العاجل'].push(key); return; }
+                if (key.indexOf('form_') === 0 || key.indexOf('cat_') === 0 || key.indexOf('type_') === 0) { g['نموذج التسجيل'].push(key); return; }
+                if (key.indexOf('tab_') === 0 || key.indexOf('th_') === 0 || key.indexOf('btn_') === 0 || key.indexOf('admin_') === 0 || key === 'dash_title' || key === 'dash_logout' || key === 'manage_news_heading' || key === 'regs_heading') { g['لوحة التحكم'].push(key); return; }
+                if (key.indexOf('news_') === 0 || key.indexOf('sched_') === 0 || key.indexOf('date_') === 0 || key === 'section_back' || key === 'schedule_heading') { g['الأخبار والمواعيد'].push(key); return; }
+                if (key === 'menu_admin' || key === 'hero_btn_reg' || key === 'hero_btn_more') { g['عام'].push(key); return; }
+                g['الأقسام والعناوين'].push(key);
+            });
+            return g;
+        }
+        function renderLabelsEditor() {
+            const container = document.getElementById('labels-groups');
+            if (!container) return;
+            const stored = getStoredLabels();
+            const groups = labelGroups();
+            const order = ['عام', 'الأقسام والعناوين', 'نموذج التسجيل', 'الأخبار والمواعيد', 'لوحة التحكم', 'الشريط العاجل', 'التذييل'];
+            let html = '';
+            order.forEach(name => {
+                const keys = groups[name];
+                if (!keys || !keys.length) return;
+                html += '<div class="mb-7 label-group">' +
+                    '<h6 class="font-black text-vetDark mb-3 border-b border-gray-100 pb-2 text-sm flex items-center"><i class="fa-solid fa-tags ml-2 text-vetBlue"></i>' + name + ' <span class="text-[11px] font-bold text-gray-400 bg-gray-100 rounded-full px-2 py-0.5 mr-2">' + keys.length + ' مسمّى</span></h6>' +
+                    '<div class="grid lg:grid-cols-2 gap-3">';
+                keys.forEach(k => {
+                    const arVal = (stored.ar && stored.ar[k]) || translations.ar[k] || '';
+                    const enVal = (stored.en && stored.en[k]) || translations.en[k] || '';
+                    html += '<div class="bg-gray-50 border rounded-xl p-3 label-row" data-search="' + esc((k + ' ' + translations.ar[k] + ' ' + translations.en[k]).toLowerCase()) + '">' +
+                        '<div class="text-[11px] font-mono text-gray-400 mb-2 truncate" dir="ltr" title="' + esc(k) + '">' + esc(k) + '</div>' +
+                        '<input type="text" data-key="' + esc(k) + '" data-lang="ar" value="' + esc(arVal) + '" class="w-full px-3 py-2 border rounded-lg text-sm mb-1.5 bg-white" placeholder="العربية">' +
+                        '<input type="text" data-key="' + esc(k) + '" data-lang="en" value="' + esc(enVal) + '" class="w-full px-3 py-2 border rounded-lg text-sm bg-white" placeholder="English">' +
+                        '</div>';
+                });
+                html += '</div></div>';
+            });
+            container.innerHTML = html;
+            const st = document.getElementById('labels-save-status');
+            if (st) st.textContent = '';
+        }
+        function filterLabels() {
+            const q = (document.getElementById('labels-search').value || '').trim().toLowerCase();
+            document.querySelectorAll('#labels-groups .label-row').forEach(row => {
+                row.style.display = (!q || (row.getAttribute('data-search') || '').indexOf(q) !== -1) ? '' : 'none';
+            });
+            document.querySelectorAll('#labels-groups .label-group').forEach(group => {
+                const visible = Array.prototype.some.call(group.querySelectorAll('.label-row'), r => r.style.display !== 'none');
+                group.style.display = visible ? '' : 'none';
+            });
+        }
+        function saveLabels() {
+            const ar = {}, en = {};
+            document.querySelectorAll('#labels-groups .label-row').forEach(row => {
+                const key = row.querySelector('input[data-lang="ar"]').getAttribute('data-key');
+                const arVal = row.querySelector('input[data-lang="ar"]').value.trim();
+                const enVal = row.querySelector('input[data-lang="en"]').value.trim();
+                if (arVal && arVal !== (translations.ar[key] || '')) ar[key] = arVal;
+                if (enVal && enVal !== (translations.en[key] || '')) en[key] = enVal;
+            });
+            const payload = {};
+            if (Object.keys(ar).length) payload.ar = ar;
+            if (Object.keys(en).length) payload.en = en;
+            setStore('vet_conf_labels', JSON.stringify(payload));
+            applyTranslations();
+            renderConferenceSections();
+            renderNews();
+            const st = document.getElementById('labels-save-status');
+            if (st) { st.textContent = 'تم حفظ النصوص وتحديث الموقع بنجاح!'; st.className = 'text-sm font-bold text-emerald-600'; }
+            showCustomAlert('تم حفظ النصوص وتحديث الموقع بنجاح!');
+        }
+        function resetLabels() {
+            if (!confirm('سيتم إرجاع جميع النصوص إلى الافتراضي. هل أنت متأكد؟')) return;
+            setStore('vet_conf_labels', JSON.stringify({}));
+            applyTranslations();
+            renderConferenceSections();
+            renderNews();
+            renderLabelsEditor();
+            const st = document.getElementById('labels-save-status');
+            if (st) { st.textContent = 'تم إرجاع جميع النصوص إلى الافتراضي.'; st.className = 'text-sm font-bold text-blue-600'; }
         }
 
         function getNews() {
@@ -2985,6 +3111,8 @@
         }
 
                 function t(key) {
+            const stored = getStoredLabels();
+            if (stored && stored[currentLang] && stored[currentLang][key]) return stored[currentLang][key];
             return (translations[currentLang] && translations[currentLang][key]) || '';
         }
 
@@ -3744,7 +3872,7 @@
         }
 
         function switchTab(tabId) {
-            const allTabs = ['site-settings', 'nav-manager', 'custom-sections', 'conf-sections', 'ticker-manager', 'add-news', 'manage-news', 'gallery', 'change-password', 'registrations', 'backup'];
+            const allTabs = ['site-settings', 'nav-manager', 'custom-sections', 'conf-sections', 'labels', 'ticker-manager', 'add-news', 'manage-news', 'gallery', 'change-password', 'registrations', 'backup'];
             allTabs.forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
                 const btn = document.getElementById(`tab-btn-${t}`);
@@ -3758,6 +3886,7 @@
             if (tabId === 'nav-manager') loadAdminNavButtons();
             if (tabId === 'custom-sections') loadAdminCustomSections();
             if (tabId === 'conf-sections') renderConfAdmin();
+            if (tabId === 'labels') renderLabelsEditor();
             if (tabId === 'ticker-manager') loadAdminTicker();
             if (tabId === 'manage-news') loadAdminNews();
             if (tabId === 'gallery') loadAdminGallery();
@@ -4446,7 +4575,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v4.3 (bilingual cards: English name/role for management, sponsors & contact sections)');
+            console.log('[BUILD] v4.4 (edit all static labels & translations from admin: vet_conf_labels overrides merged over defaults)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
@@ -4609,7 +4738,7 @@
             status.className = 'text-sm font-bold text-blue-600';
             const keys = ['vet_conf_settings', 'vet_conf_nav_buttons', 'vet_conf_ticker', 'vet_conf_ticker_settings',
                 'vet_conf_news', 'vet_conf_regs', 'vet_conf_custom_sections', 'vet_conf_gallery',
-                'vet_conf_management', 'vet_conf_sponsors', 'vet_conf_contact'];
+                'vet_conf_management', 'vet_conf_sponsors', 'vet_conf_contact', 'vet_conf_labels'];
             const snapshot = { _app: 'vet9-conference', _created: new Date().toISOString() };
             let anyLoaded = false;
             for (const key of keys) {
@@ -4686,7 +4815,7 @@
             const silent = !!(opts && opts.silent);
             const keys = ['vet_conf_settings', 'vet_conf_nav_buttons', 'vet_conf_ticker', 'vet_conf_ticker_settings',
                 'vet_conf_news', 'vet_conf_regs', 'vet_conf_custom_sections', 'vet_conf_gallery',
-                'vet_conf_management', 'vet_conf_sponsors', 'vet_conf_contact'];
+                'vet_conf_management', 'vet_conf_sponsors', 'vet_conf_contact', 'vet_conf_labels'];
             if (!silent) updateSyncBadge('connecting');
             let loaded = 0, anyOk = false, changed = false;
             for (const key of keys) {
@@ -4732,6 +4861,7 @@
 
         function refreshAllSections() {
             applySiteSettings();
+            applyTranslations();
             renderNavButtons();
             renderTicker();
             renderNews();
