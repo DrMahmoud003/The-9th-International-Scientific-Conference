@@ -645,7 +645,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v5.0</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v5.1</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -1465,7 +1465,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v5.0</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v5.1</span>
         </footer>
     </div>
 
@@ -3546,23 +3546,6 @@
             showRegSuccess();
         }
 
-        // ===== طبقة حماية رمزية إضافية (تصعيب بسيط - ليست حماية حقيقية) =====
-        // تعطيل الكليك اليمين (زرار الماوس الأيمن)
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-
-        // تعطيل F12 واختصارات أدوات المطور والحفظ والطباعة
-        document.addEventListener('keydown', function(e) {
-            const k = (e.key || '').toLowerCase();
-            // F12
-            if (e.key === 'F12') { e.preventDefault(); return false; }
-            // Ctrl+Shift+I / J / C / S / P (DevTools / حفظ باسم / طباعة)
-            if (e.ctrlKey && e.shiftKey && (k === 'i' || k === 'j' || k === 'c' || k === 's' || k === 'p')) { e.preventDefault(); return false; }
-            // Ctrl+U / S / P (عرض المصدر / حفظ / طباعة)
-            if (e.ctrlKey && (k === 'u' || k === 's' || k === 'p')) { e.preventDefault(); return false; }
-        });
-
         function openAdminModal() {
             document.getElementById('admin-login-modal').classList.remove('hidden');
         }
@@ -4667,7 +4650,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v5.0 (security hardening: per-key regs + admin-only regs read + auth header + password policy + Cloudinary preset + XSS esc + shortcut lock)');
+            console.log('[BUILD] v5.1 (shortcut lock removed)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
