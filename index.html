@@ -404,7 +404,7 @@
         <div class="max-w-7xl mx-auto px-4 flex flex-col items-center gap-6">
             <div class="glow-box bg-blue-950/80 border-2 border-blue-500 text-blue-100 px-6 py-3 rounded-2xl text-center shadow-lg transition duration-300">
                 <p class="text-sm md:text-base font-bold tracking-wide" data-i18n="credits_text">تمت البرمجة والتصميم بواسطة دكتور محمود اللواتي © 2026</p>
-                <p class="text-xs text-blue-200/60 mt-1 font-mono">الإصدار <span id="footer-version">v5.3</span></p>
+                <p class="text-xs text-blue-200/60 mt-1 font-mono">الإصدار <span id="footer-version">v5.4</span></p>
             </div>
             <div class="flex flex-col md:flex-row items-center justify-between w-full gap-4 pt-4 border-t border-blue-950/50">
                 <p class="text-sm" data-i18n="footer_copy">© 2026 كلية الطب البيطري - جامعة كفرالشيخ. جميع الحقوق محفوظة.</p>
@@ -643,7 +643,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v5.3</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v5.4</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -1463,7 +1463,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v5.3</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v5.4</span>
         </footer>
     </div>
 
@@ -3533,13 +3533,20 @@
                 body: JSON.stringify(newReg)
             })
                 .then(function(res) {
-                    if (res.ok) sessionStorage.setItem('vet9_last_reg_submit', String(now));
-                    updateSyncBadge(res.ok ? 'connected' : 'disconnected');
+                    if (res.ok) {
+                        sessionStorage.setItem('vet9_last_reg_submit', String(now));
+                        updateSyncBadge('connected');
+                        document.getElementById('registration-form').reset();
+                        showRegSuccess();
+                    } else {
+                        updateSyncBadge('disconnected');
+                        showCustomAlert('تعذر حفظ التسجيل الآن (رمز ' + res.status + '). يرجى المحاولة مرة أخرى.');
+                    }
                 })
-                .catch(function() { updateSyncBadge('disconnected'); });
-
-            document.getElementById('registration-form').reset();
-            showRegSuccess();
+                .catch(function() {
+                    updateSyncBadge('disconnected');
+                    showCustomAlert('تعذر الاتصال بحفظ التسجيل. تأكد من اتصالك بالإنترنت وحاول مجدداً.');
+                });
         }
 
         // ===== طبقة حماية رمزية إضافية (تصعيب بسيط - ليست حماية حقيقية) =====
@@ -4665,7 +4672,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v5.3 (full shortcut lock restored + version in footer)');
+            console.log('[BUILD] v5.4 (full shortcut lock restored + version in footer)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
