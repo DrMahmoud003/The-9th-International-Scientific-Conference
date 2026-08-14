@@ -332,6 +332,7 @@
                     <p class="text-blue-100 text-sm" data-i18n="reg_sub">يرجى استيفاء البيانات بدقة لتسجيل حضورك في المؤتمر</p>
                 </div>
                 <form id="registration-form" onsubmit="handleRegistration(event)" class="bg-white text-gray-800 p-6 rounded-2xl shadow-xl space-y-4 max-w-2xl mx-auto">
+                    <input type="text" id="reg-website" name="website" style="position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;width:0;overflow:hidden;pointer-events:none" tabindex="-1" autocomplete="off" aria-hidden="true">
                     <div class="grid sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold mb-1" data-i18n="form_name">الاسم الكامل *</label>
@@ -644,7 +645,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v4.7</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v5.0</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -1464,7 +1465,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v4.7</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v5.0</span>
         </footer>
     </div>
 
@@ -3158,7 +3159,13 @@
         }
 
         function getRegistrations() {
-            return JSON.parse(getStore('vet_conf_regs')) || [];
+            const raw = getStore('vet_conf_regs');
+            if (!raw) return [];
+            let data;
+            try { data = JSON.parse(raw); } catch (e) { return []; }
+            if (Array.isArray(data)) return data;
+            if (data && typeof data === 'object') return Object.values(data);
+            return [];
         }
 
                 function t(key) {
@@ -3189,12 +3196,12 @@
                 card.onclick = function() { openNewsScreen(item.id); };
                 card.innerHTML = `
                     <div class="relative h-44 overflow-hidden bg-gray-100">
-                        <img src="${item.media}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <span class="absolute top-3 right-3 bg-vetBlue/90 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow"><i class="fa-regular fa-calendar ml-1"></i>${item.date}</span>
+                        <img src="${esc(item.media)}" alt="${esc(title)}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <span class="absolute top-3 right-3 bg-vetBlue/90 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow"><i class="fa-regular fa-calendar ml-1"></i>${esc(item.date)}</span>
                     </div>
                     <div class="p-5 flex-1 flex flex-col">
-                        <h4 class="font-bold text-lg text-vetDark mb-2 group-hover:text-vetBlue transition-colors leading-snug">${title}</h4>
-                        <p class="text-sm text-gray-500 line-clamp-2 leading-relaxed flex-1">${summary}</p>
+                        <h4 class="font-bold text-lg text-vetDark mb-2 group-hover:text-vetBlue transition-colors leading-snug">${esc(title)}</h4>
+                        <p class="text-sm text-gray-500 line-clamp-2 leading-relaxed flex-1">${esc(summary)}</p>
                         <div class="mt-4 pt-3 border-t flex items-center justify-between gap-2 text-xs font-bold text-vetBlue">
                             <span class="flex items-center gap-2"><span>${t('news_read_more')}</span><i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i></span>
                             <span class="flex items-center gap-1.5">
@@ -3223,7 +3230,7 @@
             urls.forEach(function(u, i) {
                 const div = document.createElement('div');
                 div.className = 'shrink-0 w-full';
-                div.innerHTML = '<img src="' + u + '" alt="' + (alt || '') + '" class="w-full h-64 sm:h-96 object-cover">';
+                div.innerHTML = '<img src="' + esc(u) + '" alt="' + esc(alt || '') + '" class="w-full h-64 sm:h-96 object-cover">';
                 slides.appendChild(div);
                 if (dots) {
                     const dot = document.createElement('button');
@@ -3473,6 +3480,22 @@
             e.preventDefault();
             clearFieldErrors();
 
+            // honeypot: لو امتلأ الحقل الخفي → بوت (تجاهل بصمت وبنفس رسالة النجاح)
+            const website = document.getElementById('reg-website');
+            if (website && website.value) {
+                document.getElementById('registration-form').reset();
+                showRegSuccess();
+                return;
+            }
+
+            // حد زمني بين تسجيلات نفس الجهاز (20 ثانية)
+            const now = Date.now();
+            const lastSubmit = parseInt(sessionStorage.getItem('vet9_last_reg_submit') || '0', 10);
+            if (now - lastSubmit < 20000) {
+                showCustomAlert('تم استلام طلبك مؤخراً. يرجى الانتظار قليلاً قبل محاولة التسجيل مرة أخرى.');
+                return;
+            }
+
             const regType = document.getElementById('reg-type').value;
             if (!regType) {
                 showCustomAlert('برجاء اختيار نوع الحضور أولاً');
@@ -3496,7 +3519,7 @@
             }
 
             const newReg = {
-                id: Date.now(),
+                id: now,
                 name: name,
                 email: document.getElementById('reg-email').value,
                 phone: phone,
@@ -3504,12 +3527,21 @@
                 country: document.getElementById('reg-country').value,
                 org: document.getElementById('reg-org').value,
                 category: document.getElementById('reg-category').value,
-                type: document.getElementById('reg-type').value
+                type: regType
             };
 
-            const regs = getRegistrations();
-            regs.push(newReg);
-            setStore('vet_conf_regs', JSON.stringify(regs));
+            // كتابة مباشرة لمفتاح مستقل — بدون قراءة الـ array كلها (منع المسح الجماعي والـ race)
+            fetch(RTDB_URL + '/' + RTDB_NODE + '/vet_conf_regs/' + now + '.json', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newReg)
+            })
+                .then(function(res) {
+                    if (res.ok) sessionStorage.setItem('vet9_last_reg_submit', String(now));
+                    updateSyncBadge(res.ok ? 'connected' : 'disconnected');
+                })
+                .catch(function() { updateSyncBadge('disconnected'); });
+
             document.getElementById('registration-form').reset();
             showRegSuccess();
         }
@@ -3520,23 +3552,15 @@
             e.preventDefault();
         });
 
-        // تعطيل زرار F12 وبعض اختصارات فتح أدوات المطور الشائعة
+        // تعطيل F12 واختصارات أدوات المطور والحفظ والطباعة
         document.addEventListener('keydown', function(e) {
+            const k = (e.key || '').toLowerCase();
             // F12
-            if (e.key === 'F12') {
-                e.preventDefault();
-                return false;
-            }
-            // Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+Shift+C (DevTools)
-            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
-                e.preventDefault();
-                return false;
-            }
-            // Ctrl+U (View Page Source)
-            if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
-                e.preventDefault();
-                return false;
-            }
+            if (e.key === 'F12') { e.preventDefault(); return false; }
+            // Ctrl+Shift+I / J / C / S / P (DevTools / حفظ باسم / طباعة)
+            if (e.ctrlKey && e.shiftKey && (k === 'i' || k === 'j' || k === 'c' || k === 's' || k === 'p')) { e.preventDefault(); return false; }
+            // Ctrl+U / S / P (عرض المصدر / حفظ / طباعة)
+            if (e.ctrlKey && (k === 'u' || k === 's' || k === 'p')) { e.preventDefault(); return false; }
         });
 
         function openAdminModal() {
@@ -3619,16 +3643,18 @@
                     loadAdminNavButtons();
                     loadAdminTicker();
                     loadAdminNews();
-                    loadAdminRegs();
+                    loadAllData({ silent: true }).then(function() {
+                        loadAdminRegs();
+                    });
                 })
                 .catch((error) => {
                     submitBtn.disabled = false;
                     submitBtn.textContent = "دخول";
-                    let msg = "خطأ في تسجيل الدخول: " + error.message;
-                    if (error.code === 'auth/user-not-found') {
-                        msg = "لم يتم إنشاء حساب الأدمن بعد في Firebase Authentication.";
-                    } else if (error.code === 'auth/wrong-password') {
-                        msg = "كلمة المرور غير صحيحة!";
+                    let msg = "تعذر تسجيل الدخول. تحقق من البريد وكلمة المرور.";
+                    if (error.code === 'auth/too-many-requests') {
+                        msg = "تم إيقاف الدخول مؤقتاً بسبب المحاولات الكثيرة. حاول لاحقاً.";
+                    } else if (error.code === 'auth/network-request-failed') {
+                        msg = "تعذر الاتصال بخدمة الدخول. تأكد من اتصالك بالإنترنت.";
                     }
                     errorEl.textContent = msg;
                     errorEl.classList.remove('hidden');
@@ -3643,6 +3669,12 @@
                         // المستخدم مش مسجل دخول - تأكد إن لوحة التحكم مقفولة
                         const dash = document.getElementById('admin-dashboard');
                         if (dash) dash.classList.add('hidden');
+                    } else {
+                        // استعادة الجلسة: تحميل التسجيلات بالتوكن (قواعد regs تسمح للأدمن فقط بالقراءة)
+                        loadAllData({ silent: true }).then(function() {
+                            const dash = document.getElementById('admin-dashboard');
+                            if (dash && !dash.classList.contains('hidden')) loadAdminRegs();
+                        });
                     }
                 });
             }
@@ -4344,8 +4376,12 @@
                 showCustomAlert("كلمة المرور الجديدة غير متطابقة مع التأكيد!");
                 return;
             }
-            if (newPass.length < 4) {
-                showCustomAlert("كلمة المرور يجب ألا تقل عن 4 خانات!");
+            if (newPass.length < 8) {
+                showCustomAlert("كلمة المرور يجب ألا تقل عن 8 خانات!");
+                return;
+            }
+            if (!/[A-Za-z]/.test(newPass) || !/[0-9]/.test(newPass)) {
+                showCustomAlert("كلمة المرور يجب أن تحتوي على حروف وأرقام!");
                 return;
             }
             if (!auth || !auth.currentUser) {
@@ -4436,13 +4472,19 @@
             });
         }
 
-        function deleteReg(id) {
-            if (confirm("هل أنت متأكد من حذف هذا المسجّل؟")) {
+        async function deleteReg(id) {
+            if (!confirm("هل أنت متأكد من حذف هذا المسجّل؟")) return;
+            try {
+                const h = await getAuthHeaders();
+                const res = await fetch(RTDB_URL + '/' + RTDB_NODE + '/vet_conf_regs/' + id + '.json', { method: 'DELETE', headers: h });
+                updateSyncBadge(res.ok ? 'connected' : 'disconnected');
+            } catch (e) { updateSyncBadge('disconnected'); }
+            try {
                 let regs = getRegistrations();
-                regs = regs.filter(r => r.id != id);
-                setStore('vet_conf_regs', JSON.stringify(regs));
-                loadAdminRegs();
-            }
+                regs = regs.filter(function(r) { return String(r.id) !== String(id); });
+                appData['vet_conf_regs'] = JSON.stringify(regs);
+            } catch (e) { /* ignore */ }
+            loadAdminRegs();
         }
 
         // ===== إرسال واتساب جماعي (واحد تلو الآخر) =====
@@ -4625,7 +4667,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v4.7 (removed fee confirmation modal; registration proceeds directly then shows important notice modal)');
+            console.log('[BUILD] v5.0 (security hardening: per-key regs + admin-only regs read + auth header + password policy + Cloudinary preset + XSS esc + shortcut lock)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
@@ -4681,7 +4723,7 @@
         // والصور والفيديو على Cloudinary
         // ============================================================
         const CLOUDINARY_CLOUD = "hqhsb2wz";
-        const CLOUDINARY_PRESET = "ml_default";
+        const CLOUDINARY_PRESET = "vet_conf_uploads";
         const RTDB_URL = "https://vet9-conference-default-rtdb.firebaseio.com";
         const RTDB_NODE = "vetConfData";
         const appData = {};
@@ -4742,17 +4784,25 @@
             return (key in appData) ? appData[key] : null;
         }
 
+        // إرفاق توكن الأدمن كـ Authorization header بدل ?auth= في الـ URL (منع تسريب التوكن)
+        async function getAuthHeaders() {
+            try {
+                if (auth && auth.currentUser) {
+                    const token = await auth.currentUser.getIdToken();
+                    return { 'Authorization': 'Bearer ' + token };
+                }
+            } catch (e) { /* ignore */ }
+            return {};
+        }
+
         // حفظ/تحديث ملف JSON في Firebase Realtime Database (كل الزوار يرون التحديث فوراً)
         async function saveJSONToStorage(key, value) {
             try {
                 let url = RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json';
-                if (auth && auth.currentUser) {
-                    const token = await auth.currentUser.getIdToken();
-                    url += '?auth=' + encodeURIComponent(token);
-                }
+                const h = await getAuthHeaders();
                 const res = await fetch(url, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: Object.assign({ 'Content-Type': 'application/json' }, h),
                     body: JSON.stringify(value)
                 });
                 updateSyncBadge(res.ok ? 'connected' : 'disconnected');
@@ -4772,11 +4822,8 @@
             delete appData[key];
             try {
                 let url = RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json';
-                if (auth && auth.currentUser) {
-                    const token = await auth.currentUser.getIdToken();
-                    url += '?auth=' + encodeURIComponent(token);
-                }
-                await fetch(url, { method: 'DELETE' });
+                const h = await getAuthHeaders();
+                await fetch(url, { method: 'DELETE', headers: h });
             } catch (e) { /* ignore missing */ }
         }
 
@@ -4786,6 +4833,7 @@
             if (!status) return;
             status.textContent = 'جاري تجهيز النسخة الاحتياطية...';
             status.className = 'text-sm font-bold text-blue-600';
+            const authH = await getAuthHeaders();
             const keys = ['vet_conf_settings', 'vet_conf_nav_buttons', 'vet_conf_ticker', 'vet_conf_ticker_settings',
                 'vet_conf_news', 'vet_conf_regs', 'vet_conf_custom_sections', 'vet_conf_gallery',
                 'vet_conf_management', 'vet_conf_sponsors', 'vet_conf_contact', 'vet_conf_labels'];
@@ -4793,7 +4841,7 @@
             let anyLoaded = false;
             for (const key of keys) {
                 try {
-                    const res = await fetch(RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json');
+                    const res = await fetch(RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json', { headers: authH });
                     if (res.ok) {
                         snapshot[key] = await res.json();
                         anyLoaded = true;
@@ -4842,7 +4890,13 @@
             status.textContent = 'جاري الاستعادة (' + keys.length + ' أقسام)...';
             let done = 0, failed = 0;
             for (const key of keys) {
-                const ok = await saveJSONToStorage(key, data[key]);
+                let val = data[key];
+                if (key === 'vet_conf_regs' && Array.isArray(val)) {
+                    const obj = {};
+                    val.forEach(function(entry) { if (entry && entry.id != null) obj[String(entry.id)] = entry; });
+                    val = obj;
+                }
+                const ok = await saveJSONToStorage(key, val);
                 if (ok) {
                     appData[key] = JSON.stringify(data[key]);
                     done++;
@@ -4867,17 +4921,27 @@
                 'vet_conf_news', 'vet_conf_regs', 'vet_conf_custom_sections', 'vet_conf_gallery',
                 'vet_conf_management', 'vet_conf_sponsors', 'vet_conf_contact', 'vet_conf_labels'];
             if (!silent) updateSyncBadge('connecting');
+            const authH = await getAuthHeaders();
             let loaded = 0, anyOk = false, changed = false;
             for (const key of keys) {
                 try {
                     const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
                     const timer = setTimeout(function() { if (controller) controller.abort(); }, 5000);
-                    const res = await fetch(RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json', { signal: controller ? controller.signal : undefined });
+                    const fetchOpts = { signal: controller ? controller.signal : undefined };
+                    if (key === 'vet_conf_regs') fetchOpts.headers = authH;
+                    const res = await fetch(RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json', fetchOpts);
                     clearTimeout(timer);
                     if (res.ok) {
                         anyOk = true;
                         updateSyncBadge('connected');
-                        const data = await res.json();
+                        let data = await res.json();
+                        // ترحيل مرة واحدة: صيغة array قديمة → object عند دخول الأدمن
+                        if (key === 'vet_conf_regs' && Array.isArray(data) && auth && auth.currentUser) {
+                            const obj = {};
+                            data.forEach(function(entry) { if (entry && entry.id != null) obj[String(entry.id)] = entry; });
+                            await saveJSONToStorage('vet_conf_regs', obj);
+                            data = obj;
+                        }
                         if (data !== null && data !== undefined) {
                             const value = (typeof data === 'string') ? data : JSON.stringify(data);
                             if (appData[key] !== value) {
