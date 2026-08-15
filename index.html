@@ -404,7 +404,7 @@
         <div class="max-w-7xl mx-auto px-4 flex flex-col items-center gap-6">
             <div class="glow-box bg-blue-950/80 border-2 border-blue-500 text-blue-100 px-6 py-3 rounded-2xl text-center shadow-lg transition duration-300">
                 <p class="text-sm md:text-base font-bold tracking-wide" data-i18n="credits_text">تمت البرمجة والتصميم بواسطة دكتور محمود اللواتي © 2026</p>
-                <p class="text-xs text-blue-200/60 mt-1 font-mono">الإصدار <span id="footer-version">v5.4</span></p>
+                <p class="text-xs text-blue-200/60 mt-1 font-mono">الإصدار <span id="footer-version">v5.5</span></p>
             </div>
             <div class="flex flex-col md:flex-row items-center justify-between w-full gap-4 pt-4 border-t border-blue-950/50">
                 <p class="text-sm" data-i18n="footer_copy">© 2026 كلية الطب البيطري - جامعة كفرالشيخ. جميع الحقوق محفوظة.</p>
@@ -643,7 +643,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v5.4</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v5.5</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -1463,7 +1463,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v5.4</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v5.5</span>
         </footer>
     </div>
 
@@ -3968,6 +3968,7 @@
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
             const activeBtn = document.getElementById(`tab-btn-${tabId}`);
             if (activeBtn) activeBtn.className = "admin-tab-btn w-full text-right px-4 py-2.5 rounded-lg font-bold text-sm bg-vetBlue text-white flex items-center gap-2";
+            if (tabId === 'registrations') loadAdminRegs();
             
             if (tabId === 'site-settings') loadSiteSettingsForm();
             if (tabId === 'nav-manager') loadAdminNavButtons();
@@ -4446,35 +4447,43 @@
             return p ? 'https://wa.me/' + p + '?text=' + encodeURIComponent(msg || '') : '';
         }
         function loadAdminRegs() {
-            const tbody = document.getElementById('admin-regs-table');
-            const regs = getFilteredRegs();
-            tbody.innerHTML = '';
-            if (regs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-gray-400 font-bold">لا توجد سجلات مطابقة للفرز الحالي</td></tr>';
-                return;
+            try {
+                const tbody = document.getElementById('admin-regs-table');
+                const regs = getFilteredRegs();
+                tbody.innerHTML = '';
+                const diag = document.createElement('tr');
+                diag.innerHTML = '<td colspan="9" class="p-2 text-center text-[11px] font-mono" style="background:#f0fdf4;color:#166534">تشخيص: ' + esc(String(__regsFetchStatus)) + ' — عدد السجلات المحمّلة: ' + regs.length + ' — خامة البيانات: ' + (typeof getStore('vet_conf_regs')) + (getStore('vet_conf_regs') ? ' (' + getStore('vet_conf_regs').length + ' حرف)' : '') + '</td>';
+                tbody.appendChild(diag);
+                if (regs.length === 0) {
+                    tbody.innerHTML += '<tr><td colspan="9" class="p-6 text-center text-gray-400 font-bold">لا توجد سجلات مطابقة للفرز الحالي</td></tr>';
+                    return;
+                }
+                regs.forEach(r => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-gray-50";
+                    const wa = waLink(r.phone, '');
+                    tr.innerHTML = `
+                        <td class="p-3 font-semibold">${r.name}</td>
+                        <td class="p-3 text-gray-600">${r.email}</td>
+                        <td class="p-3 text-gray-600">
+                            <div class="flex items-center gap-2">
+                                <span dir="ltr">${r.phone}</span>
+                                ${wa ? '<a href="' + wa + '" target="_blank" rel="noopener" title="مراسلة عبر واتساب" class="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition shadow"><i class="fa-brands fa-whatsapp text-[10px]"></i></a>' : ''}
+                            </div>
+                        </td>
+                        <td class="p-3 text-gray-600" dir="ltr">${r.nationalId || '—'}</td>
+                        <td class="p-3 text-gray-600">${r.country}</td>
+                        <td class="p-3 text-gray-600">${r.org}</td>
+                        <td class="p-3"><span class="bg-blue-100 text-vetBlue px-2 py-1 rounded text-xs font-bold">${r.category}</span></td>
+                        <td class="p-3"><span class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-xs font-bold">${r.type}</span></td>
+                        <td class="p-3"><button onclick="deleteReg(${r.id})" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                const tbody = document.getElementById('admin-regs-table');
+                if (tbody) tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-red-500 font-bold">خطأ أثناء العرض: ' + esc(String(err && err.message || err)) + '</td></tr>';
             }
-            regs.forEach(r => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-50";
-                const wa = waLink(r.phone, '');
-                tr.innerHTML = `
-                    <td class="p-3 font-semibold">${r.name}</td>
-                    <td class="p-3 text-gray-600">${r.email}</td>
-                    <td class="p-3 text-gray-600">
-                        <div class="flex items-center gap-2">
-                            <span dir="ltr">${r.phone}</span>
-                            ${wa ? '<a href="' + wa + '" target="_blank" rel="noopener" title="مراسلة عبر واتساب" class="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition shadow"><i class="fa-brands fa-whatsapp text-[10px]"></i></a>' : ''}
-                        </div>
-                    </td>
-                    <td class="p-3 text-gray-600" dir="ltr">${r.nationalId || '—'}</td>
-                    <td class="p-3 text-gray-600">${r.country}</td>
-                    <td class="p-3 text-gray-600">${r.org}</td>
-                    <td class="p-3"><span class="bg-blue-100 text-vetBlue px-2 py-1 rounded text-xs font-bold">${r.category}</span></td>
-                    <td class="p-3"><span class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-xs font-bold">${r.type}</span></td>
-                    <td class="p-3"><button onclick="deleteReg(${r.id})" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button></td>
-                `;
-                tbody.appendChild(tr);
-            });
         }
 
         async function deleteReg(id) {
@@ -4672,7 +4681,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v5.4 (full shortcut lock restored + version in footer)');
+            console.log('[BUILD] v5.5 (full shortcut lock restored + version in footer)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
@@ -4920,6 +4929,7 @@
         }
 
         // تحميل كل البيانات من قاعدة البيانات السحابية عند فتح الموقع
+        let __regsFetchStatus = 'لم تُحمَّل بعد';
         async function loadAllData(opts) {
             const silent = !!(opts && opts.silent);
             const keys = ['vet_conf_settings', 'vet_conf_nav_buttons', 'vet_conf_ticker', 'vet_conf_ticker_settings',
@@ -4936,6 +4946,7 @@
                     if (key === 'vet_conf_regs') fetchOpts.headers = authH;
                     const res = await fetch(RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json', fetchOpts);
                     clearTimeout(timer);
+                    if (key === 'vet_conf_regs') __regsFetchStatus = 'HTTP ' + res.status + (res.ok ? ' (نجحت القراءة)' : ' (رفضت القراءة)');
                     if (res.ok) {
                         anyOk = true;
                         updateSyncBadge('connected');
@@ -4956,7 +4967,9 @@
                             }
                         }
                     }
-                } catch (e) { /* ignore missing keys or network errors */ }
+                } catch (e) {
+                    if (key === 'vet_conf_regs') __regsFetchStatus = 'خطأ اتصال أو مهلة (' + e.name + ')';
+                }
             }
             if (!anyOk) updateSyncBadge('disconnected');
             if (!silent || changed) refreshAllSections();
