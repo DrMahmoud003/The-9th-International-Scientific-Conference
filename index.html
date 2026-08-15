@@ -404,7 +404,7 @@
         <div class="max-w-7xl mx-auto px-4 flex flex-col items-center gap-6">
             <div class="glow-box bg-blue-950/80 border-2 border-blue-500 text-blue-100 px-6 py-3 rounded-2xl text-center shadow-lg transition duration-300">
                 <p class="text-sm md:text-base font-bold tracking-wide" data-i18n="credits_text">تمت البرمجة والتصميم بواسطة دكتور محمود اللواتي © 2026</p>
-                <p class="text-xs text-blue-200/60 mt-1 font-mono">الإصدار <span id="footer-version">v5.7</span></p>
+                <p class="text-xs text-blue-200/60 mt-1 font-mono">الإصدار <span id="footer-version">v5.8</span></p>
             </div>
             <div class="flex flex-col md:flex-row items-center justify-between w-full gap-4 pt-4 border-t border-blue-950/50">
                 <p class="text-sm" data-i18n="footer_copy">© 2026 كلية الطب البيطري - جامعة كفرالشيخ. جميع الحقوق محفوظة.</p>
@@ -643,7 +643,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v5.7</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v5.8</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -1463,7 +1463,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v5.7</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v5.8</span>
         </footer>
     </div>
 
@@ -4489,8 +4489,8 @@
         async function deleteReg(id) {
             if (!confirm("هل أنت متأكد من حذف هذا المسجّل؟")) return;
             try {
-                const h = await getAuthHeaders();
-                const res = await fetch(RTDB_URL + '/' + RTDB_NODE + '/vet_conf_regs/' + id + '.json', { method: 'DELETE', headers: h });
+                const token = await getRequestToken();
+                const res = await fetch(withAuth(RTDB_URL + '/' + RTDB_NODE + '/vet_conf_regs/' + id + '.json', token), { method: 'DELETE' });
                 updateSyncBadge(res.ok ? 'connected' : 'disconnected');
             } catch (e) { updateSyncBadge('disconnected'); }
             try {
@@ -4681,7 +4681,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v5.7 (full shortcut lock restored + version in footer)');
+            console.log('[BUILD] v5.8 (full shortcut lock restored + version in footer)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
@@ -4798,25 +4798,28 @@
             return (key in appData) ? appData[key] : null;
         }
 
-        // إرفاق توكن الأدمن كـ Authorization header بدل ?auth= في الـ URL (منع تسريب التوكن)
-        async function getAuthHeaders() {
+        // التوكن يُرسل في الرابط (?auth=) وليس في هيدر Authorization
+        // السبب: بعض البيئات/الإضافات تحجب هيدر Authorization في الطلبات العابرة للمواقع فيرفضه Firebase (401)
+        // وطريقة ?auth= مُثبتة تعمل (التوكن نفسه انتهى ساعة وتُرسَل عبر HTTPS فقط)
+        async function getRequestToken() {
             try {
-                if (auth && auth.currentUser) {
-                    const token = await auth.currentUser.getIdToken();
-                    return { 'Authorization': 'Bearer ' + token };
-                }
+                if (auth && auth.currentUser) return await auth.currentUser.getIdToken();
             } catch (e) { /* ignore */ }
-            return {};
+            return null;
+        }
+
+        function withAuth(url, token) {
+            return token ? url + '?auth=' + token : url;
         }
 
         // حفظ/تحديث ملف JSON في Firebase Realtime Database (كل الزوار يرون التحديث فوراً)
         async function saveJSONToStorage(key, value) {
             try {
-                let url = RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json';
-                const h = await getAuthHeaders();
+                const token = await getRequestToken();
+                const url = withAuth(RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json', token);
                 const res = await fetch(url, {
                     method: 'PUT',
-                    headers: Object.assign({ 'Content-Type': 'application/json' }, h),
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(value)
                 });
                 updateSyncBadge(res.ok ? 'connected' : 'disconnected');
@@ -4835,9 +4838,8 @@
         async function removeStore(key) {
             delete appData[key];
             try {
-                let url = RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json';
-                const h = await getAuthHeaders();
-                await fetch(url, { method: 'DELETE', headers: h });
+                const token = await getRequestToken();
+                await fetch(withAuth(RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json', token), { method: 'DELETE' });
             } catch (e) { /* ignore missing */ }
         }
 
@@ -4847,7 +4849,7 @@
             if (!status) return;
             status.textContent = 'جاري تجهيز النسخة الاحتياطية...';
             status.className = 'text-sm font-bold text-blue-600';
-            const authH = await getAuthHeaders();
+            const token = await getRequestToken();
             const keys = ['vet_conf_settings', 'vet_conf_nav_buttons', 'vet_conf_ticker', 'vet_conf_ticker_settings',
                 'vet_conf_news', 'vet_conf_regs', 'vet_conf_custom_sections', 'vet_conf_gallery',
                 'vet_conf_management', 'vet_conf_sponsors', 'vet_conf_contact', 'vet_conf_labels'];
@@ -4855,7 +4857,7 @@
             let anyLoaded = false;
             for (const key of keys) {
                 try {
-                    const res = await fetch(RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json', { headers: authH });
+                    const res = await fetch(withAuth(RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json', token));
                     if (res.ok) {
                         snapshot[key] = await res.json();
                         anyLoaded = true;
@@ -4937,38 +4939,26 @@
                 'vet_conf_news', 'vet_conf_regs', 'vet_conf_custom_sections', 'vet_conf_gallery',
                 'vet_conf_management', 'vet_conf_sponsors', 'vet_conf_contact', 'vet_conf_labels'];
             if (!silent) updateSyncBadge('connecting');
-            const authH = await getAuthHeaders();
+            const regsToken = await getRequestToken();
             let loaded = 0, anyOk = false, changed = false;
             for (const key of keys) {
                 try {
                     const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
                     const timer = setTimeout(function() { if (controller) controller.abort(); }, 5000);
                     const fetchOpts = { signal: controller ? controller.signal : undefined };
-                    if (key === 'vet_conf_regs') fetchOpts.headers = authH;
-                    const res = await fetch(RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json', fetchOpts);
+                    const url = (key === 'vet_conf_regs')
+                        ? withAuth(RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json', regsToken)
+                        : RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json';
+                    const res = await fetch(url, fetchOpts);
                     clearTimeout(timer);
                     if (key === 'vet_conf_regs') {
                         __regsFetchStatus = 'HTTP ' + res.status + (res.ok ? ' (نجحت القراءة)' : ' (رفضت القراءة)');
                         __regsAuthInfo = (auth && auth.currentUser)
                             ? ('مستخدم: ' + (auth.currentUser.email || 'الحساب بدون إيميل!'))
                             : 'لا يوجد مستخدم مسجَّل وقت الطلب';
-                        if (authH && authH.Authorization) {
-                            __regsAuthInfo += ' — التوكن مُرسَل';
-                            try {
-                                const parts = authH.Authorization.replace('Bearer ', '').split('.');
-                                const pad = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-                                const payload = JSON.parse(decodeURIComponent(escape(atob(pad))));
-                                __regsAuthInfo += ' | claims: email=' + (payload.email || 'لا يوجد') + ', aud=' + (payload.aud || '?') + ', ينتهي=' + (payload.exp ? new Date(payload.exp * 1000).toLocaleTimeString('ar-EG') : '?');
-                            } catch (e) { __regsAuthInfo += ' | فك التوكن فشل'; }
-                        } else {
-                            __regsAuthInfo += ' — التوكن غير مُرسَل!';
-                        }
+                        __regsAuthInfo += regsToken ? ' — التوكن مُرسَل في الرابط (?auth=)' : ' — التوكن غير مُرسَل!';
                         if (!res.ok) {
                             try { const errText = await res.text(); __regsAuthInfo += ' | رد الخادم: ' + errText.slice(0, 120); } catch (e) {}
-                            try {
-                                const r2 = await fetch(RTDB_URL + '/' + RTDB_NODE + '/vet_conf_regs.json?auth=' + authH.Authorization.replace('Bearer ', ''), { method: 'GET' });
-                                __regsAuthInfo += ' | تجربة ?auth=: HTTP ' + r2.status;
-                            } catch (e) { __regsAuthInfo += ' | تجربة ?auth= فشلت'; }
                         }
                     }
                     if (res.ok) {
