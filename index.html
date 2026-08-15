@@ -404,7 +404,7 @@
         <div class="max-w-7xl mx-auto px-4 flex flex-col items-center gap-6">
             <div class="glow-box bg-blue-950/80 border-2 border-blue-500 text-blue-100 px-6 py-3 rounded-2xl text-center shadow-lg transition duration-300">
                 <p class="text-sm md:text-base font-bold tracking-wide" data-i18n="credits_text">تمت البرمجة والتصميم بواسطة دكتور محمود اللواتي © 2026</p>
-                <p class="text-xs text-blue-200/60 mt-1 font-mono">الإصدار <span id="footer-version">v5.5</span></p>
+                <p class="text-xs text-blue-200/60 mt-1 font-mono">الإصدار <span id="footer-version">v5.6</span></p>
             </div>
             <div class="flex flex-col md:flex-row items-center justify-between w-full gap-4 pt-4 border-t border-blue-950/50">
                 <p class="text-sm" data-i18n="footer_copy">© 2026 كلية الطب البيطري - جامعة كفرالشيخ. جميع الحقوق محفوظة.</p>
@@ -643,7 +643,7 @@
                 <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gauge-high text-lg"></i></div>
                 <div>
                     <h3 class="font-bold text-base"><span data-i18n="dash_title">لوحة تحكم المؤتمر</span></h3>
-                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v5.5</span></p>
+                    <p class="text-xs text-blue-200 opacity-80">النظام المتكامل لإدارة المؤتمر العلمي <span id="build-version" class="bg-white/20 px-1.5 py-0.5 rounded font-mono">v5.6</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -1463,7 +1463,7 @@
         </div>
         <footer class="bg-white border-t border-gray-200 px-6 py-2 flex items-center justify-between text-xs text-gray-500 shrink-0">
             <span><i class="fa-solid fa-database ml-1"></i> جميع البيانات محفوظة سحابياً وتُتزامن تلقائياً من أي مكان</span>
-            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v5.5</span>
+            <span><i class="fa-solid fa-shield-halved ml-1"></i> نظام إدارة المؤتمر v5.6</span>
         </footer>
     </div>
 
@@ -4452,7 +4452,7 @@
                 const regs = getFilteredRegs();
                 tbody.innerHTML = '';
                 const diag = document.createElement('tr');
-                diag.innerHTML = '<td colspan="9" class="p-2 text-center text-[11px] font-mono" style="background:#f0fdf4;color:#166534">تشخيص: ' + esc(String(__regsFetchStatus)) + ' — عدد السجلات المحمّلة: ' + regs.length + ' — خامة البيانات: ' + (typeof getStore('vet_conf_regs')) + (getStore('vet_conf_regs') ? ' (' + getStore('vet_conf_regs').length + ' حرف)' : '') + '</td>';
+                diag.innerHTML = '<td colspan="9" class="p-2 text-center text-[11px] font-mono" style="background:#f0fdf4;color:#166534">تشخيص: ' + esc(String(__regsFetchStatus)) + ' | ' + esc(String(__regsAuthInfo)) + ' — عدد السجلات المحمّلة: ' + regs.length + '</td>';
                 tbody.appendChild(diag);
                 if (regs.length === 0) {
                     tbody.innerHTML += '<tr><td colspan="9" class="p-6 text-center text-gray-400 font-bold">لا توجد سجلات مطابقة للفرز الحالي</td></tr>';
@@ -4681,7 +4681,7 @@
         }
 
         window.onload = function() {
-            console.log('[BUILD] v5.5 (full shortcut lock restored + version in footer)');
+            console.log('[BUILD] v5.6 (full shortcut lock restored + version in footer)');
             // تثبيت اللغة العربية دائماً عند فتح الموقع
             currentLang = 'ar';
             document.documentElement.setAttribute('lang', 'ar');
@@ -4930,6 +4930,7 @@
 
         // تحميل كل البيانات من قاعدة البيانات السحابية عند فتح الموقع
         let __regsFetchStatus = 'لم تُحمَّل بعد';
+        let __regsAuthInfo = '—';
         async function loadAllData(opts) {
             const silent = !!(opts && opts.silent);
             const keys = ['vet_conf_settings', 'vet_conf_nav_buttons', 'vet_conf_ticker', 'vet_conf_ticker_settings',
@@ -4946,7 +4947,12 @@
                     if (key === 'vet_conf_regs') fetchOpts.headers = authH;
                     const res = await fetch(RTDB_URL + '/' + RTDB_NODE + '/' + key + '.json', fetchOpts);
                     clearTimeout(timer);
-                    if (key === 'vet_conf_regs') __regsFetchStatus = 'HTTP ' + res.status + (res.ok ? ' (نجحت القراءة)' : ' (رفضت القراءة)');
+                    if (key === 'vet_conf_regs') {
+                        __regsFetchStatus = 'HTTP ' + res.status + (res.ok ? ' (نجحت القراءة)' : ' (رفضت القراءة)');
+                        __regsAuthInfo = (auth && auth.currentUser)
+                            ? ('مستخدم: ' + (auth.currentUser.email || 'الحساب بدون إيميل!') + ' — التوكن: ' + (authH && authH.Authorization ? 'مُرسَل (' + String(authH.Authorization).length + ' حرف)' : 'غير مُرسَل!'))
+                            : 'لا يوجد مستخدم مسجَّل وقت الطلب';
+                    }
                     if (res.ok) {
                         anyOk = true;
                         updateSyncBadge('connected');
